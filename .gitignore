@@ -1,0 +1,42 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build output
+.next
+out
+build
+*.tsbuildinfo
+next-env.d.ts
+
+# Secrets.
+# Every .env is ignored EXCEPT .env.example, which documents the required keys
+# without holding any values. Verified against the tracked file list before the
+# first commit — an entry here does nothing for a file git already tracks.
+.env
+.env.*
+!.env.example
+
+# Credentials that must never be in a repo, private or not
+*.pem
+*.p8
+*.key
+*-serviceAccount*.json
+*serviceAccountKey*.json
+
+# Local tooling
+.vercel
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Test/coverage
+coverage
+.nyc_output

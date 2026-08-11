@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="680"
+  height="220"
+  viewBox="0 0 680 220"
+  role="img"
+  aria-labelledby="logo-title logo-description"
+>
+  <title id="logo-title">Shathi Sheba</title>
+  <desc id="logo-description">The Shathi Sheba three-petal logo beside the brand name.</desc>
+
+  <g id="shathi-sheba-mark" transform="translate(24 23) scale(.28) translate(-285 -170)">
+    <path
+      fill="#F59E0B"
+      d="M748 170C770 285 740 392 671 468C617 528 548 560 481 567C470 509 477 454 498 400C542 288 632 203 748 170Z"
+    />
+    <path
+      fill="#871449"
+      d="M421 305C482 377 505 464 491 548C477 643 432 726 361 789C313 727 287 659 289 579C292 469 338 374 421 305Z"
+    />
+    <path
+      fill="#C989A5"
+      d="M285 628C403 504 584 477 725 562C743 573 759 586 773 602C649 741 440 757 285 628Z"
+    />
+  </g>
+
+  <text
+    x="196"
+    y="112"
+    fill="#871449"
+    font-family="Segoe UI, sans-serif"
+    font-size="64"
+    font-weight="700"
+    letter-spacing="0"
+    dominant-baseline="middle"
+  >Shathi Sheba</text>
+</svg>
