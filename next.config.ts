@@ -1,6 +1,21 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /*
+   * Where the build output goes.
+   *
+   * `next build` and `next dev` share `.next` by default, and a build run while
+   * a dev server is up replaces the dev chunks underneath it. The dev server
+   * then dies with "Cannot find module './vendor-chunks/<something>.js'", which
+   * looks like a dependency problem and is not — it is a stale process holding
+   * references to files that were just deleted.
+   *
+   * `npm run build:verify` sets NEXT_DIST_DIR so a build-for-checking writes
+   * somewhere else and leaves a running dev server alone. Deploys use plain
+   * `npm run build`, which keeps `.next`.
+   */
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+
   reactStrictMode: true,
   poweredByHeader: false,
   trailingSlash: false,
