@@ -9,6 +9,7 @@ import { PENDING_KEY } from "@/components/auth/PhoneForm";
 import { useSession } from "@/components/auth/session";
 import { localePath, type Locale } from "@/lib/i18n";
 import { routes } from "@/lib/site";
+import { loginUrlFor } from "@/lib/auth/returnTo";
 
 /**
  * Step 2 — enter the SMS code.
@@ -143,7 +144,17 @@ export function OtpForm({ locale, returnTo }: { locale: Locale; returnTo?: strin
        * more specific and more recent signal.
        */
       const intent = takeIntent();
-      const destination = returnTo ?? intent ?? localePath(locale, routes.account);
+
+      /*
+       * A brand-new account goes to the profile step first, whatever it was
+       * heading for. It has no name and no gender, so every page that greets
+       * the reader would greet a blank — and the two questions take seconds.
+       * The original destination is carried on `?next=`, so nothing is lost.
+       */
+      const wanted = returnTo ?? intent ?? localePath(locale, routes.account);
+      const destination = data.needsProfile
+        ? loginUrlFor(localePath(locale, routes.registerProfile), wanted)
+        : wanted;
 
       /*
        * A FULL DOCUMENT LOAD, NOT router.replace().

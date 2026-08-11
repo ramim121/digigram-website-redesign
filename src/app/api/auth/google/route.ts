@@ -26,7 +26,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ ok: false, message: "Missing Google token" }, { status: 400 });
     }
 
-    const res = await apiRequest<{ token?: string; user?: SessionUser }>("v2/web/google", {
+    const res = await apiRequest<{ token?: string; user?: SessionUser; isNew?: boolean; needsProfile?: boolean }>("v2/web/google", {
         method: "POST",
         body: { idToken },
         revalidate: 0,
@@ -46,7 +46,9 @@ export async function POST(request: Request) {
         );
     }
 
-    const payload = res.data as { token?: string; user?: SessionUser } | undefined;
+    const payload = res.data as
+        | { token?: string; user?: SessionUser; isNew?: boolean; needsProfile?: boolean }
+        | undefined;
     if (!payload?.token) {
         return NextResponse.json(
             { ok: false, message: "Sign-in failed. Please try again." },
@@ -58,6 +60,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
         ok: true,
+        isNew: Boolean(payload?.isNew),
+        needsProfile: Boolean(payload?.needsProfile),
         user: payload.user
             ? { fullName: payload.user.fullName, phoneNumber: payload.user.phoneNumber }
             : null,

@@ -8,9 +8,14 @@ import { setSessionCookie, type SessionUser } from "@/lib/auth/session";
  * The backend's token is written straight into an httpOnly cookie and is never
  * returned in the response body, so no client script ever sees it.
  *
- * Calls `v2/web/otp` (PUT), which signs in an existing account and will not
- * create one — the no-signup-on-the-web rule lives on the backend, not in this
- * handler, so it holds however the endpoint is reached.
+ * Calls `v2/web/otp` (PUT). That route now *creates* the account when a number
+ * verifies for the first time — registration on the web is allowed. The
+ * financial bar is unmoved: `bookingBlockers` still requires a verified NID
+ * before any money moves.
+ *
+ * `needsProfile` is passed through so the client can send a new account to the
+ * name-and-gender step rather than dropping it on a dashboard with a blank
+ * name.
  */
 export async function POST(request: Request) {
     let phone: unknown;
@@ -28,7 +33,7 @@ export async function POST(request: Request) {
         );
     }
 
-    const res = await apiRequest<{ token?: string; user?: SessionUser }>("v2/web/otp", {
+    const res = await apiRequest<{ token?: string; user?: SessionUser; isNew?: boolean; needsProfile?: boolean }>("v2/web/otp", {
         method: "PUT",
         body: { phone: phone.trim(), otp: otp.trim() },
         revalidate: 0,
@@ -50,7 +55,9 @@ export async function POST(request: Request) {
 
     // The token is unwrapped from the envelope alongside `user`, so read it off
     // the same object the backend returned.
-    const payload = res.data as { token?: string; user?: SessionUser } | undefined;
+    const payload = res.data as
+        | { token?: string; user?: SessionUser; isNew?: boolean; needsProfile?: boolean }
+        | undefined;
     const token = payload?.token;
     if (!token) {
         return NextResponse.json(
@@ -64,6 +71,8 @@ export async function POST(request: Request) {
     // Only non-sensitive display fields go back to the browser.
     return NextResponse.json({
         ok: true,
+        isNew: Boolean(payload?.isNew),
+        needsProfile: Boolean(payload?.needsProfile),
         user: payload?.user
             ? { fullName: payload.user.fullName, phoneNumber: payload.user.phoneNumber }
             : null,

@@ -42,8 +42,8 @@ export function BookingGate({
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-stone-600">
                     {en
-                        ? "Use the mobile number or Google account you registered with in the Shathi app. Accounts are created in the app, not here."
-                        : "সাথী অ্যাপে যে মোবাইল নম্বর বা গুগল অ্যাকাউন্ট দিয়ে নিবন্ধন করেছেন তা ব্যবহার করুন। অ্যাকাউন্ট তৈরি হয় অ্যাপে, এখানে নয়।"}
+                        ? "Sign in with your mobile number or your Google account. No account yet? The same step creates one."
+                        : "আপনার মোবাইল নম্বর বা গুগল অ্যাকাউন্ট দিয়ে লগ ইন করুন। অ্যাকাউন্ট না থাকলে একই ধাপেই তৈরি হয়ে যাবে।"}
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
                     <Link
@@ -59,7 +59,7 @@ export function BookingGate({
                         rel="noreferrer"
                         className="inline-flex items-center rounded-md border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-800"
                     >
-                        {en ? "Register in the app" : "অ্যাপে নিবন্ধন করুন"}
+                        {en ? "Get the app" : "অ্যাপটি নিন"}
                     </a>
                 </div>
             </Card>

@@ -13,6 +13,12 @@ import { routes, site } from "@/lib/site";
 /**
  * Step 1 — phone only. No password is ever asked for, stored or displayed.
  *
+ * This is sign-in AND sign-up. A number with no account gets one when the code
+ * verifies, and is sent straight to the name-and-gender step. It used to refuse
+ * an unknown number and point at the app stores; registration on the web is now
+ * allowed, and the financial bar (a verified NID before any booking) is what
+ * still holds.
+ *
  * The +880 prefix is locked so a visitor cannot enter a country code twice,
  * and the field is numeric-only so a phone keyboard opens on mobile.
  */
@@ -27,7 +33,6 @@ export function PhoneForm({ locale, returnTo }: { locale: Locale; returnTo?: str
   const [error, setError] = useState<string | null>(null);
   const [consentError, setConsentError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [notRegistered, setNotRegistered] = useState(false);
 
   const digits = phone.replace(/\D/g, "");
 
@@ -58,7 +63,6 @@ export function PhoneForm({ locale, returnTo }: { locale: Locale; returnTo?: str
 
   async function send() {
     setBusy(true);
-    setNotRegistered(false);
     // The backend normalises this form; it accepts 01XXXXXXXXX or +8801XXXXXXXXX.
     const phoneNumber = `0${digits}`;
 
@@ -71,12 +75,6 @@ export function PhoneForm({ locale, returnTo }: { locale: Locale; returnTo?: str
       const data = await res.json();
 
       if (!res.ok || !data.ok) {
-        // The one failure that is not an error on the user's part: they have
-        // no Shathi account yet, and the web cannot create one.
-        if (data.code === "NOT_REGISTERED") {
-          setNotRegistered(true);
-          return;
-        }
         setError(data.message ?? (en ? "Could not send the code." : "কোড পাঠানো যায়নি।"));
         return;
       }
@@ -103,8 +101,8 @@ export function PhoneForm({ locale, returnTo }: { locale: Locale; returnTo?: str
       title={en ? "Log in" : "লগ ইন"}
       lead={
         en
-          ? "Use the mobile number you registered with in the Shathi app. No password to remember."
-          : "সাথী অ্যাপে যে মোবাইল নম্বর দিয়ে নিবন্ধন করেছেন সেটিই ব্যবহার করুন। পাসওয়ার্ড মনে রাখতে হবে না।"
+          ? "New or returning — the same number works either way. We send a code by SMS; there is no password to remember."
+          : "নতুন হোন বা আগের, একই নম্বরেই কাজ হবে। এসএমএসে কোড পাঠানো হবে; পাসওয়ার্ড মনে রাখতে হবে না।"
       }
       footer={
         en ? (
@@ -124,40 +122,6 @@ export function PhoneForm({ locale, returnTo }: { locale: Locale; returnTo?: str
         )
       }
     >
-      {/* Registration happens in the app, never here. This panel is what the
-          site shows instead of a sign-up form, and it is the only place a
-          visitor learns that the number they typed has no account yet. */}
-      {notRegistered && (
-        <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-5">
-          <p className="font-display text-[15px] font-bold text-stone-900">
-            {en ? "No Shathi account for this number" : "এই নম্বরে কোনো সাথী অ্যাকাউন্ট নেই"}
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-stone-700">
-            {en
-              ? "Accounts are created in the Shathi app, where identity verification happens. Register there once, then sign in here with the same number."
-              : "অ্যাকাউন্ট তৈরি হয় সাথী অ্যাপে, যেখানে পরিচয় যাচাই করা হয়। একবার সেখানে নিবন্ধন করুন, তারপর একই নম্বর দিয়ে এখানে লগ ইন করুন।"}
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <a
-              href={site.app.playStore}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-md bg-brand-strong px-4 py-2 text-sm font-semibold text-white"
-            >
-              {en ? "Get it on Google Play" : "গুগল প্লে থেকে নিন"}
-            </a>
-            <a
-              href={site.app.appStore}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-md border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-800"
-            >
-              {en ? "Download on the App Store" : "অ্যাপ স্টোর থেকে ডাউনলোড"}
-            </a>
-          </div>
-        </div>
-      )}
-
       <form onSubmit={submit} noValidate className="space-y-6">
         <TextField
           id="phone"

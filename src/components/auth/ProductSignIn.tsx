@@ -80,13 +80,13 @@ export async function ProductSignIn({
                                 </p>
                                 <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-stone-900 lg:text-3xl">
                                     {en
-                                        ? "Log in with the number you registered in the app"
-                                        : "অ্যাপে যে নম্বরে নিবন্ধন করেছেন সেটি দিয়ে লগ ইন করুন"}
+                                        ? "Sign in, or start with your mobile number"
+                                        : "লগ ইন করুন, অথবা মোবাইল নম্বর দিয়ে শুরু করুন"}
                                 </h2>
                                 <p className="mt-3 max-w-xl leading-relaxed text-stone-600">
                                     {en
-                                        ? "One account across the app and this site. No password — a code by SMS, or your Google account."
-                                        : "অ্যাপ ও এই সাইটে একটিই অ্যাকাউন্ট। পাসওয়ার্ড নেই — এসএমএসে কোড, অথবা আপনার গুগল অ্যাকাউন্ট।"}
+                                        ? "One account across the app and this site. No password — a code by SMS, or your Google account. If you are new, the same step creates your account."
+                                        : "অ্যাপ ও এই সাইটে একটিই অ্যাকাউন্ট। পাসওয়ার্ড নেই — এসএমএসে কোড, অথবা গুগল অ্যাকাউন্ট। নতুন হলে একই ধাপেই অ্যাকাউন্ট তৈরি হবে।"}
                                 </p>
                                 <div className="mt-6 flex flex-wrap gap-3">
                                     <Link
@@ -103,7 +103,7 @@ export async function ProductSignIn({
                                         className="inline-flex items-center gap-2 rounded-md border border-stone-300 bg-white px-5 py-3 font-display text-sm font-semibold text-stone-800"
                                     >
                                         <Icon name="download" size={16} />
-                                        {en ? "New here? Register in the app" : "নতুন? অ্যাপে নিবন্ধন করুন"}
+                                        {en ? "Get the mobile app" : "মোবাইল অ্যাপটি নিন"}
                                     </a>
                                 </div>
                             </div>

@@ -33,6 +33,8 @@ export type SessionUser = {
     idUsers: number;
     fullName: string | null;
     fullNameBn?: string | null;
+    /** Migration 007. Null means never asked, distinct from 'prefer_not_to_say'. */
+    gender?: "male" | "female" | "other" | "prefer_not_to_say" | null;
     email: string | null;
     phoneNumber: string | null;
     userType: string | null;

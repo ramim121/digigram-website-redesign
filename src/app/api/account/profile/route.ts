@@ -3,16 +3,23 @@ import { apiRequest } from "@/lib/api/client";
 import { getSessionToken } from "@/lib/auth/session";
 
 /**
- * PUT { fullName, email?, dateOfBirth } → update the signed-in user's profile.
+ * PUT { fullName, gender, dateOfBirth } → update the signed-in user's profile.
  *
  * The backend derives the user from the token, so there is no id in the body
  * and nothing to tamper with.
  *
- * NOTE ON EMAIL
- * Saving an address does **not** verify it — `PUT /api/user` leaves
- * `emailVerified` untouched, and only signing in with Google sets it. The UI
- * must not imply otherwise, or someone will believe they have satisfied the
- * booking requirement when they have not.
+ * WHY v2/web/profile AND NOT THE APP'S PUT /api/user
+ * That route writes exactly `fullName`, `email` and `dateOfBirth`. It has no
+ * `gender` column in its update, so gender would be silently dropped — and it
+ * writes `email` straight onto the account without verifying it, which is the
+ * state that produced duplicate accounts and that migration 010's unique index
+ * now rejects outright.
+ *
+ * `email` is therefore not accepted by this handler at all. An address reaches
+ * an account only through v2/web/email/verify, which requires a code proving
+ * the mailbox.
+ *
+ * The app route is left exactly as it is: the shipped app depends on it.
  */
 export async function PUT(request: Request) {
     const token = await getSessionToken();
@@ -28,24 +35,38 @@ export async function PUT(request: Request) {
     }
 
     const fullName = typeof body.fullName === "string" ? body.fullName.trim() : "";
-    const email = typeof body.email === "string" ? body.email.trim() : "";
+    const gender = typeof body.gender === "string" ? body.gender.trim() : "";
     const dateOfBirth = typeof body.dateOfBirth === "string" ? body.dateOfBirth : "";
 
     if (!fullName) {
         return NextResponse.json({ ok: false, message: "Full name is required" }, { status: 400 });
     }
+    /*
+     * `email` is deliberately not accepted here.
+     *
+     * It used to be forwarded, which wrote an unverified address straight onto
+     * the account — the exact state that made the Google handler create
+     * duplicates, and that migration 010's unique index now rejects outright.
+     * An address only reaches an account through v2/web/email/verify, which
+     * requires a code proving the mailbox.
+     */
+    const GENDERS = ["male", "female", "other", "prefer_not_to_say"];
+    if (gender && !GENDERS.includes(gender)) {
+        return NextResponse.json(
+            { ok: false, message: "Choose one of the listed options" },
+            { status: 400 },
+        );
+    }
+
     if (!dateOfBirth) {
         return NextResponse.json({ ok: false, message: "Date of birth is required" }, { status: 400 });
     }
 
-    const res = await apiRequest("user", {
-        method: "PUT",
+    const res = await apiRequest("v2/web/profile", {
+        method: "POST",
         token,
         revalidate: 0,
-        // `email` is sent only when present: the backend runs a
-        // case-insensitive uniqueness check, and an empty string would collide
-        // with every other account that has no address.
-        body: { fullName, dateOfBirth, ...(email ? { email } : {}) },
+        body: { fullName, dateOfBirth, ...(gender ? { gender } : {}) },
     });
 
     if (!res.ok) {

@@ -5,6 +5,7 @@ import { Note } from "@/components/ui/Primitives";
 import { useSession } from "@/components/auth/session";
 import { localePath, type Locale } from "@/lib/i18n";
 import { routes, site } from "@/lib/site";
+import { loginUrlFor } from "@/lib/auth/returnTo";
 
 /**
  * Google sign-in.
@@ -14,11 +15,11 @@ import { routes, site } from "@/lib/site";
  * backend, which verifies the signature and audience server-side. Nothing is
  * trusted because the browser said it.
  *
- * SIGN-IN ONLY, NEVER SIGN-UP.
- * The backend route this reaches (`v2/web/google`) looks the account up and
- * refuses to create one. A Google account with no matching Shathi account gets
- * `NOT_REGISTERED`, and this component shows the download-the-app panel — the
- * same rule the phone form enforces.
+ * SIGN-IN AND SIGN-UP.
+ * `v2/web/google` signs in when the address was already proved, and creates an
+ * account when nobody holds it. It refuses only one case — an address claimed
+ * but never verified by another account that has no other way to sign in —
+ * which comes back as ADDRESS_CONTESTED and needs a human.
  *
  * Renders nothing when `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is unset, so a
  * misconfigured deploy shows one working sign-in path rather than a button that
@@ -75,7 +76,7 @@ export function GoogleSignIn({ locale, returnTo }: { locale: Locale; returnTo?: 
                 const data = await res.json();
 
                 if (!res.ok || !data.ok) {
-                    if (data.code === "NOT_REGISTERED") {
+                    if (data.code === "ADDRESS_CONTESTED") {
                         setNotRegistered(true);
                         return;
                     }
@@ -93,7 +94,13 @@ export function GoogleSignIn({ locale, returnTo }: { locale: Locale; returnTo?: 
                 // full document load — see the comment in `OtpForm` for why
                 // `router.replace()` + `refresh()` is not reliable here.
                 const intent = takeIntent();
-                window.location.assign(returnTo ?? intent ?? localePath(locale, routes.account));
+                const wanted = returnTo ?? intent ?? localePath(locale, routes.account);
+                // A new account answers name and gender first — see OtpForm.
+                window.location.assign(
+                    data.needsProfile
+                        ? loginUrlFor(localePath(locale, routes.registerProfile), wanted)
+                        : wanted,
+                );
                 return;
             } catch {
                 setError(en ? "Network error. Please try again." : "নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন।");
@@ -192,8 +199,13 @@ export function GoogleSignIn({ locale, returnTo }: { locale: Locale; returnTo?: 
                 <Note tone="warn" icon="alert-triangle" className="mt-4">
                     {en ? (
                         <>
-                            No Shathi account is linked to that Google address. Accounts are created
-                            in the Shathi app —{" "}
+                            Another Shathi account lists that email address and has no other way to
+                            sign in, so we cannot hand it over automatically. Write to{" "}
+                            <a href="mailto:info@digigramventures.com" className="underline">
+                                info@digigramventures.com
+                            </a>{" "}
+                            and we will sort it out. You can also sign in with your phone number, or
+                            get the app —{" "}
                             <a href={site.app.playStore} target="_blank" rel="noreferrer" className="underline">
                                 Google Play
                             </a>{" "}
@@ -205,8 +217,12 @@ export function GoogleSignIn({ locale, returnTo }: { locale: Locale; returnTo?: 
                         </>
                     ) : (
                         <>
-                            ওই গুগল ঠিকানার সঙ্গে কোনো সাথী অ্যাকাউন্ট যুক্ত নেই। অ্যাকাউন্ট তৈরি হয় সাথী
-                            অ্যাপে —{" "}
+                            ওই ইমেইল ঠিকানাটি অন্য একটি সাথী অ্যাকাউন্টে আছে এবং সেটির আর কোনো লগ ইনের
+                            উপায় নেই, তাই স্বয়ংক্রিয়ভাবে হস্তান্তর করা যাচ্ছে না। লিখুন{" "}
+                            <a href="mailto:info@digigramventures.com" className="underline">
+                                info@digigramventures.com
+                            </a>{" "}
+                            — আমরা ঠিক করে দেব। ফোন নম্বর দিয়েও লগ ইন করতে পারেন, বা অ্যাপ নিতে পারেন —{" "}
                             <a href={site.app.playStore} target="_blank" rel="noreferrer" className="underline">
                                 গুগল প্লে
                             </a>{" "}

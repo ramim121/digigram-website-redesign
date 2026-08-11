@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, Note } from "@/components/ui/Primitives";
 import { Button } from "@/components/ui/Button";
-import { TextField } from "@/components/ui/Field";
+import { TextField, SelectField } from "@/components/ui/Field";
+import { EmailVerification } from "@/components/auth/EmailVerification";
 import { Icon } from "@/components/ui/Icon";
 import type { SessionUser } from "@/lib/auth/session";
 import type { Locale } from "@/lib/i18n";
@@ -142,7 +143,7 @@ function IdentitySection({ locale, user }: { locale: Locale; user: SessionUser }
     const en = locale === "en";
     const { busy, error, done, run } = useRefreshingSubmit();
     const [fullName, setFullName] = useState(user.fullName ?? "");
-    const [email, setEmail] = useState(user.email ?? "");
+    const [gender, setGender] = useState(user.gender ?? "");
     const [dateOfBirth, setDateOfBirth] = useState(
         user.dateOfBirth ? String(user.dateOfBirth).slice(0, 10) : "",
     );
@@ -163,7 +164,7 @@ function IdentitySection({ locale, user }: { locale: Locale; user: SessionUser }
                         fetch("/api/account/profile", {
                             method: "PUT",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ fullName, email, dateOfBirth }),
+                            body: JSON.stringify({ fullName, gender, dateOfBirth }),
                         }),
                     );
                 }}
@@ -180,6 +181,23 @@ function IdentitySection({ locale, user }: { locale: Locale; user: SessionUser }
                     }
                     required
                 />
+                <SelectField
+                    id="gender"
+                    label={en ? "Gender" : "লিঙ্গ"}
+                    value={gender}
+                    onChange={(event) => setGender(event.target.value)}
+                    required
+                >
+                    <option value="" disabled>
+                        {en ? "Choose one" : "একটি নির্বাচন করুন"}
+                    </option>
+                    <option value="female">{en ? "Female" : "নারী"}</option>
+                    <option value="male">{en ? "Male" : "পুরুষ"}</option>
+                    <option value="other">{en ? "Other" : "অন্যান্য"}</option>
+                    <option value="prefer_not_to_say">
+                        {en ? "Prefer not to say" : "বলতে চাই না"}
+                    </option>
+                </SelectField>
                 <TextField
                     id="dateOfBirth"
                     label={en ? "Date of birth" : "জন্ম তারিখ"}
@@ -188,22 +206,15 @@ function IdentitySection({ locale, user }: { locale: Locale; user: SessionUser }
                     onChange={(event) => setDateOfBirth(event.target.value)}
                     required
                 />
-                <TextField
-                    id="email"
-                    label={en ? "Email address" : "ইমেইল ঠিকানা"}
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    hint={
-                        user.emailVerified === "yes"
-                            ? en
-                                ? "Verified through Google sign-in."
-                                : "গুগল সাইন-ইনের মাধ্যমে যাচাইকৃত।"
-                            : en
-                              ? "Used for booking confirmations. Saving it does not verify it — sign in with Google to verify."
-                              : "বুকিং নিশ্চিতকরণের জন্য ব্যবহৃত। সংরক্ষণ করলেই যাচাই হয় না — যাচাই করতে গুগল দিয়ে লগ ইন করুন।"
-                    }
-                />
+                {/* The email lives in its own flow, not this form: an address
+                    is only written to the account once a code proves it, so it
+                    cannot be saved here alongside fields that need no proof. */}
+                <div className="border-t border-stone-200 pt-4">
+                    <p className="mb-3 font-display text-sm font-bold text-stone-900">
+                        {en ? "Email address" : "ইমেইল ঠিকানা"}
+                    </p>
+                    <EmailVerification locale={locale} user={user} />
+                </div>
 
                 {error && (
                     <p role="alert" className="text-sm font-medium text-danger">
