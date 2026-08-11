@@ -1,0 +1,64 @@
+name: Deploy new.digigramventures.com
+
+# Manual only, deliberately. This site is the public face of the company and a
+# push-to-deploy trigger means a typo on main is live before anyone reads it.
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy files to the server
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          # `.env.production` is excluded: the server holds its own, with real
+          # values. Overwriting it from the repo would blank every secret.
+          # `node_modules` and `.next` are excluded because both are rebuilt on
+          # the server — rsyncing them is slow and mixes architectures.
+          switches: >-
+            -avzr --delete
+            --exclude=".git" --exclude=".github" --exclude="node_modules"
+            --exclude=".next" --exclude=".env.production" --exclude=".env.local"
+            --exclude="docs" --exclude="*.md"
+          path: ./
+          remote_path: /var/www/html/digigram-website-redesign
+          remote_host: ${{ secrets.DEV_SSH_HOST }}
+          remote_user: ${{ secrets.DEV_SSH_USERNAME }}
+          remote_key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          remote_port: ${{ secrets.DEV_SSH_PORT }}
+
+      - name: Install, build, restart
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USERNAME }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.DEV_SSH_PORT }}
+          script: |
+            set -e
+            cd /var/www/html/digigram-website-redesign
+
+            # `npm ci` not `npm install`: it installs exactly the lockfile and
+            # fails loudly if the two disagree, rather than quietly resolving to
+            # something that was never tested.
+            npm ci --omit=dev --ignore-scripts=false
+
+            # Build BEFORE stopping the old process, so a failed build leaves
+            # the current site running instead of taking it down. The existing
+            # API deploy does `pm2 delete` first and is offline for the whole
+            # build; there is no reason to repeat that here.
+            #
+            # next/font/google fetches Montserrat at build time. The build fails
+            # outright if the server cannot reach fonts.googleapis.com, so that
+            # egress has to be open.
+            NODE_OPTIONS="--max-old-space-size=4096" npm run build
+
+            pm2 reload ecosystem.config.js --update-env || pm2 start ecosystem.config.js
+            pm2 save
+
+            # Fail the job if the site is not actually answering afterwards.
+            sleep 4
+            curl -fsS -o /dev/null http://127.0.0.1:4300/ || (pm2 logs digigram-website --lines 40 --nostream; exit 1)
