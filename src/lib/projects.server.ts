@@ -30,7 +30,43 @@ import { daysUntil, decorate, isInvestable, type Project, type ProjectQuery } fr
 async function loadLiveProjects(): Promise<Project[] | null> {
     const res = await apiGet<ApiProject[]>("projects/get_projects_for_investment");
     if (!res.ok || !Array.isArray(res.data)) return null;
-    return res.data.map(mapProject);
+
+    /*
+     * That endpoint decides *which* projects are investable, but returns no
+     * imagery at all — no MainImage, no FeaturedImages, and `projectBanner` is
+     * null on every row. So every card fell back to the motif placeholder while
+     * the detail pages, which use `projects/details/:id`, showed real photos.
+     * It read as "the images are broken" when it was really two endpoints
+     * disagreeing about what a project row contains.
+     *
+     * `get_all_projects` does carry the file rows, so images are merged in from
+     * there by id. The investment endpoint stays the authority on membership —
+     * it applies the product rule about what is open — and this only fills in
+     * pictures.
+     *
+     * If the enrichment call fails the list still renders, just with
+     * placeholder art. A missing photo is not a reason to show no projects.
+     */
+    const withImages = await apiGet<ApiProject[]>("projects/get_all_projects");
+    const imagery = new Map<number, ApiProject>();
+    if (withImages.ok && Array.isArray(withImages.data)) {
+        for (const row of withImages.data) imagery.set(Number(row.idProjects), row);
+    }
+
+    return res.data.map((row) => {
+        const extra = imagery.get(Number(row.idProjects));
+        return mapProject(
+            extra
+                ? {
+                      ...row,
+                      MainImage: row.MainImage ?? extra.MainImage,
+                      FeaturedImages: row.FeaturedImages?.length
+                          ? row.FeaturedImages
+                          : extra.FeaturedImages,
+                  }
+                : row,
+        );
+    });
 }
 
 /**
