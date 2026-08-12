@@ -117,7 +117,12 @@ export function PartnerList({
 
                             <span className="shrink-0 text-end">
                                 <span className="block font-display text-sm font-bold text-stone-900 tabular-nums">
-                                    {partner.units} {en ? "units" : "ইউনিট"}
+                                    {partner.units}{" "}
+                                    {en
+                                        ? partner.units === 1
+                                            ? "unit"
+                                            : "units"
+                                        : "ইউনিট"}
                                 </span>
                                 <span className="block text-xs text-stone-500 tabular-nums">
                                     {formatBdt(partner.amount, locale)}

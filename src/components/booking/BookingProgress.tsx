@@ -22,8 +22,16 @@ const STEPS = [
     { key: "confirmed", en: "Payment confirmed", bn: "পরিশোধ নিশ্চিত" },
 ] as const;
 
+/**
+ * How far along the rail the booking is.
+ *
+ * `confirmed` returns 3, one past the last step, so every circle renders as
+ * done. Returning 2 left "Payment confirmed" showing as the *current* step on a
+ * booking that was already confirmed — an unticked circle under a Confirmed
+ * badge.
+ */
 function stepIndex(status: BookingStatus, proofSubmitted: boolean): number {
-    if (status === "confirmed") return 2;
+    if (status === "confirmed") return STEPS.length;
     if (status === "proof_submitted" || proofSubmitted) return 1;
     return 0;
 }
