@@ -95,7 +95,11 @@ export default async function InvestPage({
       <h1 className="font-display text-3xl font-extrabold tracking-tight text-stone-900">
         {locale === "en" ? "Confirm your investment" : "আপনার বিনিয়োগ নিশ্চিত করুন"}
       </h1>
-      <div className="mt-8 max-w-xl">
+      {/* Was `max-w-xl`, which put the whole checkout in a 36rem column and
+          left two thirds of a desktop screen empty while the partner list
+          stacked below the fold. CheckoutForm lays itself out in two columns
+          now; this only stops it running the full width of a wide monitor. */}
+      <div className="mt-8 max-w-5xl">
         <CheckoutForm
           locale={locale}
           idProjects={Number(project.id)}

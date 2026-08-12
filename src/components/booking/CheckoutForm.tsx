@@ -118,7 +118,17 @@ export function CheckoutForm({
     }
 
     return (
-        <form onSubmit={submit} className="space-y-6">
+        /*
+         * Two columns on a wide screen.
+         *
+         * Everything used to stack in one narrow column, so the units card sat
+         * alone with two thirds of the screen empty beside it while the partner
+         * allocation — the thing that changes as you adjust the quantity — was
+         * pushed below the fold. Side by side, the number and its consequence
+         * are visible together.
+         */
+        <form onSubmit={submit} className="grid gap-6 lg:grid-cols-2 lg:items-start">
+            <div className="space-y-6 lg:col-start-1 lg:row-start-1">
             <Card className="p-6">
                 <h2 className="font-display text-lg font-bold text-stone-900">{title}</h2>
                 <p className="mt-1 text-sm text-stone-600">
@@ -178,17 +188,6 @@ export function CheckoutForm({
                 </div>
             </Card>
 
-            {/* Who the money actually reaches, updating with the quantity. */}
-            <AllocationPreview
-                locale={locale}
-                partners={partners}
-                units={units}
-                unitValue={unitValue}
-            />
-
-            {/* Payment is offline, so the button does not end the process —
-                it starts a three-day clock. Say so before it is pressed. */}
-            <WhatHappensNext locale={locale} />
 
             <Note tone="info" icon="info">
                 {en
@@ -238,6 +237,21 @@ export function CheckoutForm({
                     ? "You can cancel a booking before you pay."
                     : "পরিশোধের আগে যেকোনো সময় বুকিং বাতিল করতে পারেন।"}
             </p>
+            </div>
+
+            {/* Who the money actually reaches, updating with the quantity. */}
+            <div className="space-y-6 lg:col-start-2 lg:row-start-1">
+            <AllocationPreview
+                locale={locale}
+                partners={partners}
+                units={units}
+                unitValue={unitValue}
+            />
+
+            {/* Payment is offline, so the button does not end the process —
+                it starts a three-day clock. Say so before it is pressed. */}
+            <WhatHappensNext locale={locale} />
+            </div>
         </form>
     );
 }
