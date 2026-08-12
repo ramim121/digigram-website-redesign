@@ -99,22 +99,16 @@ export function ProjectCard({
           )}
         />
 
-        {/* A bottom-up scrim so the return figure stays legible over any
-            photograph, light or dark, without dimming the whole image.
-
-            Without a photograph a black scrim just makes the motif look like a
-            grey smudge, so the no-photo case gets a brand gradient instead —
-            the same legibility, but it reads as a designed panel rather than a
-            missing image. */}
-        <div
-          aria-hidden
-          className={clsx(
-            "absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t",
-            hasPhoto
-              ? "from-black/70 via-black/25 to-transparent"
-              : "from-brand-strong via-brand-strong/70 to-transparent",
-          )}
-        />
+        {/* A scrim only where there is no photograph: the motif needs a panel
+            behind the status badge to read as designed rather than as a missing
+            image. Over a real photograph nothing is overlaid at the bottom any
+            more, so no scrim is needed there. */}
+        {!hasPhoto && (
+          <div
+            aria-hidden
+            className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-brand-strong via-brand-strong/70 to-transparent"
+          />
+        )}
 
         <div className="absolute top-3 left-3 flex flex-wrap gap-2">
           <Badge
@@ -133,24 +127,33 @@ export function ProjectCard({
           )}
         </div>
 
-        {/* The return band, over the image. It is what the eye should land on
-            first, and putting it here frees the body for everything else. */}
-        <div className="absolute bottom-3 left-3">
-          <p className="font-display text-2xl leading-none font-extrabold text-white drop-shadow-sm">
-            {formatRange(project.returnPct.min, project.returnPct.max, locale)}
-          </p>
-          <p className="mt-1 font-display text-[11px] font-semibold tracking-wide text-white/80 uppercase">
-            {en ? "Estimated return" : "প্রাক্কলিত রিটার্ন"}
-          </p>
-        </div>
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-lg leading-snug font-bold text-stone-900">
-          <Link href={href} className="after:absolute after:inset-0 focus:outline-none">
-            {t(project.title, locale)}
-          </Link>
-        </h3>
+        {/* THE RETURN SITS IN THE BODY, NOT OVER THE IMAGE.
+            It used to be overlaid on the photograph, which assumed the image
+            was a plain photograph. The real uploads are promotional banners
+            with the project name, unit price and return band already printed
+            into the artwork, so the overlay landed on top of baked-in text and
+            the two collided.
+            Any overlay is a gamble on artwork we do not control, so the figure
+            moved down here where nothing can cover it. */}
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-display text-lg leading-snug font-bold text-stone-900">
+            <Link href={href} className="after:absolute after:inset-0 focus:outline-none">
+              {t(project.title, locale)}
+            </Link>
+          </h3>
+
+          <div className="shrink-0 text-right">
+            <p className="font-display text-xl leading-none font-extrabold text-brand-strong">
+              {formatRange(project.returnPct.min, project.returnPct.max, locale)}
+            </p>
+            <p className="mt-1 font-display text-[10px] font-semibold tracking-wide text-stone-500 uppercase">
+              {en ? "Est. return" : "প্রাক্কলিত"}
+            </p>
+          </div>
+        </div>
 
         <p className="mt-1 flex items-center gap-1.5 text-sm text-stone-500">
           <Icon name="map-pin" size={14} className="shrink-0" />
