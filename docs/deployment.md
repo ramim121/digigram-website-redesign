@@ -6,7 +6,7 @@ bookings all come from the API — so it cannot be exported as static files.
 
 | | |
 |---|---|
-| Port | `4300` (3111, 3210 and 4200 are already taken) |
+| Port | `4300` — free. The box already uses 3000 (shathisheba, under root's pm2), 4100 (staging API) and 4200 (production API); 3210 is this site's local dev server |
 | Path on server | `/var/www/html/digigram-website-redesign` |
 | Process manager | PM2, app name `digigram-website` |
 | Deploy | GitHub Actions, **manual trigger** |
@@ -40,8 +40,10 @@ server is the authority and is never overwritten by a deploy. Create it once:
 ```bash
 cd /var/www/html/digigram-website-redesign
 cat > .env.production <<'EOF'
-SHATHI_API_URL=https://api.digigramventures.com/api/
-SHATHI_S3_URL=https://saathi-files-new.s3.ap-southeast-1.amazonaws.com/
+# Staging backend to begin with. See the warning below before switching this
+# to https://api.digigramventures.com/api/
+SHATHI_API_URL=https://api-test.digigramventures.com/api/
+SHATHI_S3_URL=https://saathi-staging-2026.s3.ap-southeast-1.amazonaws.com/
 SHATHI_REVALIDATE=300
 SHATHI_TIMEOUT_MS=8000
 
@@ -51,6 +53,17 @@ NEXT_PUBLIC_GOOGLE_CLIENT_ID=<the web OAuth client id>
 EOF
 chmod 600 .env.production
 ```
+
+> **Do not point this at the production API yet.**
+> `https://api.digigramventures.com/api/digigram_bank_info` still returns the
+> stale placeholder — United Commercial Bank Ltd. / SAATHI LTD /
+> `0124563214789` — because migration `003` has never run there. This site
+> reads that table live and presents it as the account to transfer money into.
+> Switch only after 003 has run on production and every digit has been checked
+> against a bank statement. Staging already holds the correct Mutual Trust row.
+>
+> `SHATHI_S3_URL` must match whichever API is selected, or images 404:
+> staging → `saathi-staging-2026`, production → `saathi-production-2025`.
 
 > **`NEXT_PUBLIC_SITE_URL` must match the real origin.** It builds canonical
 > URLs, the sitemap and Open Graph tags. Wrong here means Google indexes the
@@ -133,12 +146,16 @@ restricts egress, open it or the deploy will fail unpredictably.
 92 pages are generated and the default heap is not always enough on a small
 instance.
 
-**The site reads the production API.** There is no separate content store. An
-API outage takes project listings with it — pages degrade rather than crash, but
+**The site reads a live API.** There is no separate content store. An API
+outage takes project listings with it — pages degrade rather than crash, but
 they will be empty.
 
-**Two Next apps on one box.** The admin panel and this site both run under PM2.
-Check `pm2 list` before assuming a restart affected the right one.
+**Three Next apps on one box, across two PM2 daemons.** `ubuntu` runs
+`saathi-app` (staging, 4100), `saathi-app-production` (4200) and now
+`digigram-website` (4300); `root` runs shathisheba-admin (3000). `pm2 list`
+shows different things depending on who you are, so start this one as `ubuntu`
+and never with sudo. Never `pm2 restart all` — it would bounce the production
+API.
 
 ---
 

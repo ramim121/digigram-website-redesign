@@ -1,9 +1,15 @@
 /**
  * PM2 process definition for new.digigramventures.com.
  *
- * Port 4300. The estate already uses 3111 (admin dev), 3210 (this site's dev
- * server) and 4200 (the production API), so this avoids all three — two Next
- * apps silently fighting over a port is a confusing way to lose an afternoon.
+ * Port 4300, confirmed free on the box.
+ *
+ * Taken already: 3000 (shathisheba-admin, under *root's* pm2 daemon), 4100
+ * (saathi-app — the staging API behind api-test) and 4200
+ * (saathi-app-production). 3210 is this site's local dev server.
+ *
+ * Start this as the `ubuntu` user, never with sudo: root and ubuntu run
+ * separate pm2 daemons, and an app registered in root's will not be revived by
+ * ubuntu's `pm2 startup` after a reboot.
  *
  * Nginx terminates TLS and proxies to this; see deploy/nginx.conf.
  *
