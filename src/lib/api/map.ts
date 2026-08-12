@@ -89,8 +89,38 @@ function bi(en: string | null | undefined, bn: string | null | undefined): Bi {
     return { en: english, bn: nullIfBlank(bn) ?? english };
 }
 
+/**
+ * The S3 URL for an uploaded file row.
+ *
+ * THE KEY IS BUILT FROM THE ROW, NOT GUESSED
+ * This used to default to a `projects/` prefix, which no object has ever been
+ * stored under — so every project image 404'd and the page silently fell back
+ * to the seeded placeholder art. It looked like the API was returning nothing.
+ *
+ * The real layout comes from the row itself: `refType` is the prefix, and for
+ * some types the upload path also nests by `refId`:
+ *
+ *   project-main-image/45/<fileName>       nested
+ *   project-featured-image/12/<fileName>   nested
+ *   featured-image/186/<fileName>          nested
+ *   profile-picture/135/<fileName>         nested
+ *   partnerships/<fileName>                flat
+ *   blog-featured-images/<fileName>        flat
+ *
+ * Rather than hardcode which types nest, include `refId` whenever the row has
+ * one — every nested type carries it and the flat ones are addressed by plain
+ * string columns elsewhere, not through this function.
+ *
+ * `prefix` remains as a fallback for rows from an endpoint that omits
+ * `refType`.
+ */
 function fileUrl(file: ApiFile | null | undefined, prefix = "projects"): string | null {
-    return s3Url(prefix, file?.fileName ?? null);
+    if (!file?.fileName) return null;
+
+    const type = file.refType?.trim() || prefix;
+    const path = file.refId != null ? `${type}/${file.refId}` : type;
+
+    return s3Url(path, file.fileName);
 }
 
 function tenureInMonths(row: ApiProject): number {

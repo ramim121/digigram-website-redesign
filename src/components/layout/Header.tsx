@@ -11,6 +11,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { useSession } from "@/components/auth/session";
 import { mainNav, routes, type NavItem } from "@/lib/site";
 import { AccountMenu, type HeaderUser } from "@/components/layout/AccountMenu";
+import { useLoginHref } from "@/lib/auth/useLoginHref";
 import { localePath, stripLocale, t, type Locale } from "@/lib/i18n";
 
 /**
@@ -41,6 +42,9 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
   const { user, signOut } = useSession();
 
   const overlayCapable = !SOLID_ROUTES.some((route) => bare.startsWith(route));
+  // `/` and `/bn` both strip to `/`.
+  const isHome = bare === "/";
+  const loginHref = useLoginHref(locale);
   const [scrolled, setScrolled] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -156,16 +160,37 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
                 server and passed down — client script cannot see that cookie,
                 and rendering from it server-side avoids a logged-out flash. */}
             {/*
-              Signed in: the account menu. Signed out: **nothing**.
+              Signed in: the account menu. Signed out: a "Log in" link on every
+              page except the homepage.
 
-              A "Log in" link in the global header invites the wrong action from
-              the wrong people — most visitors are prospective investors reading
-              marketing pages, and an account is only meaningful once they reach
-              Shathi or Shathi Sheba. Those two pages carry the sign-in band, and
-              the invest flow gates itself. Everywhere else the header stays
-              about the site, not the account.
+              The header used to show nothing at all when signed out, on the
+              reasoning that most visitors are reading marketing pages and an
+              account only becomes meaningful on the two product pages, which
+              carry their own sign-in band.
+
+              That held while accounts could only be created in the app. Now
+              that registering happens here too, it left a signed-out reader on
+              /projects, /impact or /about with no way in from anywhere on the
+              page — the two product pages were the only door, and nothing said
+              so.
+
+              The homepage still stays clean: it is the one page whose job is
+              the pitch, not the product.
             */}
-            {sessionUser && <AccountMenu locale={locale} user={sessionUser} />}
+            {sessionUser ? (
+              <AccountMenu locale={locale} user={sessionUser} />
+            ) : (
+              !isHome && (
+                <Link
+                  href={loginHref}
+                  className="hidden items-center gap-1.5 rounded-md border border-white/25 px-3 py-1.5 font-display text-sm font-semibold text-white/85 transition-colors hover:border-white/50 hover:text-white sm:inline-flex"
+                  data-header-login
+                >
+                  {locale === "en" ? "Log in" : "লগ ইন"}
+                  <Icon name="arrow-right" size={15} />
+                </Link>
+              )
+            )}
 
             {/* Wrapped rather than given `hidden sm:inline-flex` directly: the
                 button's own `inline-flex` and a `hidden` utility are both
@@ -196,7 +221,15 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
         </div>
       </div>
 
-      {drawer && <MobileDrawer locale={locale} onClose={() => setDrawer(false)} user={user} onSignOut={signOut} />}
+      {drawer && (
+        <MobileDrawer
+          locale={locale}
+          onClose={() => setDrawer(false)}
+          user={user}
+          onSignOut={signOut}
+          loginHref={loginHref}
+        />
+      )}
     </header>
   );
 }
@@ -333,10 +366,13 @@ function MobileDrawer({
   onClose,
   user,
   onSignOut,
+  loginHref,
 }: {
   locale: Locale;
   onClose: () => void;
   user: { name: string } | null;
+  /** Where "Log in" goes, already carrying ?next= for the current page. */
+  loginHref: string;
   onSignOut: () => void;
 }) {
   return (
@@ -419,7 +455,15 @@ function MobileDrawer({
                   {locale === "en" ? "Log out" : "লগ আউট"}
                 </button>
               </div>
-            ) : null}
+            ) : (
+              <Link
+                href={loginHref}
+                onClick={onClose}
+                className="font-display text-sm font-semibold text-brand-strong"
+              >
+                {locale === "en" ? "Log in or register" : "লগ ইন বা নিবন্ধন"}
+              </Link>
+            )}
           </div>
         </nav>
 
