@@ -1,6 +1,7 @@
 import "server-only";
 
 import { apiGet } from "@/lib/api/client";
+import { s3Url } from "@/lib/api/config";
 import type { CheckoutPartner } from "@/components/booking/CheckoutForm";
 
 /**
@@ -18,7 +19,13 @@ import type { CheckoutPartner } from "@/components/booking/CheckoutForm";
 type ApiProjectPartner = {
     idProjectPartners?: number;
     partnerUnitCapacity?: number | null;
-    User?: { fullName?: string | null; fullNameBn?: string | null } | null;
+    /** Units already reserved against this partner, confirmed or not. */
+    investorAlreadyBookedCount?: number | null;
+    User?: {
+        fullName?: string | null;
+        fullNameBn?: string | null;
+        ProfilePicture?: { fileName?: string | null; refType?: string | null; refId?: number | null } | null;
+    } | null;
 };
 
 export async function fetchProjectPartners(idProjects: number): Promise<CheckoutPartner[]> {
@@ -29,8 +36,27 @@ export async function fetchProjectPartners(idProjects: number): Promise<Checkout
 
     return res.data
         .filter((row) => row.idProjectPartners)
-        .map((row) => ({
-            idProjectPartners: row.idProjectPartners as number,
-            name: row.User?.fullName ?? null,
-        }));
+        .map((row) => {
+            const capacity = Number(row.partnerUnitCapacity ?? 0) || 0;
+            const taken = Number(row.investorAlreadyBookedCount ?? 0) || 0;
+            const photo = row.User?.ProfilePicture;
+
+            return {
+                idProjectPartners: row.idProjectPartners as number,
+                name: row.User?.fullName ?? null,
+                // Same key rule as everywhere else: refType is the prefix and
+                // profile-picture nests by refId.
+                image: photo?.fileName
+                    ? s3Url(
+                          photo.refId != null
+                              ? `${photo.refType ?? "profile-picture"}/${photo.refId}`
+                              : (photo.refType ?? "profile-picture"),
+                          photo.fileName,
+                      )
+                    : null,
+                capacity,
+                // Never negative: a partner at or over capacity has none left.
+                remaining: Math.max(0, capacity - taken),
+            };
+        });
 }

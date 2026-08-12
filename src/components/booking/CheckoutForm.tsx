@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AllocationPreview } from "@/components/booking/AllocationPreview";
 import { useRouter } from "next/navigation";
 import { Card, Note } from "@/components/ui/Primitives";
 import { Button } from "@/components/ui/Button";
@@ -22,7 +23,15 @@ import { routes } from "@/lib/site";
  * promise something the process does not honour.
  */
 
-export type CheckoutPartner = { idProjectPartners: number; name: string | null };
+export type CheckoutPartner = {
+    idProjectPartners: number;
+    name: string | null;
+    image: string | null;
+    /** Total units this partner can take on for the project. */
+    capacity: number;
+    /** Units still free after what is already reserved. */
+    remaining: number;
+};
 
 export function CheckoutForm({
     locale,
@@ -165,6 +174,14 @@ export function CheckoutForm({
                     </span>
                 </div>
             </Card>
+
+            {/* Who the money actually reaches, updating with the quantity. */}
+            <AllocationPreview
+                locale={locale}
+                partners={partners}
+                units={units}
+                unitValue={unitValue}
+            />
 
             <Note tone="info" icon="info">
                 {en
