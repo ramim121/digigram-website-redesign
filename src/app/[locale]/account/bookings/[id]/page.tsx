@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { Card, Note } from "@/components/ui/Primitives";
 import { ProofOfPaymentForm } from "@/components/booking/ProofOfPaymentForm";
 import { CancelBookingButton } from "@/components/booking/CancelBookingButton";
+import { SubmittedProof } from "@/components/booking/SubmittedProof";
 import { Icon } from "@/components/ui/Icon";
 import { BookingProgress } from "@/components/booking/BookingProgress";
 import { PartnerList } from "@/components/booking/PartnerList";
@@ -230,6 +231,14 @@ export default async function BookingPage({
                             <CancelBookingButton locale={locale} bookingId={summary.id} />
                         </>
                     ) : (
+                        <div className="space-y-6">
+                            {/* The receipt already on file. A status that says "under
+                                review" while showing nothing to review leaves the investor
+                                unable to tell whether the right file even arrived. */}
+                            {summary.proofSubmitted && (
+                                <SubmittedProof locale={locale} bookingId={summary.id} />
+                            )}
+
                         <Card className="p-6">
                             <h2 className="font-display text-lg font-bold text-stone-900">
                                 {t(BOOKING_STATUS_LABEL[summary.status], locale)}
@@ -257,6 +266,7 @@ export default async function BookingPage({
                                         : "এই বুকিং নথিভুক্ত হয়েছে। সর্বশেষ অবস্থা জানতে সাথী অ্যাপ দেখুন।")}
                             </p>
                         </Card>
+                        </div>
                     )}
                 </div>
             </div>

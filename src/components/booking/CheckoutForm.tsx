@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AllocationPreview } from "@/components/booking/AllocationPreview";
+import { WhatHappensNext } from "@/components/booking/WhatHappensNext";
 import { useRouter } from "next/navigation";
 import { Card, Note } from "@/components/ui/Primitives";
 import { Button } from "@/components/ui/Button";
@@ -184,6 +185,10 @@ export function CheckoutForm({
                 units={units}
                 unitValue={unitValue}
             />
+
+            {/* Payment is offline, so the button does not end the process —
+                it starts a three-day clock. Say so before it is pressed. */}
+            <WhatHappensNext locale={locale} />
 
             <Note tone="info" icon="info">
                 {en
