@@ -19,31 +19,59 @@ import { formatBdt, type Locale } from "@/lib/i18n";
  * and submit. It is labelled tentative for that reason — the same wording the
  * app uses — rather than presented as a decision the investor has made.
  *
- * The fill order mirrors the server's: take from each partner in turn up to
- * their remaining capacity. If the two ever diverge the label is still honest,
- * which is why it is worded as an expectation rather than a promise.
+ * The distribution mirrors the app's: one unit to each partner in turn, round
+ * after round. See `allocate` below.
  */
 
 export type Allocation = { partner: CheckoutPartner; units: number };
 
-/** Fills partners in order, up to each one's remaining capacity. */
+/**
+ * Spreads units across partners one at a time, round-robin.
+ *
+ * THIS MIRRORS THE APP, AND THE FIRST VERSION DID NOT.
+ * `ProjectDetails.tsx` loops in rounds: each pass walks every assigned partner
+ * in order and gives one unit to anyone with room, repeating until the units
+ * run out. So three units across three partners is one each — not three to the
+ * first partner.
+ *
+ * The earlier implementation here filled each partner to capacity before moving
+ * on, so the website showed a single partner taking every unit while the app
+ * showed them shared. The booking that came back from the server then looked
+ * nothing like the preview.
+ *
+ * ONE DEPARTURE, DELIBERATE.
+ * The app's loop decrements only when it places a unit, so if no partner has
+ * room it spins forever. Here a pass that places nothing ends the loop and the
+ * caller reports the shortfall instead.
+ */
 export function allocate(partners: CheckoutPartner[], units: number): Allocation[] {
-    const out: Allocation[] = [];
+    const given = new Map<number, number>();
     let left = units;
 
-    for (const partner of partners) {
-        if (left <= 0) break;
-        // A partner with no capacity recorded is treated as able to take the
-        // rest: the server is authoritative, and showing nobody would be worse
-        // than showing an optimistic guess.
-        const room = partner.remaining > 0 ? partner.remaining : left;
-        const take = Math.min(room, left);
-        if (take <= 0) continue;
-        out.push({ partner, units: take });
-        left -= take;
+    while (left > 0) {
+        let placedThisRound = 0;
+
+        for (const partner of partners) {
+            if (left <= 0) break;
+
+            const already = given.get(partner.idProjectPartners) ?? 0;
+            // `remaining` is MAX_SAFE_INTEGER for a partner with no limit, so
+            // the same comparison covers both cases.
+            if (already >= partner.remaining) continue;
+
+            given.set(partner.idProjectPartners, already + 1);
+            left -= 1;
+            placedThisRound += 1;
+        }
+
+        // Nobody could take a unit: every partner is full. Stop rather than
+        // loop forever, and let the caller surface the shortfall.
+        if (placedThisRound === 0) break;
     }
 
-    return out;
+    return partners
+        .filter((partner) => (given.get(partner.idProjectPartners) ?? 0) > 0)
+        .map((partner) => ({ partner, units: given.get(partner.idProjectPartners) as number }));
 }
 
 function Avatar({ partner }: { partner: CheckoutPartner }) {
@@ -109,7 +137,7 @@ export function AllocationPreview({
                             <span className="block truncate font-display text-sm font-semibold text-stone-900">
                                 {partner.name ?? (en ? "Shathi partner" : "সাথী")}
                             </span>
-                            {partner.capacity > 0 && (
+                            {!partner.unlimited && partner.capacity > 0 && (
                                 <span className="block text-xs text-stone-500">
                                     {en
                                         ? `${partner.remaining} of ${partner.capacity} units free`

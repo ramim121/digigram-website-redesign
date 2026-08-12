@@ -27,9 +27,11 @@ export type CheckoutPartner = {
     idProjectPartners: number;
     name: string | null;
     image: string | null;
-    /** Total units this partner can take on for the project. */
+    /** Total units this partner can take on. 0 in the API means no limit. */
     capacity: number;
-    /** Units still free after what is already reserved. */
+    /** True when the project sets no per-partner limit. */
+    unlimited: boolean;
+    /** Units still free after what is already booked and confirmed. */
     remaining: number;
 };
 

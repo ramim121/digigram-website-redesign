@@ -7,6 +7,9 @@ import type { CheckoutPartner } from "@/components/booking/CheckoutForm";
 /**
  * The Shathi partners assigned to a project.
  *
+ * The endpoint already drops partners at capacity and orders least-loaded
+ * first, so the order it returns is the order units should be offered in.
+ *
  * A booking must record which partners the money is against —
  * `bookings/create` requires at least one `idProjectPartners` per project — so
  * checkout cannot proceed without this list. The app labels these assignments
@@ -19,8 +22,10 @@ import type { CheckoutPartner } from "@/components/booking/CheckoutForm";
 type ApiProjectPartner = {
     idProjectPartners?: number;
     partnerUnitCapacity?: number | null;
-    /** Units already reserved against this partner, confirmed or not. */
+    /** Allocation rows against this partner whose investment is `booked`. */
     investorAlreadyBookedCount?: number | null;
+    /** Allocation rows whose investment is `confirmed`. */
+    investorConfirmedBookingCount?: number | null;
     User?: {
         fullName?: string | null;
         fullNameBn?: string | null;
@@ -37,8 +42,20 @@ export async function fetchProjectPartners(idProjects: number): Promise<Checkout
     return res.data
         .filter((row) => row.idProjectPartners)
         .map((row) => {
+            /*
+             * `partnerUnitCapacity = 0` means no limit, not "full". The
+             * endpoint's own filter says so:
+             *   HAVING (partnerUnitCapacity = 0 OR confirmed < partnerUnitCapacity)
+             * Treating 0 as zero capacity would hide every unlimited partner.
+             */
             const capacity = Number(row.partnerUnitCapacity ?? 0) || 0;
-            const taken = Number(row.investorAlreadyBookedCount ?? 0) || 0;
+            const unlimited = capacity === 0;
+
+            // Both counts occupy capacity: a booked-but-unconfirmed unit is
+            // still reserved. Using only the booked count understated usage.
+            const taken =
+                (Number(row.investorAlreadyBookedCount ?? 0) || 0) +
+                (Number(row.investorConfirmedBookingCount ?? 0) || 0);
             const photo = row.User?.ProfilePicture;
 
             return {
@@ -55,8 +72,9 @@ export async function fetchProjectPartners(idProjects: number): Promise<Checkout
                       )
                     : null,
                 capacity,
+                unlimited,
                 // Never negative: a partner at or over capacity has none left.
-                remaining: Math.max(0, capacity - taken),
+                remaining: unlimited ? Number.MAX_SAFE_INTEGER : Math.max(0, capacity - taken),
             };
         });
 }
