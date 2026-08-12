@@ -1,6 +1,7 @@
 import "server-only";
 
 import { apiGet } from "@/lib/api/client";
+import { s3Url } from "@/lib/api/config";
 import { getSessionToken } from "@/lib/auth/session";
 import { mapBookingStatus, type BookingStatus } from "@/lib/booking";
 
@@ -59,6 +60,11 @@ export type AssignedPartner = {
     hasDisability: boolean;
     units: number;
     amount: number;
+    /** Absolute S3 URL, or null when the partner has no photo on file. */
+    image: string | null;
+    bio: string | null;
+    /** What they farm or make — "Goat, Cow", "Livestock". */
+    interestedIn: string | null;
 };
 
 export type BookingSummary = {
@@ -123,6 +129,13 @@ type ApiInvestment = {
                 role?: string | null;
                 location?: string | null;
                 disability?: string | null;
+                bio?: string | null;
+                interestedIn?: string | null;
+                ProfilePicture?: {
+                    fileName?: string | null;
+                    refType?: string | null;
+                    refId?: number | null;
+                } | null;
             } | null;
         } | null;
     }[];
@@ -130,6 +143,19 @@ type ApiInvestment = {
 
 /** Decimals arrive as strings; Number() first or `+` concatenates. */
 const n = (value: unknown): number => Number(value ?? 0) || 0;
+
+/**
+ * A partner's photo.
+ *
+ * Same key rule as everywhere else: the prefix is the file row's `refType` and
+ * `profile-picture` nests by `refId`. Guessing a flat `profile/` path is what
+ * made every project image 404 before.
+ */
+function partnerPhoto(file: { fileName?: string | null; refType?: string | null; refId?: number | null } | null | undefined): string | null {
+    if (!file?.fileName) return null;
+    const type = file.refType?.trim() || "profile-picture";
+    return s3Url(file.refId != null ? `${type}/${file.refId}` : type, file.fileName);
+}
 
 /**
  * Folds the flat investment list into one entry per booking.
@@ -201,6 +227,9 @@ function groupByBooking(rows: ApiInvestment[]): BookingSummary[] {
                 units: n(link.investedUnit),
                 // No amount column on the allocation either; derive it the same way.
                 amount: n(link.investedUnit) * unitValue,
+                image: partnerPhoto(partner.User?.ProfilePicture),
+                bio: partner.User?.bio ?? null,
+                interestedIn: partner.User?.interestedIn ?? null,
             });
         }
     }

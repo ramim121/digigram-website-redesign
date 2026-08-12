@@ -69,6 +69,10 @@ const paths = {
   star: "m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z",
   building: "M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 7h.01M15 7h.01M9 11h.01M15 11h.01M9 15h.01M15 15h.01",
   refresh: "M21 12a9 9 0 1 1-3-6.7M21 3v6h-6",
+  // The international symbol of access, used on partner records where the
+  // producer is a person with a disability. Lucide "accessibility".
+  accessibility:
+    "M12 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM4.5 8.5l6 1.5v4l3 5M19.5 8.5l-6 1.5M10.5 14l-2 5",
 } as const;
 
 export type IconName = keyof typeof paths;

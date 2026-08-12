@@ -54,7 +54,14 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
           ? "A verified contact and a verified NID are what an investment needs. Everything else can wait."
           : "বিনিয়োগের জন্য দরকার একটি যাচাইকৃত যোগাযোগ ও যাচাইকৃত এনআইডি। বাকি সব পরে করলেও চলবে।"}
       </p>
-      <div className="mt-8 max-w-2xl">
+      {/*
+        No max-width here. It used to be `max-w-2xl`, which was right when this
+        was a single column of forms — but the checklist sits beside them now,
+        and squeezing a two-column layout into 672px left most of a desktop
+        screen empty while the forms themselves stayed cramped. ProfileForms
+        caps its own form column; the grid handles the rest.
+      */}
+      <div className="mt-8">
         <ProfileForms locale={locale} user={user} hasBank={(banks?.length ?? 0) > 0} />
       </div>
     </div>

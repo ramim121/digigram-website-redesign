@@ -55,8 +55,8 @@ export function ProfileForms({ locale, user, hasBank }: Props) {
          * the forms are filled in. It stacks above the forms on narrow screens,
          * where sticky positioning would just eat the viewport.
          */
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
-            <div className="order-2 space-y-6 lg:order-1">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+            <div className="order-2 max-w-3xl space-y-6 lg:order-1">
                 <IdentitySection locale={locale} user={user} />
                 <ContactSection locale={locale} user={user} />
                 <NidSection locale={locale} user={user} />

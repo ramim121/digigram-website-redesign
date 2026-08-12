@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Card, Note } from "@/components/ui/Primitives";
 import { ProofOfPaymentForm } from "@/components/booking/ProofOfPaymentForm";
 import { CancelBookingButton } from "@/components/booking/CancelBookingButton";
+import { Icon } from "@/components/ui/Icon";
+import { BookingProgress } from "@/components/booking/BookingProgress";
+import { PartnerList } from "@/components/booking/PartnerList";
 import { fetchBankAccounts } from "@/lib/account.server";
 import { getSessionUser } from "@/lib/auth/session";
 import { fetchBooking, fetchDigigramBank } from "@/lib/bookings.server";
-import { BOOKING_STATUS_LABEL } from "@/lib/booking";
+import { BOOKING_STATUS_LABEL, type BookingStatus } from "@/lib/booking";
 import { buildMetadata } from "@/lib/seo";
 import { formatBdt, formatDate, isLocale, localePath, t, type Locale } from "@/lib/i18n";
 import { routes } from "@/lib/site";
@@ -30,6 +34,44 @@ export async function generateMetadata({
 
 /** Session-dependent, and the status changes as we process the payment. */
 export const dynamic = "force-dynamic";
+
+const STATUS_TONE: Record<BookingStatus, string> = {
+    pending: "bg-amber-100 text-amber-900",
+    proof_submitted: "bg-sky-100 text-sky-900",
+    confirmed: "bg-emerald-100 text-emerald-900",
+    denied: "bg-red-100 text-red-900",
+    cancelled: "bg-stone-100 text-stone-600",
+    unknown: "bg-stone-100 text-stone-600",
+};
+
+const SUPPORT_EMAIL = "info@digigramventures.com";
+
+function Figure({
+    label,
+    value,
+    strong,
+    tone,
+}: {
+    label: string;
+    value: string;
+    strong?: boolean;
+    tone?: "positive";
+}) {
+    return (
+        <div>
+            <dt className="font-display text-[11px] font-semibold tracking-wide text-stone-500 uppercase">
+                {label}
+            </dt>
+            <dd
+                className={"mt-0.5 font-display tabular-nums " +
+                    (strong ? "text-xl font-extrabold " : "text-sm font-bold ") +
+                    (tone === "positive" ? "text-emerald-700" : "text-stone-900")}
+            >
+                {value}
+            </dd>
+        </div>
+    );
+}
 
 export default async function BookingPage({
     params,
@@ -68,70 +110,108 @@ export default async function BookingPage({
 
     return (
         <div className="container-page py-12 lg:py-16">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-stone-900">
-                {en ? "Booking" : "বুকিং"} {summary.reference}
-            </h1>
+            <Link
+                href={localePath(locale, routes.account)}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-500 hover:text-brand-strong"
+            >
+                <Icon name="arrow-left" size={15} />
+                {en ? "All bookings" : "সব বুকিং"}
+            </Link>
 
-            <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-                <Card className="h-fit p-6">
-                    <dl className="space-y-3 text-sm">
-                        <Row label={en ? "Status" : "অবস্থা"} value={t(BOOKING_STATUS_LABEL[summary.status], locale)} />
-                        <Row
-                            label={en ? "Placed" : "বুকিংয়ের তারিখ"}
-                            value={
-                                (summary.placedAt
-                                    ? formatDate(summary.placedAt.slice(0, 10), locale)
-                                    : null) ?? "—"
-                            }
-                        />
-                        <Row
-                            label={en ? "Projects" : "প্রকল্প"}
-                            value={summary.projectNames.join(", ") || "—"}
-                        />
-                        <Row label={en ? "Units" : "ইউনিট"} value={String(summary.totalUnits)} />
-                        <Row
-                            label={en ? "Amount payable" : "প্রদেয় পরিমাণ"}
-                            value={formatBdt(summary.totalInvested, locale)}
-                        />
-                    </dl>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+                <h1 className="font-display text-3xl font-extrabold tracking-tight text-stone-900">
+                    {en ? "Booking" : "বুকিং"} {summary.reference}
+                </h1>
+                <span className={`rounded-full px-2.5 py-1 font-display text-xs font-bold ${STATUS_TONE[summary.status]}`}>
+                    {t(BOOKING_STATUS_LABEL[summary.status], locale)}
+                </span>
+            </div>
+            <p className="mt-1 text-sm text-stone-500">
+                {summary.projectNames.join(" · ") || "—"}
+            </p>
 
-                    {summary.partners.length > 0 && (
-                        <div className="mt-6 border-t border-stone-200 pt-5">
-                            <h2 className="font-display text-sm font-bold text-stone-900">
-                                {en ? "Assigned Shathi partners" : "নির্ধারিত সাথী অংশীদার"}
-                            </h2>
-                            <ul className="mt-3 space-y-3">
-                                {summary.partners.map((partner) => (
-                                    <li key={partner.id} className="text-sm">
-                                        <p className="font-display font-semibold text-stone-900">
-                                            {partner.name ?? (en ? "Shathi partner" : "সাথী অংশীদার")}
-                                            {partner.hasDisability && (
-                                                <span className="ms-2 rounded bg-brand-canvas px-2 py-0.5 text-xs font-bold text-brand-strong">
-                                                    {en ? "Person with disability" : "প্রতিবন্ধী ব্যক্তি"}
-                                                </span>
-                                            )}
-                                        </p>
-                                        <p className="text-stone-600">
-                                            {[partner.role, partner.location].filter(Boolean).join(" · ")}
-                                        </p>
-                                        <p className="text-stone-500">
-                                            {en
-                                                ? `${partner.units} unit${partner.units === 1 ? "" : "s"} · ${formatBdt(partner.amount, locale)}`
-                                                : `${partner.units} ইউনিট · ${formatBdt(partner.amount, locale)}`}
-                                        </p>
-                                    </li>
-                                ))}
-                            </ul>
-                            {awaitingPayment && (
-                                <p className="mt-4 text-xs text-stone-500">
-                                    {en
-                                        ? "These assignments are tentative until your payment is confirmed; partners are finalised then, based on availability."
-                                        : "পেমেন্ট নিশ্চিত না হওয়া পর্যন্ত এই নির্ধারণ অস্থায়ী; তখন প্রাপ্যতা অনুযায়ী অংশীদার চূড়ান্ত করা হয়।"}
-                                </p>
-                            )}
-                        </div>
-                    )}
-                </Card>
+            {/* The headline figures, before any of the detail. */}
+            <dl className="mt-6 grid grid-cols-2 gap-4 rounded-xl border border-stone-200 bg-white p-5 sm:grid-cols-4">
+                <Figure
+                    label={en ? "Invested" : "বিনিয়োগ"}
+                    value={formatBdt(summary.totalInvested, locale)}
+                    strong
+                />
+                <Figure label={en ? "Units" : "ইউনিট"} value={String(summary.totalUnits)} />
+                <Figure
+                    label={en ? "Expected return" : "প্রত্যাশিত ফেরত"}
+                    value={
+                        summary.expectedReturnMax > 0
+                            ? `${formatBdt(Math.round(summary.expectedReturnMin), locale)} – ${formatBdt(Math.round(summary.expectedReturnMax), locale)}`
+                            : "—"
+                    }
+                />
+                <Figure
+                    label={en ? "Expected gain" : "প্রত্যাশিত মুনাফা"}
+                    value={
+                        summary.expectedReturnMax > 0
+                            ? `+ ${formatBdt(Math.round(summary.expectedReturnMax - summary.totalInvested), locale)}`
+                            : "—"
+                    }
+                    tone="positive"
+                />
+            </dl>
+
+            <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+                <div className="space-y-6">
+                    <BookingProgress
+                        locale={locale}
+                        status={summary.status}
+                        proofSubmitted={summary.proofSubmitted}
+                        placedAt={summary.placedAt}
+                        maturityDate={summary.maturityDate}
+                    />
+
+                    <Card className="p-5">
+                        <dl className="space-y-3 text-sm">
+                            <Row
+                                label={en ? "Placed" : "বুকিংয়ের তারিখ"}
+                                value={
+                                    (summary.placedAt
+                                        ? formatDate(summary.placedAt.slice(0, 10), locale)
+                                        : null) ?? "—"
+                                }
+                            />
+                            <Row
+                                label={en ? "Matures" : "মেয়াদপূর্তি"}
+                                value={
+                                    summary.maturityDate
+                                        ? (formatDate(summary.maturityDate, locale) ?? "—")
+                                        : en
+                                          ? "After payment"
+                                          : "পরিশোধের পর"
+                                }
+                            />
+                            <Row label={en ? "Reference" : "রেফারেন্স"} value={summary.reference} />
+                        </dl>
+
+                        {/* Quoting the reference is the difference between a
+                            useful support email and a slow one, so it is
+                            pre-filled rather than left to be copied. */}
+                        <a
+                            href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+                                (en ? "Booking " : "বুকিং ") + summary.reference,
+                            )}`}
+                            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md border border-stone-300 px-4 py-2.5 font-display text-sm font-semibold text-stone-800 hover:border-brand-strong hover:text-brand-strong"
+                        >
+                            <Icon name="mail" size={16} />
+                            {en ? "Email support about this booking" : "এই বুকিং নিয়ে সহায়তা চান"}
+                        </a>
+                    </Card>
+
+                    <Card className="p-5">
+                        <PartnerList
+                            locale={locale}
+                            partners={summary.partners}
+                            tentative={awaitingPayment}
+                        />
+                    </Card>
+                </div>
 
                 <div>
                     {awaitingPayment ? (

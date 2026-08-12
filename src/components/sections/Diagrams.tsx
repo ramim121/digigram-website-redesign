@@ -54,7 +54,16 @@ export function ImpactFocusDiagram({ locale }: { locale: Locale }) {
     <div>
       {/* Diagram — hidden from assistive tech; the list below is the content. */}
       <div className="hidden lg:block" aria-hidden="true">
-        <svg viewBox="0 0 760 480" className="h-auto w-full" role="presentation">
+        {/*
+          The viewBox is wider than the artwork on purpose.
+          The side labels are anchored at x=120 (end-anchored, so the text grows
+          leftwards) and x=640 (start-anchored, growing rightwards). With a
+          0..760 box both ran outside it and were clipped mid-word — the left
+          label lost its first letters and read "creased volume of", the right
+          one ended at "affordab". The circles keep their coordinates; the box
+          just extends past them on both sides to give the text room.
+        */}
+        <svg viewBox="-70 0 900 480" className="h-auto w-full" role="presentation">
           <defs>
             <radialGradient id="focus-a" cx="50%" cy="50%">
               <stop offset="0%" stopColor="var(--color-teal-500)" stopOpacity="0.20" />
@@ -90,7 +99,7 @@ export function ImpactFocusDiagram({ locale }: { locale: Locale }) {
                   .reduce<string[][]>(
                     (lines, word) => {
                       const last = lines[lines.length - 1];
-                      if (last.join(" ").length + word.length > 24) lines.push([word]);
+                      if (last.join(" ").length + word.length > 20) lines.push([word]);
                       else last.push(word);
                       return lines;
                     },
