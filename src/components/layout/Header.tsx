@@ -55,6 +55,10 @@ const HERO_ROUTES = [
   routes.impact,
   routes.products,
   `${routes.products}/shadhin-feed`,
+  // Both carry a dark hero of their own rather than a PageHero, which is why
+  // they were missed when this list was first derived.
+  routes.shathi,
+  routes.shathiSheba,
   routes.projects,
 ];
 
