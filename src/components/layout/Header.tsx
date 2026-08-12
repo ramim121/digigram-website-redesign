@@ -26,14 +26,36 @@ import { localePath, stripLocale, t, type Locale } from "@/lib/i18n";
  * server render already matches — no flash of the wrong treatment.
  */
 
-const SOLID_ROUTES = [
-  routes.login,
-  routes.registerProfile,
-  routes.account,
-  routes.terms,
-  routes.privacy,
-  routes.faq,
-  routes.deleteAccount,
+/**
+ * Routes that open with a dark hero, and so can carry a transparent bar.
+ *
+ * THIS LIST IS THE RIGHT WAY ROUND, AND IT DID NOT USED TO BE.
+ * It was previously a list of routes needing a *solid* bar, which meant every
+ * page not on it got the transparent treatment by default: white text with
+ * nothing behind it. Any new page without a hero shipped with an invisible
+ * header, and that is exactly what happened to the invest page — the nav was
+ * there, drawn in white on white.
+ *
+ * Inverted, the default is safe. A page missing from this list gets a solid bar
+ * over a hero: slightly less pretty, entirely readable. That is the failure
+ * worth having.
+ *
+ * `/faq` and `/delete-account` render a PageHero but are deliberately absent —
+ * their heroes are light, so a transparent bar would be unreadable there too.
+ *
+ * Matched exactly, except where a prefix is given: `/projects` has a hero but
+ * `/projects/[slug]` and `/projects/[slug]/invest` do not.
+ */
+const HERO_ROUTES = [
+  "/",
+  routes.about,
+  `${routes.about}/careers`,
+  routes.blog,
+  routes.contact,
+  routes.impact,
+  routes.products,
+  `${routes.products}/shadhin-feed`,
+  routes.projects,
 ];
 
 export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: HeaderUser | null }) {
@@ -41,7 +63,7 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
   const bare = stripLocale(pathname);
   const { user, signOut } = useSession();
 
-  const overlayCapable = !SOLID_ROUTES.some((route) => bare.startsWith(route));
+  const overlayCapable = HERO_ROUTES.includes(bare);
   // `/` and `/bn` both strip to `/`.
   const isHome = bare === "/";
   const loginHref = useLoginHref(locale);

@@ -6,6 +6,7 @@ import { maskAccountNumber, type BankAccount } from "@/lib/account.server";
 import { profileGaps, type SessionUser } from "@/lib/auth/session";
 import { BOOKING_STATUS_LABEL } from "@/lib/booking";
 import type { BookingSummary } from "@/lib/bookings.server";
+import { BookingCard } from "@/components/auth/BookingCard";
 import { formatBdt, localePath, t, type Locale } from "@/lib/i18n";
 import { routes, site } from "@/lib/site";
 
@@ -129,6 +130,34 @@ export function AccountOverview({
                                     </span>
                                 </span>
                             </li>
+                        ))}
+                    </ul>
+                    <Link
+                        href={localePath(locale, routes.registerProfile)}
+                        className="mt-5 inline-flex items-center gap-2 font-display text-sm font-semibold text-brand-strong hover:underline"
+                    >
+                        {en ? "Complete my profile" : "প্রোফাইল সম্পূর্ণ করুন"}
+                        <Icon name="arrow-right" size={16} />
+                    </Link>
+                </Card>
+            )}
+
+            {nidPending && (
+                <Note tone="info" icon="info" className="mt-6">
+                    {en
+                        ? "Your NID is submitted and under review. You will be told once it is verified."
+                        : "আপনার এনআইডি জমা হয়েছে এবং পর্যালোচনায় আছে। যাচাই সম্পন্ন হলে জানানো হবে।"}
+                </Note>
+            )}
+
+            {bookings !== null && bookings.length > 0 && (
+                <Card className="mt-8 p-6">
+                    <h2 className="font-display text-lg font-bold text-stone-900">
+                        {en ? "Your bookings" : "আপনার বুকিং"}
+                    </h2>
+                    <ul className="mt-4 grid gap-4">
+                        {bookings.map((booking) => (
+                            <BookingCard key={booking.id} locale={locale} booking={booking} />
                         ))}
                     </ul>
                     <Link

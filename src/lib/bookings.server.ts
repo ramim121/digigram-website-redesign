@@ -69,83 +69,144 @@ export type BookingSummary = {
     projectNames: string[];
     totalUnits: number;
     totalInvested: number;
+    /** Low and high ends of the projected return, in taka. Never a promise. */
+    expectedReturnMin: number;
+    expectedReturnMax: number;
+    /** Latest end date across the booking's projects, or null before payment. */
+    maturityDate: string | null;
+    /** True once a receipt is on file and awaiting review. */
+    proofSubmitted: boolean;
     /** The Shathi partners this booking is recorded against. */
     partners: AssignedPartner[];
 };
 
-type ApiBooking = {
-    idProjectInvestmentBookings?: number;
-    bookingId?: string | null;
-    paymentConfirmationStatus?: string | null;
-    /** Separate column, not a status value — a cancelled booking keeps whatever
-     *  payment status it had, so this must be checked independently. */
-    cancelled?: string | null;
-    createdAt?: string | null;
-    ProjectInvestors?: {
-        unitPurchased?: number | string | null;
-        Project?: { projectName?: string | null; unitInvestmentValue?: string | number | null } | null;
-        ProjectPartnerInvestors?: {
-            investedUnit?: number | string | null;
-            amountInvested?: number | string | null;
-            ProjectPartner?: {
-                idProjectPartners?: number;
-                User?: {
-                    fullName?: string | null;
-                    role?: string | null;
-                    location?: string | null;
-                    disability?: string | null;
-                } | null;
+/**
+ * One row of `v2/investments/mine`.
+ *
+ * NOTE THE NESTING. That endpoint returns **investments**, each carrying the
+ * booking it belongs to. The previous mapper expected the opposite — bookings
+ * each carrying investments — so `ProjectInvestors` was always undefined and
+ * every booking rendered with zero units, zero amount and no project name.
+ * That is why the account page showed a list of references against BDT 0.
+ */
+type ApiInvestment = {
+    idProjectInvestors?: number;
+    unitPurchased?: number | string | null;
+    investmentStatus?: string | null;
+    investmentDate?: string | null;
+    /** Computed by the API: investment date (or payment date) plus the tenure. */
+    projectStartDate?: string | null;
+    projectEndDate?: string | null;
+    Project?: {
+        idProjects?: number;
+        projectName?: string | null;
+        unitInvestmentValue?: string | number | null;
+        returnRangeMin?: string | number | null;
+        returnRangeMax?: string | number | null;
+    } | null;
+    ProjectInvestmentBooking?: {
+        idProjectInvestmentBookings?: number;
+        bookingId?: string | null;
+        paymentConfirmationStatus?: string | null;
+        /** A separate column: a cancelled booking keeps its payment status. */
+        cancelled?: string | null;
+        proofOfPayment?: string | null;
+        createdAt?: string | null;
+    } | null;
+    ProjectPartnerInvestors?: {
+        investedUnit?: number | string | null;
+        ProjectPartner?: {
+            idProjectPartners?: number;
+            Project?: { projectName?: string | null } | null;
+            User?: {
+                fullName?: string | null;
+                role?: string | null;
+                location?: string | null;
+                disability?: string | null;
             } | null;
-        }[];
+        } | null;
     }[];
 };
 
-function toSummary(row: ApiBooking): BookingSummary {
-    const investors = row.ProjectInvestors ?? [];
+/** Decimals arrive as strings; Number() first or `+` concatenates. */
+const n = (value: unknown): number => Number(value ?? 0) || 0;
 
-    let totalUnits = 0;
-    let totalInvested = 0;
-    const projectNames: string[] = [];
-    const partners: AssignedPartner[] = [];
+/**
+ * Folds the flat investment list into one entry per booking.
+ *
+ * Money is derived, not read: there is no amount column on either table. The
+ * booking total is units x the project's unit value, and the projected return
+ * applies the project's own min/max percentages to that — matching BR-06.
+ */
+function groupByBooking(rows: ApiInvestment[]): BookingSummary[] {
+    const byReference = new Map<string, BookingSummary>();
 
-    for (const investor of investors) {
-        const units = Number(investor.unitPurchased ?? 0) || 0;
-        // Decimals arrive as strings from this API; Number() before arithmetic
-        // or the additions become string concatenation.
-        const unitValue = Number(investor.Project?.unitInvestmentValue ?? 0) || 0;
-        totalUnits += units;
-        totalInvested += units * unitValue;
-        if (investor.Project?.projectName) projectNames.push(investor.Project.projectName);
+    for (const row of rows) {
+        const booking = row.ProjectInvestmentBooking;
+        if (!booking) continue;
 
-        for (const link of investor.ProjectPartnerInvestors ?? []) {
+        const reference = booking.bookingId ?? String(booking.idProjectInvestmentBookings ?? "");
+        if (!reference) continue;
+
+        const units = n(row.unitPurchased);
+        const unitValue = n(row.Project?.unitInvestmentValue);
+        const amount = units * unitValue;
+
+        let entry = byReference.get(reference);
+        if (!entry) {
+            entry = {
+                id: Number(booking.idProjectInvestmentBookings ?? 0),
+                reference,
+                status:
+                    booking.cancelled === "yes"
+                        ? "cancelled"
+                        : mapBookingStatus(booking.paymentConfirmationStatus),
+                placedAt: booking.createdAt ?? null,
+                projectNames: [],
+                totalUnits: 0,
+                totalInvested: 0,
+                expectedReturnMin: 0,
+                expectedReturnMax: 0,
+                maturityDate: null,
+                proofSubmitted: Boolean(booking.proofOfPayment),
+                partners: [],
+            };
+            byReference.set(reference, entry);
+        }
+
+        entry.totalUnits += units;
+        entry.totalInvested += amount;
+        entry.expectedReturnMin += amount * (1 + n(row.Project?.returnRangeMin) / 100);
+        entry.expectedReturnMax += amount * (1 + n(row.Project?.returnRangeMax) / 100);
+
+        const name = row.Project?.projectName ?? row.ProjectPartnerInvestors?.[0]?.ProjectPartner?.Project?.projectName;
+        if (name && !entry.projectNames.includes(name)) entry.projectNames.push(name);
+
+        // A booking spanning projects of different lengths matures when the
+        // last one does.
+        if (row.projectEndDate && (!entry.maturityDate || row.projectEndDate > entry.maturityDate)) {
+            entry.maturityDate = row.projectEndDate;
+        }
+
+        for (const link of row.ProjectPartnerInvestors ?? []) {
             const partner = link.ProjectPartner;
             if (!partner?.idProjectPartners) continue;
-            partners.push({
+            if (entry.partners.some((p) => p.id === partner.idProjectPartners)) continue;
+            entry.partners.push({
                 id: partner.idProjectPartners,
                 name: partner.User?.fullName ?? null,
                 role: partner.User?.role ?? null,
                 location: partner.User?.location ?? null,
-                hasDisability: partner.User?.disability === 'yes',
-                units: Number(link.investedUnit ?? 0) || 0,
-                amount: Number(link.amountInvested ?? 0) || 0,
+                hasDisability: partner.User?.disability === "yes",
+                units: n(link.investedUnit),
+                // No amount column on the allocation either; derive it the same way.
+                amount: n(link.investedUnit) * unitValue,
             });
         }
     }
 
-    return {
-        id: Number(row.idProjectInvestmentBookings ?? 0),
-        // `bookingId` is the zero-padded human reference ("000158").
-        reference: row.bookingId ?? String(row.idProjectInvestmentBookings ?? ""),
-        status:
-            row.cancelled === "yes"
-                ? "cancelled"
-                : mapBookingStatus(row.paymentConfirmationStatus),
-        placedAt: row.createdAt ?? null,
-        projectNames,
-        totalUnits,
-        totalInvested,
-        partners,
-    };
+    // Newest first, matching the app's My Investment ordering.
+    return [...byReference.values()].sort((a, b) => (b.placedAt ?? "").localeCompare(a.placedAt ?? ""));
 }
 
 /**
@@ -159,10 +220,10 @@ export async function fetchMyBookings(): Promise<BookingSummary[] | null> {
     const token = await getSessionToken();
     if (!token) return null;
 
-    const res = await apiGet<ApiBooking[]>("v2/investments/mine", { token, revalidate: 0 });
+    const res = await apiGet<ApiInvestment[]>("v2/investments/mine", { token, revalidate: 0 });
     if (!res.ok || !Array.isArray(res.data)) return null;
 
-    return res.data.map(toSummary);
+    return groupByBooking(res.data);
 }
 
 /**
@@ -176,8 +237,25 @@ export async function fetchBooking(id: number): Promise<{ raw: unknown; summary:
     const token = await getSessionToken();
     if (!token) return null;
 
-    const res = await apiGet<ApiBooking>(`v2/web/bookings/${id}`, { token, revalidate: 0 });
-    if (!res.ok || !res.data) return null;
+    /*
+     * Derived from the same user-scoped list the account page uses, rather than
+     * from `v2/web/bookings/{id}`.
+     *
+     * That route returns the opposite nesting — a booking carrying investments,
+     * where `mine` returns investments carrying a booking — so it needed its own
+     * mapper. Two mappers over two shapes is how the list came to show BDT 0
+     * while the detail page looked right: only one of them was ever corrected.
+     * One shape, one mapper, no divergence.
+     *
+     * `mine` derives the caller from the token, so this is still ownership-safe:
+     * somebody else's booking id simply is not in the list.
+     */
+    const res = await apiGet<ApiInvestment[]>("v2/investments/mine", { token, revalidate: 0 });
+    if (!res.ok || !Array.isArray(res.data)) return null;
 
-    return { raw: res.data, summary: toSummary(res.data) };
+    const summary = groupByBooking(res.data).find((b) => b.id === id);
+    if (!summary) return null;
+
+    const raw = res.data.filter((r) => r.ProjectInvestmentBooking?.idProjectInvestmentBookings === id);
+    return { raw, summary };
 }

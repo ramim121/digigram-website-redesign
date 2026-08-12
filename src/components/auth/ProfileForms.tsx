@@ -6,6 +6,7 @@ import { Card, Note } from "@/components/ui/Primitives";
 import { Button } from "@/components/ui/Button";
 import { TextField, SelectField } from "@/components/ui/Field";
 import { EmailVerification } from "@/components/auth/EmailVerification";
+import { ProfileChecklist } from "@/components/auth/ProfileChecklist";
 import { Icon } from "@/components/ui/Icon";
 import type { SessionUser } from "@/lib/auth/session";
 import type { Locale } from "@/lib/i18n";
@@ -45,18 +46,33 @@ export function ProfileForms({ locale, user, hasBank }: Props) {
     const en = locale === "en";
 
     return (
-        <div className="space-y-6">
-            <IdentitySection locale={locale} user={user} />
-            <ContactSection locale={locale} user={user} />
-            <NidSection locale={locale} user={user} />
-            <PhotoSection locale={locale} user={user} />
-            <BankSection locale={locale} hasBank={hasBank} />
+        /*
+         * Forms on the left, a running checklist on the right.
+         *
+         * The requirements used to be scattered as badges down the page, so
+         * "what is still stopping me investing?" meant scrolling and adding it
+         * up. The checklist answers that in one place and stays in view while
+         * the forms are filled in. It stacks above the forms on narrow screens,
+         * where sticky positioning would just eat the viewport.
+         */
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+            <div className="order-2 space-y-6 lg:order-1">
+                <IdentitySection locale={locale} user={user} />
+                <ContactSection locale={locale} user={user} />
+                <NidSection locale={locale} user={user} />
+                <PhotoSection locale={locale} user={user} />
+                <BankSection locale={locale} hasBank={hasBank} />
 
-            <p className="text-xs text-stone-500">
-                {en
-                    ? "Your NID images are stored privately and are only seen by the team that verifies them."
-                    : "আপনার এনআইডির ছবি ব্যক্তিগতভাবে সংরক্ষিত থাকে এবং কেবল যাচাইকারী দলই তা দেখতে পান।"}
-            </p>
+                <p className="text-xs text-stone-500">
+                    {en
+                        ? "Your NID images are stored privately and are only seen by the team that verifies them."
+                        : "আপনার এনআইডির ছবি ব্যক্তিগতভাবে সংরক্ষিত থাকে এবং কেবল যাচাইকারী দলই তা দেখতে পান।"}
+                </p>
+            </div>
+
+            <div className="order-1 lg:order-2">
+                <ProfileChecklist locale={locale} user={user} hasBank={hasBank} />
+            </div>
         </div>
     );
 }
@@ -311,16 +327,38 @@ function NidSection({ locale, user }: { locale: Locale; user: SessionUser }) {
                             : "নথিভুক্ত এনআইডি পরিবর্তন করতে সহায়তা কেন্দ্রে যোগাযোগ করুন — এখান থেকে বদলানো যায় না, যাতে যাচাইকৃত অ্যাকাউন্ট ভুলবশত বাতিল না হয়।"}
                     </p>
                 </div>
+            ) : pending ? (
+                /*
+                 * Under review: no form at all.
+                 *
+                 * It used to stay open with a "you can upload again" note, which
+                 * invited a second upload of something already queued for an
+                 * admin — extra files, a second pending record, and no way for
+                 * the reviewer to know which was meant. There is nothing for the
+                 * investor to do here, so the page says so and stops.
+                 */
+                <div className="space-y-3">
+                    <div className="flex items-start gap-3 rounded-lg border border-sky-200 bg-sky-50 p-4">
+                        <Icon name="clock" size={20} className="mt-0.5 shrink-0 text-sky-700" />
+                        <div>
+                            <p className="font-display text-sm font-bold text-stone-900">
+                                {en ? "Submitted — awaiting review" : "জমা হয়েছে — পর্যালোচনার অপেক্ষায়"}
+                            </p>
+                            <p className="mt-1 text-sm leading-relaxed text-stone-700">
+                                {en
+                                    ? "Both sides are on file. Verification is usually quick, and you will be able to invest as soon as it is approved. Nothing more is needed from you."
+                                    : "দুই দিকই জমা আছে। যাচাই সাধারণত দ্রুত হয়, অনুমোদনের সঙ্গে সঙ্গেই বিনিয়োগ করতে পারবেন। আপনার আর কিছু করার নেই।"}
+                            </p>
+                        </div>
+                    </div>
+                    <p className="text-sm text-stone-500">
+                        {en
+                            ? "Sent the wrong images? Contact support and we will reopen it for you."
+                            : "ভুল ছবি পাঠিয়েছেন? সহায়তা কেন্দ্রে জানালে আমরা আবার খুলে দেব।"}
+                    </p>
+                </div>
             ) : (
                 <>
-                    {pending && (
-                        <Note tone="info" icon="info" className="mb-4">
-                            {en
-                                ? "Submitted and under review. You can keep browsing; you will be able to invest once it is approved. Uploading again replaces what you sent."
-                                : "জমা হয়েছে এবং পর্যালোচনায় আছে। আপনি দেখা চালিয়ে যেতে পারেন; অনুমোদনের পরই বিনিয়োগ করতে পারবেন। আবার আপলোড করলে আগেরটি প্রতিস্থাপিত হবে।"}
-                        </Note>
-                    )}
-
                     <form
                         className="space-y-4"
                         onSubmit={(event) => {
