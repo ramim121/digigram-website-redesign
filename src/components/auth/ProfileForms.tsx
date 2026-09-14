@@ -36,13 +36,17 @@ import type { Locale } from "@/lib/i18n";
  * local state.
  */
 
+/** Absolute S3 URLs for the NID images, resolved on the server. */
+export type NidImages = { front: string | null; back: string | null };
+
 type Props = {
     locale: Locale;
     user: SessionUser;
     hasBank: boolean;
+    nidImages?: NidImages;
 };
 
-export function ProfileForms({ locale, user, hasBank }: Props) {
+export function ProfileForms({ locale, user, hasBank, nidImages }: Props) {
     const en = locale === "en";
 
     return (
@@ -59,14 +63,28 @@ export function ProfileForms({ locale, user, hasBank }: Props) {
             <div className="order-2 max-w-3xl space-y-6 lg:order-1">
                 <IdentitySection locale={locale} user={user} />
                 <ContactSection locale={locale} user={user} />
-                <NidSection locale={locale} user={user} />
+                <NidSection locale={locale} user={user} images={nidImages} />
                 <PhotoSection locale={locale} user={user} />
                 <BankSection locale={locale} hasBank={hasBank} />
 
+                {/*
+                    This used to read "stored privately and are only seen by the
+                    team that verifies them". That is not what the backend does:
+                    `profile/nid.ts` uploads both sides to S3 with
+                    `ACL: 'public-read'`, so anyone holding the object URL can
+                    fetch the image — the filenames are hashes, which is
+                    obscurity, not access control.
+
+                    The claim has been narrowed to what is actually true (what
+                    the images are used for) rather than asserting a storage
+                    guarantee the stack does not provide. Restoring the stronger
+                    wording needs the upload changed to a private ACL with
+                    presigned reads first.
+                */}
                 <p className="text-xs text-stone-500">
                     {en
-                        ? "Your NID images are stored privately and are only seen by the team that verifies them."
-                        : "আপনার এনআইডির ছবি ব্যক্তিগতভাবে সংরক্ষিত থাকে এবং কেবল যাচাইকারী দলই তা দেখতে পান।"}
+                        ? "Your NID images are used only to verify your identity, and are reviewed by our verification team."
+                        : "আপনার এনআইডির ছবি কেবল পরিচয় যাচাইয়ের জন্য ব্যবহার করা হয়, এবং আমাদের যাচাইকারী দল তা দেখে।"}
                 </p>
             </div>
 
@@ -107,10 +125,20 @@ function Section({
     );
 }
 
+/**
+ * A confirmed state: green filled tick, not a brand-coloured one.
+ *
+ * Every use of this — phone verified, email verified, NID verified — means
+ * "this is settled, there is nothing left to do". Brand purple reads as an
+ * accent among the other purple accents on the page; green is the only colour
+ * a reader scans as *done*, and it matches the emerald tick the profile
+ * checklist already uses for the same three items. Using two different marks
+ * for one status in two panels of the same page was the actual problem.
+ */
 function Done({ children }: { children: React.ReactNode }) {
     return (
-        <p className="flex items-start gap-2 text-sm text-stone-700">
-            <Icon name="check" size={18} className="mt-0.5 shrink-0 text-brand-strong" />
+        <p className="flex items-start gap-2 text-sm font-medium text-stone-800">
+            <Icon name="check-circle" size={18} className="mt-0.5 shrink-0 text-emerald-600" />
             <span>{children}</span>
         </p>
     );
@@ -301,7 +329,69 @@ function ContactSection({ locale, user }: { locale: Locale; user: SessionUser })
 
 /* ------------------------------------------------------------------ NID -- */
 
-function NidSection({ locale, user }: { locale: Locale; user: SessionUser }) {
+/**
+ * The two NID images already on file, side by side and read-only.
+ *
+ * Rendered with a plain `<img>` rather than `next/image`. These are private
+ * identity documents: routing them through the Next image optimiser would write
+ * a copy of someone's NID into the server's image cache on disk, where it
+ * outlives the session and is served from a predictable `/_next/image?url=…`
+ * path. A direct request keeps the only copy on S3.
+ *
+ * `loading="lazy"` because on a completed profile this sits below the fold, and
+ * `bg-stone-100` gives the frame a defined box while the image arrives so the
+ * section does not jump.
+ *
+ * Renders nothing when neither URL is present — an account verified before the
+ * image columns were populated should show the confirmation alone, not two
+ * broken frames.
+ */
+function NidImagePair({ locale, images }: { locale: Locale; images?: NidImages }) {
+    const en = locale === "en";
+    if (!images?.front && !images?.back) return null;
+
+    const sides = [
+        { url: images.front, label: en ? "Front" : "সামনের দিক" },
+        { url: images.back, label: en ? "Back" : "পেছনের দিক" },
+    ].filter((side) => Boolean(side.url));
+
+    return (
+        <div>
+            <div className="grid gap-3 sm:grid-cols-2">
+                {sides.map((side) => (
+                    <figure key={side.label} className="min-w-0">
+                        <div className="overflow-hidden rounded-lg border border-stone-200 bg-stone-100">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={side.url as string}
+                                alt={
+                                    en
+                                        ? `Your NID, ${side.label.toLowerCase()}`
+                                        : `আপনার এনআইডি, ${side.label}`
+                                }
+                                loading="lazy"
+                                className="block aspect-[8/5] w-full object-cover"
+                            />
+                        </div>
+                        <figcaption className="mt-1.5 text-xs font-medium text-stone-500">
+                            {side.label}
+                        </figcaption>
+                    </figure>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function NidSection({
+    locale,
+    user,
+    images,
+}: {
+    locale: Locale;
+    user: SessionUser;
+    images?: NidImages;
+}) {
     const en = locale === "en";
     const { busy, error, done, run, setError } = useRefreshingSubmit();
     const frontRef = useRef<HTMLInputElement>(null);
@@ -319,8 +409,20 @@ function NidSection({ locale, user }: { locale: Locale; user: SessionUser }) {
             }}
         >
             {verified ? (
-                <div className="space-y-2">
-                    <Done>{en ? "Your NID is verified." : "আপনার এনআইডি যাচাইকৃত।"}</Done>
+                <div className="space-y-4">
+                    <Done>
+                        {en
+                            ? "NID information verified."
+                            : "এনআইডির তথ্য যাচাই করা হয়েছে।"}
+                    </Done>
+
+                    {/* The images that were verified, read-only.
+                        Showing them matters: without it a verified account has
+                        no way to confirm *which* NID is on file, and the only
+                        remaining affordance was a sentence about contacting
+                        support. There is no upload control in this branch at
+                        all, so a verified status cannot be reset from here. */}
+                    <NidImagePair locale={locale} images={images} />
                     <p className="text-sm text-stone-500">
                         {en
                             ? "To change the NID on file, contact support — it cannot be replaced here, so a verified account cannot be reset by accident."
@@ -351,6 +453,7 @@ function NidSection({ locale, user }: { locale: Locale; user: SessionUser }) {
                             </p>
                         </div>
                     </div>
+                    <NidImagePair locale={locale} images={images} />
                     <p className="text-sm text-stone-500">
                         {en
                             ? "Sent the wrong images? Contact support and we will reopen it for you."

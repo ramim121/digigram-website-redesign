@@ -540,3 +540,71 @@
     row-gap: 2rem;
   }
 }
+
+/* ------------------------------------------------ app screen auto-scroll -- */
+
+/*
+ * A tall app capture scrolling inside a phone-shaped frame.
+ *
+ * WHY THIS EXISTS
+ * The Shathi Sheba home screen is a long scroll — greeting, readiness score,
+ * four service tiles, the AI assistant, the buyer strip, market rates. Dropped
+ * into a marketing frame at `h-auto` it rendered as one absurdly tall phone
+ * that no layout could hold and nobody could read.
+ *
+ * Cropping it would throw away the part that makes the point: that this is a
+ * real, populated product rather than a login screen. So the frame is fixed to
+ * a true phone aspect and the *content* travels inside it, which is what the
+ * screen actually does in the hand.
+ *
+ * HOW THE DISTANCE IS SET
+ * `--app-scroll-travel` is the distance to move, expressed as a percentage of
+ * the image's own height, and is computed per image by the component from its
+ * intrinsic dimensions — a shorter or longer capture needs no CSS change. It is
+ * negative (e.g. `-21.34%`).
+ *
+ * The long holds at each end are deliberate: a capture that reverses the
+ * instant it lands reads as a glitch, while a beat at the top and bottom reads
+ * as somebody scrolling and pausing to look.
+ */
+.app-scroll {
+  overflow: hidden;
+}
+
+.app-scroll__screen {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: app-scroll-pan var(--app-scroll-duration, 26s) ease-in-out infinite alternate;
+}
+
+/* Paused on hover and on keyboard focus, so a reader can stop it and look. */
+.app-scroll:hover .app-scroll__screen,
+.app-scroll:focus-within .app-scroll__screen {
+  animation-play-state: paused;
+}
+
+@keyframes app-scroll-pan {
+  0%,
+  12% {
+    transform: translateY(0);
+  }
+  88%,
+  100% {
+    transform: translateY(var(--app-scroll-travel, -20%));
+  }
+}
+
+/*
+ * Reduced motion: no travel at all.
+ *
+ * The frame keeps its shape and shows the top of the screen, which is the part
+ * carrying the branding and the greeting. Slowing the animation down would not
+ * help — the objection to motion here is the motion, not its speed.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .app-scroll__screen {
+    animation: none;
+    transform: none;
+  }
+}

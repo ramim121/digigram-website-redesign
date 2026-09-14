@@ -7,7 +7,11 @@ import { ProductCards, CtaBand } from "@/components/sections/Shared";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema, buildMetadata } from "@/lib/seo";
 import { pillars } from "@/content/company";
-import { isLocale, t, type Locale } from "@/lib/i18n";
+import { shebaRails, shebaLenderPrinciple } from "@/content/sheba";
+import { Reveal } from "@/components/ui/Reveal";
+import { ShathiShebaLogo } from "@/components/brand/Logo";
+import { ButtonLink } from "@/components/ui/Button";
+import { isLocale, localePath, t, type Locale } from "@/lib/i18n";
 import { routes } from "@/lib/site";
 
 export async function generateMetadata({
@@ -25,7 +29,7 @@ export async function generateMetadata({
     description:
       locale === "en"
         ? "Shathi funds the production cycle, Shadhin Cattle Feed supplies it, Shathi Sheba records it. Three products, one rural enterprise model."
-        : "সাথী উৎপাদন চক্রে অর্থায়ন করে, স্বাধীন গো-খাদ্য উপকরণ জোগায়, সাথী সেবা নথিভুক্ত করে। তিনটি পণ্য, একটি গ্রামীণ উদ্যোগ মডেল।",
+        : "সাথী উৎপাদন চক্রে অর্থায়ন করে, স্বাধীন গরুর খাবার উপকরণ জোগায়, সাথী সেবা নথিভুক্ত করে। তিনটি পণ্য, একটি গ্রামীণ উদ্যোগ মডেল।",
   });
 }
 
@@ -65,7 +69,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
             ? "Each product does one job in the Fund / Supply / Grow / Sell model — and each one leaves behind a record that makes the next cycle easier to finance."
             : "ফান্ড / সরবরাহ / প্রবৃদ্ধি / বিক্রয় মডেলে প্রতিটি পণ্যের একটি নির্দিষ্ট কাজ — আর প্রতিটিই এমন নথি রেখে যায় যা পরের চক্রে অর্থায়ন সহজ করে।"
         }
-        image="/assets/projects/cattle-shed.jpg"
+        image="/assets/photos/hero/products-inputs.webp"
       />
 
       <Section tone="page">
@@ -138,6 +142,70 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
           </div>
         </div>
       </Section>
+
+      {/*
+        A Shathi Sheba strip, in wine, between the comparison table and the CTA.
+
+        The table above marks Shathi Sheba present on all four pillars with a
+        tick, which is accurate and says nothing — a tick is the same width for
+        a product that ships and one that is a slide. Shathi Sheba is the newest
+        and least familiar of the three, so it gets the space to be concrete
+        here rather than being left as a row in a grid.
+      */}
+      <section data-brand="shathi-sheba" className="section bg-brand-canvas">
+        <div className="container-page">
+          <div className="max-w-3xl">
+            <ShathiShebaLogo locale={locale} className="h-8" />
+            <h2 className="mt-6 font-display text-3xl leading-tight font-bold tracking-tight text-balance text-stone-900 lg:text-4xl">
+              {en
+                ? "One app, four service rails"
+                : "একটি অ্যাপ, চারটি সেবা রেল"}
+            </h2>
+            <p className="mt-4 text-[17px] leading-relaxed text-stone-600">
+              {en
+                ? "Better market access for farmers. Better traceable sourcing for buyers. Better risk visibility for finance partners. Each rail produces data that improves the next application."
+                : "কৃষকের জন্য ভালো বাজার, ক্রেতার জন্য সন্ধানযোগ্য সরবরাহ, অর্থায়ন অংশীদারের জন্য স্পষ্ট ঝুঁকিচিত্র। প্রতিটি রেল এমন তথ্য তৈরি করে, যা পরের আবেদনটিকে আরও শক্ত করে।"}
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {shebaRails.map((rail, index) => (
+              <Reveal key={rail.key} delay={index * 60}>
+                <div className="flex h-full flex-col rounded-lg border border-brand-line bg-white p-6">
+                  <span className="flex size-10 items-center justify-center rounded-md bg-brand-tint text-brand-strong">
+                    <Icon name={rail.icon} size={20} />
+                  </span>
+                  <h3 className="mt-4 font-display text-lg font-bold text-brand-strong">
+                    {t(rail.title, locale)}
+                  </h3>
+                  <p className="mt-1.5 text-[13px] font-semibold text-stone-700">
+                    {t(rail.line, locale)}
+                  </p>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
+                    {t(rail.detail, locale)}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* The boundary, stated wherever the Fund rail is. Describing a
+              scoring engine without it reads as though DigiGram lends. */}
+          <div className="mt-8 flex flex-col gap-5 rounded-lg border border-brand-line bg-white p-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="flex items-start gap-2.5 text-[15px] leading-relaxed text-stone-700">
+              <Icon name="shield" size={18} className="mt-0.5 shrink-0 text-brand-strong" />
+              {t(shebaLenderPrinciple, locale)}
+            </p>
+            <ButtonLink
+              href={localePath(locale, routes.shathiSheba)}
+              icon="arrow-right"
+              className="shrink-0"
+            >
+              {en ? "Explore Shathi Sheba" : "সাথী সেবা দেখুন"}
+            </ButtonLink>
+          </div>
+        </div>
+      </section>
 
       <CtaBand locale={locale} />
     </>

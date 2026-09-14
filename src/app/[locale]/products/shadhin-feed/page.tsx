@@ -26,12 +26,12 @@ export async function generateMetadata({
     title:
       locale === "en"
         ? "Shadhin Cattle Feed — DLS-compliant compound feed"
-        : "স্বাধীন গো-খাদ্য — ডিএলএস-অনুমোদিত কম্পাউন্ড ফিড",
+        : "স্বাধীন গরুর খাবার — ডিএলএস-অনুমোদিত কম্পাউন্ড ফিড",
     description:
       locale === "en"
         ? "DLS-compliant compound cattle feed validated at 900g average daily gain. 100 tons a month, scalable to 500, distributed through cooperative and B2B channels."
-        : "ডিএলএস-অনুমোদিত কম্পাউন্ড গো-খাদ্য, দৈনিক গড়ে ৯০০ গ্রাম ওজন বৃদ্ধিতে যাচাইকৃত। মাসে ১০০ টন, ৫০০ টন পর্যন্ত সম্প্রসারণযোগ্য, সমবায় ও বিটুবি চ্যানেলে বিতরণ।",
-    image: "/assets/projects/cattle-shed.jpg",
+        : "ডিএলএস-অনুমোদিত কম্পাউন্ড গরুর খাবার, দৈনিক গড়ে ৯০০ গ্রাম ওজন বৃদ্ধিতে যাচাইকৃত। মাসে ১০০ টন, ৫০০ টন পর্যন্ত সম্প্রসারণযোগ্য, সমবায় ও বিটুবি চ্যানেলে বিতরণ।",
+    image: "/assets/photos/hero/products-inputs.webp",
   });
 }
 
@@ -135,9 +135,9 @@ export default async function ShadhinFeedPage({
         locale={locale}
         crumbs={[
           { label: en ? "Products" : "পণ্য ও সেবা", href: localePath(locale, routes.products) },
-          { label: en ? "Shadhin Cattle Feed" : "স্বাধীন গো-খাদ্য" },
+          { label: en ? "Shadhin Cattle Feed" : "স্বাধীন গরুর খাবার" },
         ]}
-        eyebrow={en ? "Shadhin Cattle Feed" : "স্বাধীন গো-খাদ্য"}
+        eyebrow={en ? "Shadhin Cattle Feed" : "স্বাধীন গরুর খাবার"}
         title={
           en
             ? "Quality feed a farmer can actually get hold of"
@@ -148,7 +148,7 @@ export default async function ShadhinFeedPage({
             ? "Ungraded feed is not cheap — it is paid back in extra weeks of feeding. Shadhin is a DLS-compliant compound feed, produced at commercial scale and delivered through the cooperative network."
             : "গ্রেডবিহীন খাদ্য সস্তা নয় — এর দাম শোধ করতে হয় অতিরিক্ত কয়েক সপ্তাহ খাইয়ে। স্বাধীন একটি ডিএলএস-অনুমোদিত কম্পাউন্ড ফিড, বাণিজ্যিক পরিসরে উৎপাদিত এবং সমবায় নেটওয়ার্কে সরবরাহকৃত।"
         }
-        image="/assets/projects/cattle-shed.jpg"
+        image="/assets/photos/hero/products-inputs.webp"
       />
 
       <Section tone="page">

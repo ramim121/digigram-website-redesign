@@ -30,7 +30,7 @@ export async function generateMetadata({
       locale === "en"
         ? "A for-profit impact enterprise in Bangladesh turning rural homes into micro-enterprises. Our model, our team, our partners and the gaps we exist to close."
         : "বাংলাদেশের একটি মুনাফাভিত্তিক ইমপ্যাক্ট প্রতিষ্ঠান, যা গ্রামীণ ঘরকে ক্ষুদ্র উদ্যোগে রূপান্তর করে। আমাদের মডেল, দল, অংশীদার এবং যে ফাঁক পূরণে আমাদের অস্তিত্ব।",
-    image: "/assets/photos/community-meeting.webp",
+    image: "/assets/photos/hero/about-cooperative.webp",
   });
 }
 
@@ -72,7 +72,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             ? "A for-profit impact enterprise transforming rural livelihoods in Bangladesh — with a deliberate emphasis on women and people facing disability-related barriers."
             : "বাংলাদেশের গ্রামীণ জীবিকা রূপান্তরে কাজ করা একটি মুনাফাভিত্তিক ইমপ্যাক্ট প্রতিষ্ঠান — নারী ও প্রতিবন্ধকতার মুখোমুখি মানুষের ওপর সচেতন গুরুত্বসহ।"
         }
-        image="/assets/photos/community-meeting.webp"
+        image="/assets/photos/hero/about-cooperative.webp"
       />
 
       {/* Sticky sub-nav */}
@@ -193,7 +193,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               <p className="mt-4 font-display text-2xl leading-snug font-semibold text-balance text-stone-900 lg:text-3xl">
                 {en
                   ? "Empower rural communities through inclusive, sustainable and innovative solutions that foster economic independence and resilience."
-                  : "অন্তর্ভুক্তিমূলক, টেকসই ও উদ্ভাবনী সমাধানের মাধ্যমে গ্রামীণ জনগোষ্ঠীকে ক্ষমতায়িত করা, যা অর্থনৈতিক স্বাধীনতা ও সহনশীলতা গড়ে তোলে।"}
+                  : "সবার জন্য, টেকসই ও উদ্ভাবনী সমাধানের মাধ্যমে গ্রামীণ জনগোষ্ঠীকে ক্ষমতায়িত করা, যা অর্থনৈতিক স্বাধীনতা ও সহনশীলতা গড়ে তোলে।"}
               </p>
             </div>
             <div>
@@ -233,7 +233,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             lead={
               en
                 ? "A team with operating experience in supply chain, livestock and technology — not only in development programmes."
-                : "সরবরাহ চেইন, পশুসম্পদ ও প্রযুক্তিতে বাস্তব অভিজ্ঞতাসম্পন্ন একটি দল — কেবল উন্নয়ন কর্মসূচিতে নয়।"
+                : "সরবরাহ চেইন, গবাদিপশু ও প্রযুক্তিতে বাস্তব অভিজ্ঞতাসম্পন্ন একটি দল — কেবল উন্নয়ন কর্মসূচিতে নয়।"
             }
           />
 

@@ -44,7 +44,7 @@ const openRoles: {
 }[] = [
   {
     icon: "sprout",
-    title: { en: "Field Officer — Livestock", bn: "মাঠ কর্মকর্তা — পশুসম্পদ" },
+    title: { en: "Field Officer — Livestock", bn: "মাঠ কর্মকর্তা — গবাদিপশু" },
     team: { en: "Field operations", bn: "মাঠ পরিচালনা" },
     location: { en: "Rangunia, Chattogram", bn: "রাঙ্গুনিয়া, চট্টগ্রাম" },
     type: { en: "Full time", bn: "পূর্ণকালীন" },
@@ -120,7 +120,7 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
             ? "Most of what we do is decided in a courtyard in Rangunia, not in a meeting room in Dhaka. We hire people who are comfortable with that."
             : "আমাদের বেশিরভাগ সিদ্ধান্ত হয় রাঙ্গুনিয়ার কোনো উঠানে, ঢাকার সভাকক্ষে নয়। আমরা এমন মানুষ নিই যাঁরা এতে স্বচ্ছন্দ।"
         }
-        image="/assets/photos/field-visit.webp"
+        image="/assets/photos/hero/careers-field-team.webp"
       />
 
       <Section tone="page">

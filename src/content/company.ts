@@ -57,7 +57,7 @@ export const pillars: {
     no: "01",
     key: "fund",
     title: { en: "Fund", bn: "ফান্ড" },
-    line: { en: "Inclusive & accessible finance", bn: "অন্তর্ভুক্তিমূলক ও সহজলভ্য অর্থায়ন" },
+    line: { en: "Inclusive & accessible finance", bn: "সবার জন্য সহজলভ্য অর্থায়ন" },
     detail: {
       en: "Only 15% of rural households reach formal credit; the rest borrow informally and expensively. We fund production directly through investor capital and project-linked finance, and we build the verified profile a bank needs before it will lend.",
       bn: "গ্রামীণ পরিবারের মাত্র ১৫% আনুষ্ঠানিক ঋণ পান; বাকিরা চড়া সুদে অনানুষ্ঠানিকভাবে ঋণ নেন। আমরা বিনিয়োগকারীর পুঁজি ও প্রকল্প-সংযুক্ত অর্থায়নের মাধ্যমে সরাসরি উৎপাদনে অর্থায়ন করি, এবং ব্যাংক ঋণ দেওয়ার আগে যে যাচাইকৃত প্রোফাইল দরকার সেটিও তৈরি করি।",
@@ -81,7 +81,7 @@ export const pillars: {
     },
     example: {
       en: "Shadhin Cattle Feed: 100 ton/month today, validated at 900g average daily gain, distributed through the cooperative network.",
-      bn: "স্বাধীন গো-খাদ্য: এখন মাসে ১০০ টন, দৈনিক গড়ে ৯০০ গ্রাম ওজন বৃদ্ধিতে যাচাইকৃত, সমবায় নেটওয়ার্কের মাধ্যমে বিতরণ।",
+      bn: "স্বাধীন গরুর খাবার: এখন মাসে ১০০ টন, দৈনিক গড়ে ৯০০ গ্রাম ওজন বৃদ্ধিতে যাচাইকৃত, সমবায় নেটওয়ার্কের মাধ্যমে বিতরণ।",
     },
   },
   {
@@ -159,11 +159,11 @@ export const stakeholders: { title: Bi; body: Bi; bullets: Bi[] }[] = [
     title: { en: "Investors", bn: "বিনিয়োগকারী" },
     body: {
       en: "Transparent rural projects with a stated mechanism, a monitored cycle and a disclosed risk.",
-      bn: "স্বচ্ছ গ্রামীণ প্রকল্প — নির্দিষ্ট প্রক্রিয়া, তদারকিকৃত চক্র ও প্রকাশিত ঝুঁকিসহ।",
+      bn: "স্বচ্ছ গ্রামীণ প্রকল্প — নির্দিষ্ট প্রক্রিয়া, তদারকি করা চক্র ও প্রকাশিত ঝুঁকিসহ।",
     },
     bullets: [
       { en: "Project-level reporting", bn: "প্রকল্পভিত্তিক প্রতিবেদন" },
-      { en: "Estimated return bands, never guarantees", bn: "প্রাক্কলিত রিটার্ন, কখনো নিশ্চয়তা নয়" },
+      { en: "Estimated return bands, never guarantees", bn: "আনুমানিক রিটার্ন, কখনো নিশ্চয়তা নয়" },
       { en: "Impact you can trace to a household", bn: "পরিবার পর্যন্ত অনুসরণযোগ্য প্রভাব" },
     ],
   },
@@ -234,7 +234,7 @@ export const leadership: TeamMember[] = [
   },
   {
     name: { en: "AQM Shafiqur Rouf", bn: "এ কিউ এম শফিকুর রউফ" },
-    role: { en: "Consultant, Livestock Operations", bn: "পরামর্শক, পশুসম্পদ পরিচালনা" },
+    role: { en: "Consultant, Livestock Operations", bn: "পরামর্শক, গবাদিপশু পরিচালনা" },
     years: "30 years",
   },
 ];
@@ -285,7 +285,7 @@ export const testimonials: Testimonial[] = [
       bn: "যোগ দেওয়ার আগে রুজির দুটি গরু ছিল, আর বিক্রি করতেন গ্রামের সবার মতোই — যিনি বাড়ির সামনে আসতেন, সেদিন সকালে তিনি যা বলতেন সেই দামে। এখন তিনি দেখান প্রতি কেজির হিসাব: বিটুবি দর, তা থেকে পরিবহন ও পশুচিকিৎসার কর্তন, আর শেষে তাঁর হাতে আসা অঙ্কটি। বিক্রিকে আর এমন দর-কষাকষি মনে করেন না যেখানে হারতেই হবে।",
     },
     name: { en: "Roji Akter", bn: "রুজি আক্তার" },
-    role: { en: "Shathi partner · Livestock", bn: "সাথী অংশীদার · পশুসম্পদ" },
+    role: { en: "Shathi partner · Livestock", bn: "সাথী অংশীদার · গবাদিপশু" },
     district: { en: "Rangunia, Chattogram", bn: "রাঙ্গুনিয়া, চট্টগ্রাম" },
     photo: "/assets/photos/partner-portrait-1.webp",
     consentGranted: false,
@@ -300,7 +300,7 @@ export const testimonials: Testimonial[] = [
       bn: "নিলু আগে কিনতেন কাছের একটিমাত্র বাজারে সেই সপ্তাহে যা থাকত তাই — ফলে বস্তা বদলালেই আমিষের পরিমাণ বদলে যেত আর পশুর বৃদ্ধি হতো অসমান। সমবায়ের মাধ্যমে আসা গ্রেডকৃত খাদ্য সেই আন্দাজ দূর করেছে — আর আনতে গিয়ে যে একটি দিন নষ্ট হতো, সেটিও।",
     },
     name: { en: "Nilu Akter", bn: "নিলু আক্তার" },
-    role: { en: "Shathi partner · Livestock", bn: "সাথী অংশীদার · পশুসম্পদ" },
+    role: { en: "Shathi partner · Livestock", bn: "সাথী অংশীদার · গবাদিপশু" },
     district: { en: "Rangunia, Chattogram", bn: "রাঙ্গুনিয়া, চট্টগ্রাম" },
     photo: "/assets/photos/partner-portrait-2.webp",
     consentGranted: false,
@@ -330,7 +330,7 @@ export const testimonials: Testimonial[] = [
       bn: "কৃষকের বলা ওজন একটি দাবি; মাঠ কর্মকর্তার যাচাই করা ওজন একটি প্রমাণ। আনোয়ার নিজেই সাপ্তাহিক নথি রাখেন, সমবায় তাতে অনুমোদন দেয়, আর ক্রেতা আসেন আগেই জেনে কী আসছে — এ কারণেই দাম ঠিক হয় পশু গোয়াল ছাড়ার আগে, বাড়ির সামনে নয়।",
     },
     name: { en: "Anowar Hossain", bn: "আনোয়ার হোসেন" },
-    role: { en: "Shathi partner · Livestock", bn: "সাথী অংশীদার · পশুসম্পদ" },
+    role: { en: "Shathi partner · Livestock", bn: "সাথী অংশীদার · গবাদিপশু" },
     district: { en: "Rangunia, Chattogram", bn: "রাঙ্গুনিয়া, চট্টগ্রাম" },
     photo: "/assets/photos/partner-portrait-4.webp",
     consentGranted: false,
@@ -360,7 +360,7 @@ export const testimonials: Testimonial[] = [
       bn: "একটি চক্র মানে আয়। দুটি চক্র — যেখানে উপকরণের খরচ আগেই জানা আর বিক্রয়মূল্য পশু বিক্রির আগেই প্রকাশিত — মানে একটি পরিকল্পনা। মোফাজ্জল প্রথম পরিশোধের অর্থ তুলে না নিয়ে পুনর্বিনিয়োগ করেছেন — ঠিক এখান থেকেই একটি পরিবার ধাক্কা সামলানো ছেড়ে সম্পদ গড়া শুরু করে।",
     },
     name: { en: "Mohammad Mofazzol", bn: "মোহাম্মদ মোফাজ্জল" },
-    role: { en: "Shathi partner · Livestock", bn: "সাথী অংশীদার · পশুসম্পদ" },
+    role: { en: "Shathi partner · Livestock", bn: "সাথী অংশীদার · গবাদিপশু" },
     district: { en: "Rangunia, Chattogram", bn: "রাঙ্গুনিয়া, চট্টগ্রাম" },
     photo: "/assets/photos/partner-portrait-6.webp",
     consentGranted: false,
@@ -386,7 +386,7 @@ export const partners: Partner[] = [
   },
   { name: "Orange Corners Bangladesh", note: { en: "Incubation", bn: "ইনকিউবেশন" } },
   { name: "B-Briddhi", note: { en: "Social enterprise support", bn: "সামাজিক উদ্যোগ সহায়তা" } },
-  { name: "SAJIDA Foundation", note: { en: "Inclusive finance", bn: "অন্তর্ভুক্তিমূলক অর্থায়ন" } },
+  { name: "SAJIDA Foundation", note: { en: "Inclusive finance", bn: "সবার জন্য অর্থায়ন" } },
   { name: "LendForGood", note: { en: "Impact lending", bn: "ইমপ্যাক্ট ঋণ" } },
   {
     name: "EcoDev / mPowerU",
@@ -415,7 +415,7 @@ export const faqs: Faq[] = [
     },
     a: {
       en: "No. Every figure on this site is an estimated range, not a promise. Returns come from a real production cycle — animals gain weight, a crop yields, output is sold — and a cycle can underperform through disease, weather or a market move. We publish the mechanism, the monitoring and the mitigation for each project, and we disclose what happens if a cycle falls short. Capital is at risk.",
-      bn: "না। এই ওয়েবসাইটের প্রতিটি সংখ্যা একটি প্রাক্কলিত পরিসর, কোনো প্রতিশ্রুতি নয়। রিটার্ন আসে বাস্তব উৎপাদন চক্র থেকে — পশুর ওজন বাড়ে, ফসল ফলে, উৎপাদন বিক্রি হয় — আর রোগ, আবহাওয়া বা বাজারের পরিবর্তনে চক্র প্রত্যাশার নিচে যেতে পারে। প্রতিটি প্রকল্পের প্রক্রিয়া, তদারকি ও ঝুঁকি প্রশমন আমরা প্রকাশ করি, এবং চক্র কম ফল দিলে কী হয় তাও জানাই। বিনিয়োগ ঝুঁকিপূর্ণ।",
+      bn: "না। এই ওয়েবসাইটের প্রতিটি সংখ্যা একটি আনুমানিক পরিসর, কোনো প্রতিশ্রুতি নয়। রিটার্ন আসে বাস্তব উৎপাদন চক্র থেকে — পশুর ওজন বাড়ে, ফসল ফলে, উৎপাদন বিক্রি হয় — আর রোগ, আবহাওয়া বা বাজারের পরিবর্তনে চক্র প্রত্যাশার নিচে যেতে পারে। প্রতিটি প্রকল্পের প্রক্রিয়া, তদারকি ও ঝুঁকি প্রশমন আমরা প্রকাশ করি, এবং চক্র কম ফল দিলে কী হয় তাও জানাই। বিনিয়োগ ঝুঁকিপূর্ণ।",
     },
   },
   {

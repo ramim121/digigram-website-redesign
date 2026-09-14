@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import clsx from "clsx";
 import { ProjectCard } from "@/components/projects/ProjectCard";
+import { ShebaProjectCard } from "@/components/projects/ShebaProjectCard";
 import { ProjectCardSkeleton } from "@/components/ui/Primitives";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -16,6 +17,7 @@ import {
   type ProjectQuery,
   type ProjectStatus,
 } from "@/lib/projects";
+import type { ShebaProject } from "@/lib/sheba";
 import { t, type Locale } from "@/lib/i18n";
 import { routes } from "@/lib/site";
 
@@ -27,28 +29,63 @@ import { routes } from "@/lib/site";
  * parent starts passing a paginated page instead. The empty, error and
  * end-of-list states below are the ones the design brief asks for — they are
  * real states, not placeholders.
+ *
+ * TWO PRODUCT LINES, ONE PAGE.
+ * `/projects` now carries both halves of the rural cycle: Shathi investments,
+ * where a person puts in capital and takes a return band, and Shathi Sheba
+ * partner projects, where a farmer applies and a bank lends against a
+ * guaranteed buy-back. They come from two different backends and have no field
+ * in common beyond a name and a district.
+ *
+ * The product tabs are therefore a *switch*, not another filter. The category,
+ * status and sort controls below them describe investments — unit price,
+ * funding, return — and none of them mean anything for a partner project. So
+ * they are shown for the Shathi views and hidden for the Sheba one, rather
+ * than being left on screen governing nothing. In the combined view they still
+ * apply to the investment grid, and the partner projects follow underneath
+ * under their own heading, so it is always visible which list a control moves.
  */
 
 type StatusTab = "open" | "upcoming" | "funded" | "completed" | "all";
+
+/** Which product line is on screen. */
+type ProductTab = "all" | "shathi" | "sheba";
 
 const PAGE_SIZE = 9;
 
 export function ProjectExplorer({
   projects,
+  shebaProjects = [],
+  shebaStale = false,
   locale,
   loadFailed = false,
 }: {
   projects: Project[];
+  /**
+   * Shathi Sheba partner projects. Defaults to empty so every other caller of
+   * this component — and a deployment with no Sheba platform configured —
+   * keeps working untouched and simply shows no product tabs.
+   */
+  shebaProjects?: ShebaProject[];
+  /** True when the partner projects are drafted content, not live platform data. */
+  shebaStale?: boolean;
   locale: Locale;
   /** Set when the upstream fetch failed so the error state can be exercised. */
   loadFailed?: boolean;
 }) {
   const en = locale === "en";
+  const [product, setProduct] = useState<ProductTab>("all");
   const [category, setCategory] = useState<ProjectCategory | "all">("all");
   const [status, setStatus] = useState<StatusTab>("open");
   const [sort, setSort] = useState<NonNullable<ProjectQuery["sort"]>>("newest");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  // No partner projects to show means no choice to offer: the tabs disappear
+  // and the page is exactly what it was before Sheba existed.
+  const hasSheba = shebaProjects.length > 0;
+  const showInvestments = !hasSheba || product !== "sheba";
+  const showSheba = hasSheba && product !== "shathi";
 
   const filtered = useMemo(() => {
     let rows = projects;
@@ -117,6 +154,52 @@ export function ProjectExplorer({
 
   return (
     <div className="mt-10">
+      {/*
+        Product switch. Rendered only when there is something to switch to, so
+        a page with investments alone looks exactly as it always did.
+      */}
+      {hasSheba && (
+        <div
+          role="tablist"
+          aria-label={en ? "Product" : "পণ্য"}
+          className="flex flex-wrap gap-2 border-b border-stone-200 pb-4"
+        >
+          {(["all", "shathi", "sheba"] as const).map((key) => (
+            <button
+              key={key}
+              role="tab"
+              type="button"
+              aria-selected={product === key}
+              onClick={() => reset(() => setProduct(key))}
+              className={clsx(
+                "rounded-md px-4 py-2.5 font-display text-sm font-semibold transition-colors duration-150",
+                product === key
+                  ? key === "sheba"
+                    ? "bg-sheba-600 text-white"
+                    : key === "shathi"
+                      ? "bg-shathi-600 text-white"
+                      : "bg-teal-800 text-white"
+                  : "text-stone-500 hover:bg-stone-100 hover:text-stone-800",
+              )}
+            >
+              {key === "all"
+                ? en
+                  ? "All projects"
+                  : "সব প্রকল্প"
+                : key === "shathi"
+                  ? en
+                    ? "Invest · Shathi"
+                    : "বিনিয়োগ · সাথী"
+                  : en
+                    ? "Partner · Shathi Sheba"
+                    : "অংশীদার · সাথী সেবা"}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {showInvestments && (
+        <>
       {/* -------------------------------------------------------- filters */}
       <div className="flex flex-col gap-4">
         <button
@@ -219,6 +302,55 @@ export function ProjectExplorer({
         </>
       ) : (
         <EmptyState locale={locale} onReset={() => reset(() => { setCategory("all"); setStatus("all"); })} />
+      )}
+        </>
+      )}
+
+      {/* ------------------------------------------- partner projects -- */}
+      {showSheba && (
+        <section
+          data-brand="shathi-sheba"
+          className={showInvestments ? "mt-16 border-t border-stone-200 pt-12" : "mt-9"}
+        >
+          {/* The heading only appears in the combined view. On the Sheba tab
+              the tab itself already says what the list is, and a second label
+              under it is just repetition. */}
+          {showInvestments && (
+            <div className="max-w-2xl">
+              <p className="eyebrow">{en ? "Shathi Sheba" : "সাথী সেবা"}</p>
+              <h3 className="mt-2 font-display text-2xl leading-tight font-bold tracking-tight text-stone-900 lg:text-3xl">
+                {en ? "Partner projects for farmers" : "কৃষকদের জন্য পার্টনার প্রকল্প"}
+              </h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-stone-600">
+                {en
+                  ? "The other side of the same cycle. A farmer joins a project, a bank lends against it, and an offtake buyer guarantees the sale — so the price risk does not sit with the household. These are applications, not investments."
+                  : "একই চক্রের অন্য দিক। কৃষক প্রকল্পে যুক্ত হন, ব্যাংক ঋণ দেয়, আর ক্রেতা প্রতিষ্ঠান বিক্রি নিশ্চিত করে — দামের ঝুঁকি আর পরিবারের ঘাড়ে থাকে না। এগুলো আবেদনের প্রকল্প, বিনিয়োগের নয়।"}
+              </p>
+            </div>
+          )}
+
+          <div
+            className={clsx(
+              "grid gap-5 sm:grid-cols-2 lg:grid-cols-3",
+              showInvestments ? "mt-9" : "mt-0",
+            )}
+          >
+            {shebaProjects.map((project) => (
+              <ShebaProjectCard key={project.id} project={project} locale={locale} />
+            ))}
+          </div>
+
+          {/* Said plainly rather than hidden: these are real projects, but the
+              copy on screen may be behind the platform. Same convention the
+              Shathi side uses for a failed fetch. */}
+          {shebaStale && (
+            <p className="mt-5 text-xs text-stone-400">
+              {en
+                ? "Showing cached partner-project information — live details were unavailable just now."
+                : "পার্টনার প্রকল্পের সংরক্ষিত তথ্য দেখানো হচ্ছে — এই মুহূর্তে সরাসরি তথ্য পাওয়া যায়নি।"}
+            </p>
+          )}
+        </section>
       )}
     </div>
   );

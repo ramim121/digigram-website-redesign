@@ -58,7 +58,7 @@ export async function generateMetadata({
     title,
     description: en
       ? `${title} — ${t(project.location, locale)}. ${formatBdt(project.unitAmountBdt, locale, { variant: "data" })} per unit, ${project.tenureMonths} months, estimated ${formatRange(project.returnPct.min, project.returnPct.max, locale)} return. Capital at risk.`
-      : `${title} — ${t(project.location, locale)}। প্রতি ইউনিট ${formatBdt(project.unitAmountBdt, locale, { variant: "data" })}, ${project.tenureMonths} মাস, প্রাক্কলিত রিটার্ন ${formatRange(project.returnPct.min, project.returnPct.max, locale)}। পুঁজি ঝুঁকিতে।`,
+      : `${title} — ${t(project.location, locale)}। প্রতি ইউনিট ${formatBdt(project.unitAmountBdt, locale, { variant: "data" })}, ${project.tenureMonths} মাস, আনুমানিক রিটার্ন ${formatRange(project.returnPct.min, project.returnPct.max, locale)}। পুঁজি ঝুঁকিতে।`,
     image: project.coverImage,
     type: "article",
   });
@@ -246,7 +246,7 @@ export default async function ProjectDetailPage({
                     </>
                   ) : (
                     <>
-                      রিটার্ন প্রাক্কলিত, নিশ্চিত নয়, এবং আপনার পুঁজি ঝুঁকিতে থাকে।{" "}
+                      রিটার্ন আনুমানিক, নিশ্চিত নয়, এবং আপনার পুঁজি ঝুঁকিতে থাকে।{" "}
                       <Link href={localePath(locale, routes.terms)} className="text-brand-strong underline">
                         সম্পূর্ণ শর্তাবলি
                       </Link>{" "}
@@ -402,14 +402,14 @@ export default async function ProjectDetailPage({
                     q: { en: "What happens if the cycle underperforms?", bn: "চক্র প্রত্যাশার নিচে গেলে কী হয়?" },
                     a: {
                       en: "Returns can land below the estimated band, and in a severe case capital can be lost. Risk is reduced through graded inputs, veterinary cover, weekly monitoring, cooperative verification and buyers arranged before the sale — but it is not removed.",
-                      bn: "রিটার্ন প্রাক্কলিত পরিসরের নিচে নামতে পারে, আর গুরুতর ক্ষেত্রে পুঁজিও হারাতে পারে। গ্রেডকৃত উপকরণ, পশুচিকিৎসা, সাপ্তাহিক তদারকি, সমবায় যাচাই ও বিক্রির আগেই ক্রেতা ঠিক করার মাধ্যমে ঝুঁকি কমানো হয় — তবে তা দূর হয় না।",
+                      bn: "রিটার্ন আনুমানিক পরিসরের নিচে নামতে পারে, আর গুরুতর ক্ষেত্রে পুঁজিও হারাতে পারে। গ্রেডকৃত উপকরণ, পশুচিকিৎসা, সাপ্তাহিক তদারকি, সমবায় যাচাই ও বিক্রির আগেই ক্রেতা ঠিক করার মাধ্যমে ঝুঁকি কমানো হয় — তবে তা দূর হয় না।",
                     },
                   },
                   {
                     q: { en: "Can I withdraw early?", bn: "আগেভাগে টাকা তোলা যাবে?" },
                     a: {
                       en: "Refunds are available within 15 days of the project start date. After that the capital is committed to the cycle and cannot be withdrawn until maturity.",
-                      bn: "প্রকল্প শুরুর তারিখ থেকে ১৫ দিনের মধ্যে অর্থ ফেরত নেওয়া যায়। এরপর পুঁজি চক্রে প্রতিশ্রুত হয়ে যায় এবং মেয়াদপূর্তির আগে তোলা যায় না।",
+                      bn: "প্রকল্প শুরুর তারিখ থেকে ১৫ দিনের মধ্যে অর্থ ফেরত নেওয়া যায়। এরপর পুঁজি চক্রে প্রতিশ্রুত হয়ে যায় এবং মেয়াদ শেষের আগে তোলা যায় না।",
                     },
                   },
                   {

@@ -29,6 +29,8 @@ import { buildMetadata } from "@/lib/seo";
 import { formatDate, isLocale, localePath, t, type Locale } from "@/lib/i18n";
 import { routes, site } from "@/lib/site";
 import { ProcessFlow } from "@/components/sections/ProcessFlow";
+import { ShebaBand } from "@/components/sections/ShebaBand";
+import { HeroCarousel, type HeroSlide } from "@/components/sections/HeroCarousel";
 
 export async function generateMetadata({
   params,
@@ -47,8 +49,8 @@ export async function generateMetadata({
         : "গ্রামীণ বাংলাদেশে বিনিয়োগ করুন — ডিজিগ্রাম ভেঞ্চারস",
     description:
       locale === "en"
-        ? "Fund rural micro-enterprises in Bangladesh. Farmers get capital, quality inputs, training and a guaranteed buyer; you get a transparent, monitored return. 1,000+ farmers connected, 70% women."
-        : "বাংলাদেশের গ্রামীণ ক্ষুদ্র উদ্যোগে অর্থায়ন করুন। কৃষক পান পুঁজি, মানসম্পন্ন উপকরণ, প্রশিক্ষণ ও নিশ্চিত ক্রেতা; আপনি পান স্বচ্ছ, তদারকিকৃত রিটার্ন। ১,০০০+ কৃষক সংযুক্ত, ৭০% নারী।",
+        ? "DigiGram finances rural micro-enterprises in Bangladesh and builds Shathi Sheba, the app they run on. Farmers get capital, quality inputs, training and a named buyer; investors get a transparent, monitored return. 1,000+ farmers connected, 70% women."
+        : "ডিজিগ্রাম বাংলাদেশের গ্রামীণ ক্ষুদ্র উদ্যোগে অর্থায়ন করে এবং তারা যে অ্যাপে চলে — সাথী সেবা — সেটিও বানায়। কৃষক পান পুঁজি, মানসম্পন্ন উপকরণ, প্রশিক্ষণ ও নির্দিষ্ট ক্রেতা; বিনিয়োগকারী পান স্বচ্ছ, তদারকি করা রিটার্ন। ১,০০০+ কৃষক সংযুক্ত, ৭০% নারী।",
     keywords:
       locale === "en"
         ? [
@@ -59,10 +61,45 @@ export async function generateMetadata({
             "cattle fattening investment",
             "DigiGram Ventures",
             "Shathi",
+            "Shathi Sheba",
+            "rural enterprise app Bangladesh",
+            "finance readiness smallholder farmers",
           ]
-        : ["বাংলাদেশে কৃষি বিনিয়োগ", "চুক্তিভিত্তিক চাষ", "গ্রামীণ অর্থায়ন", "সাথী", "ডিজিগ্রাম"],
+        : [
+            "বাংলাদেশে কৃষি বিনিয়োগ",
+            "চুক্তিভিত্তিক চাষ",
+            "গ্রামীণ অর্থায়ন",
+            "সাথী",
+            "সাথী সেবা",
+            "ডিজিগ্রাম",
+          ],
   });
 }
+
+/**
+ * Homepage hero backgrounds, in rotation order.
+ *
+ * Three commissioned 1536×1024 frames, in the order a visitor should meet the
+ * business: the cooperative that organises a village, the advisory that reaches
+ * a farmer through a phone, and the production cycle the money actually buys.
+ *
+ * They replaced a single 479×551 photograph that was being stretched across a
+ * full-bleed hero — roughly a 4× upscale on a laptop, and the whole reason the
+ * old banner looked washed out. Each is composed with its subject right of
+ * centre so the left-hand scrim keeps the headline legible; see `HeroCarousel`
+ * for the resolution any replacement has to meet.
+ */
+const heroSlides: HeroSlide[] = [
+  {
+    src: "/assets/photos/hero/hero-cooperative.webp",
+    caption: {
+      en: "A farmers' cooperative meeting on a path between paddy fields in rural Bangladesh",
+      bn: "গ্রামীণ বাংলাদেশে ধানখেতের আলপথে কৃষক সমবায়ের বৈঠক",
+    },
+  },
+  { src: "/assets/photos/hero/hero-advisory.webp" },
+  { src: "/assets/photos/hero/hero-cattle.webp" },
+];
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
@@ -77,15 +114,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <>
       {/* 1 ─ Hero ------------------------------------------------------- */}
+      {/*
+        The photographs rotate; the message does not. See `HeroCarousel` for
+        why, and for the resolution these slides have to meet — the originals
+        here are badly undersized for a full-bleed hero and that is the main
+        reason it reads as soft. Replacing the files in `heroSlides` below is
+        the whole fix; no markup changes.
+      */}
       <section className="relative isolate flex min-h-[38rem] items-end overflow-hidden bg-teal-900 lg:min-h-[44rem]">
-        <Image
-          src="/assets/photos/community-meeting.webp"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center opacity-60"
-        />
+        <HeroCarousel slides={heroSlides} locale={locale} />
         <div className="absolute inset-0 scrim-left" aria-hidden="true" />
 
         <div className="relative container-page pt-32 pb-24 lg:pt-44 lg:pb-32">
@@ -96,9 +133,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             {t(site.tagline, locale)}
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/85 lg:text-xl">
+            {/* Both sides of the model, in the first thing anyone reads. The
+                previous line addressed the investor alone, which set the whole
+                page up as an investment product and left the farmer-facing
+                half to be discovered later, if at all. */}
             {en
-              ? "Fund rural micro-enterprises in Bangladesh. Farmers get capital, inputs, training and a buyer. You get a transparent return."
-              : "বাংলাদেশের গ্রামীণ ক্ষুদ্র উদ্যোগে অর্থায়ন করুন। কৃষক পান পুঁজি, উপকরণ, প্রশিক্ষণ ও ক্রেতা। আপনি পান স্বচ্ছ রিটার্ন।"}
+              ? "We finance rural micro-enterprises in Bangladesh and build the software they run on. Farmers get capital, inputs, training and a named buyer. Investors get a transparent, monitored return."
+              : "আমরা বাংলাদেশের গ্রামীণ ক্ষুদ্র উদ্যোগে অর্থায়ন করি, আর তারা যে সফটওয়্যারে চলে তাও আমরাই বানাই। কৃষক পান পুঁজি, উপকরণ, প্রশিক্ষণ ও নির্দিষ্ট ক্রেতা। বিনিয়োগকারী পান স্বচ্ছ, তদারকি করা রিটার্ন।"}
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <ButtonLink
@@ -160,7 +201,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             lead={
               en
                 ? "Each project is one production cycle with a stated unit price, tenure and estimated return band. Capital is at risk; returns are estimated, never guaranteed."
-                : "প্রতিটি প্রকল্প একটি উৎপাদন চক্র — নির্দিষ্ট ইউনিট মূল্য, মেয়াদ ও প্রাক্কলিত রিটার্ন পরিসরসহ। বিনিয়োগ ঝুঁকিপূর্ণ; রিটার্ন প্রাক্কলিত, নিশ্চিত নয়।"
+                : "প্রতিটি প্রকল্প একটি উৎপাদন চক্র — নির্দিষ্ট ইউনিট মূল্য, মেয়াদ ও আনুমানিক রিটার্ন পরিসরসহ। বিনিয়োগ ঝুঁকিপূর্ণ; রিটার্ন আনুমানিক, নিশ্চিত নয়।"
             }
             action={<ViewAllLink locale={locale} href={routes.projects} />}
           />
@@ -186,6 +227,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* 5 ─ How investing works ----------------------------------------- */}
       <ProcessFlow locale={locale} />
 
+      {/* 5b ─ Shathi Sheba (farmer side, wine token layer) ---------------- */}
+      {/* Placed directly after the investment story rather than further down:
+          section 4 has just shown where the money goes, and this is what it
+          arrives into. Read in order, the two bands are one argument. */}
+      <ShebaBand locale={locale} />
+
       {/* 6 ─ Our products ------------------------------------------------ */}
       <Section tone="page" id="products">
         <div className="container-page">
@@ -194,8 +241,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             title={en ? "Three products, one model" : "তিনটি পণ্য, একটি মডেল"}
             lead={
               en
-                ? "Shathi funds the cycle, Shadhin supplies it, Shathi Sheba records it — and the record is what unlocks the next loan, the next buyer and the next cycle."
-                : "সাথী চক্রে অর্থায়ন করে, স্বাধীন উপকরণ জোগায়, সাথী সেবা নথিভুক্ত করে — আর সেই নথিই খুলে দেয় পরের ঋণ, পরের ক্রেতা ও পরের চক্রের দরজা।"
+                ? "Shathi funds the cycle, Shadhin supplies it, and Shathi Sheba runs it — carrying the record that unlocks the next loan, the next buyer and the next cycle."
+                : "সাথী চক্রে অর্থায়ন করে, স্বাধীন উপকরণ জোগায়, আর সাথী সেবা চক্রটি পরিচালনা করে — সঙ্গে রাখে সেই নথি, যা খুলে দেয় পরের ঋণ, পরের ক্রেতা ও পরের চক্রের দরজা।"
             }
             action={<ViewAllLink locale={locale} href={routes.products} label={en ? "All products" : "সব পণ্য"} />}
           />
@@ -260,7 +307,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="container-page">
           <SectionHead
             eyebrow={en ? "Voices" : "কণ্ঠস্বর"}
-            title={en ? "Shathi partners, in their words" : "সাথী অংশীদারদের নিজের ভাষায়"}
+            title={en ? "Our partners, in their words" : "আমাদের অংশীদারদের নিজের ভাষায়"}
           />
           <TestimonialCarousel locale={locale} />
         </div>

@@ -4,10 +4,9 @@ import { Icon } from "@/components/ui/Icon";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { maskAccountNumber, type BankAccount } from "@/lib/account.server";
 import { profileGaps, type SessionUser } from "@/lib/auth/session";
-import { BOOKING_STATUS_LABEL } from "@/lib/booking";
 import type { BookingSummary } from "@/lib/bookings.server";
 import { BookingCard } from "@/components/auth/BookingCard";
-import { formatBdt, localePath, t, type Locale } from "@/lib/i18n";
+import { localePath, type Locale } from "@/lib/i18n";
 import { routes, site } from "@/lib/site";
 
 /**
@@ -87,7 +86,20 @@ export function AccountOverview({
 }) {
     const en = locale === "en";
     const gaps = profileGaps(user, (banks?.length ?? 0) > 0);
-    const nidPending = user.nidVerificationStatus === "pending";
+    /*
+     * "Under review" is only true while the NID is *not yet* verified.
+     *
+     * This read `nidVerificationStatus === "pending"` on its own, and the
+     * backend does not clear that column when an admin approves a NID — it
+     * flips `nidVerified` to "yes" and leaves the submission status where it
+     * was. So a fully verified investor was told their NID was still sitting in
+     * a queue, on a page that printed "Verified" two cards further down.
+     *
+     * `session.ts` and `ProfileChecklist` already test `nidVerified` first.
+     * This was the one place that did not.
+     */
+    const nidVerified = user.nidVerified === "yes";
+    const nidPending = !nidVerified && user.nidVerificationStatus === "pending";
 
     return (
         <div className="container-page py-12 lg:py-16">
@@ -160,61 +172,25 @@ export function AccountOverview({
                             <BookingCard key={booking.id} locale={locale} booking={booking} />
                         ))}
                     </ul>
-                    <Link
-                        href={localePath(locale, routes.registerProfile)}
-                        className="mt-5 inline-flex items-center gap-2 font-display text-sm font-semibold text-brand-strong hover:underline"
-                    >
-                        {en ? "Complete my profile" : "প্রোফাইল সম্পূর্ণ করুন"}
-                        <Icon name="arrow-right" size={16} />
-                    </Link>
-                </Card>
-            )}
-
-            {nidPending && (
-                <Note tone="info" icon="info" className="mt-6">
-                    {en
-                        ? "Your NID is submitted and under review. You will be told once it is verified."
-                        : "আপনার এনআইডি জমা হয়েছে এবং পর্যালোচনায় আছে। যাচাই সম্পন্ন হলে জানানো হবে।"}
-                </Note>
-            )}
-
-            {bookings !== null && bookings.length > 0 && (
-                <Card className="mt-8 p-6">
-                    <h2 className="font-display text-lg font-bold text-stone-900">
-                        {en ? "Your bookings" : "আপনার বুকিং"}
-                    </h2>
-                    <ul className="mt-4 divide-y divide-stone-200">
-                        {bookings.map((booking) => (
-                            <li key={booking.id} className="flex flex-wrap items-center gap-3 py-3">
-                                <Link
-                                    href={localePath(locale, `${routes.account}/bookings/${booking.id}`)}
-                                    className="font-display text-sm font-bold text-stone-900 hover:underline"
-                                >
-                                    {booking.reference}
-                                </Link>
-                                <span className="text-sm text-stone-600">
-                                    {booking.projectNames.join(", ")}
-                                </span>
-                                <span className="ms-auto text-sm font-medium text-stone-900">
-                                    {formatBdt(booking.totalInvested, locale)}
-                                </span>
-                                <span
-                                    className={
-                                        booking.status === "pending"
-                                            ? "rounded bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800"
-                                            : "rounded bg-stone-100 px-2 py-0.5 text-xs font-bold text-stone-600"
-                                    }
-                                >
-                                    {t(BOOKING_STATUS_LABEL[booking.status], locale)}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                    <p className="mt-4 text-xs text-stone-500">
-                        {en
-                            ? "A booking awaiting payment needs a receipt uploaded within 3 days."
-                            : "পরিশোধের অপেক্ষায় থাকা বুকিংয়ের রসিদ ৩ দিনের মধ্যে আপলোড করতে হবে।"}
-                    </p>
+                    {/*
+                        Only when something is genuinely outstanding.
+                    
+                        This rendered unconditionally at the foot of the bookings
+                        list, so an account with a complete, verified profile was
+                        still being told to go and finish it — directly beneath the
+                        bookings it had already placed. The setup card above carries
+                        the same link when there are gaps; this is that same
+                        condition, not a new one.
+                    */}
+                    {gaps.length > 0 && (
+                        <Link
+                            href={localePath(locale, routes.registerProfile)}
+                            className="mt-5 inline-flex items-center gap-2 font-display text-sm font-semibold text-brand-strong hover:underline"
+                        >
+                            {en ? "Complete my profile" : "প্রোফাইল সম্পূর্ণ করুন"}
+                            <Icon name="arrow-right" size={16} />
+                        </Link>
+                    )}
                 </Card>
             )}
 
@@ -242,7 +218,7 @@ export function AccountOverview({
                         <Row
                             label={en ? "NID" : "এনআইডি"}
                             value={
-                                user.nidVerified === "yes"
+                                nidVerified
                                     ? en
                                         ? "Verified"
                                         : "যাচাইকৃত"

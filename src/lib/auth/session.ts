@@ -44,6 +44,17 @@ export type SessionUser = {
     phoneVerified: string | null;
     nidVerified: string | null;
     nidVerificationStatus: string | null;
+    /**
+     * NID fields from the `users` row. `GET /api/user` returns the whole model,
+     * so these arrive already — they were simply not declared here.
+     *
+     * The two image fields are S3 object names under the `nid/` prefix, not
+     * URLs: pair them with `s3Url("nid", …)` to render. Both are null until a
+     * submission is made.
+     */
+    nidNumber?: string | null;
+    nidImageFront?: string | null;
+    nidImageBack?: string | null;
     status: string | null;
 };
 

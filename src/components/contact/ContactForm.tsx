@@ -25,7 +25,7 @@ const TOPICS: { value: string; label: Bi }[] = [
   { value: "farmer", label: { en: "I am a farmer or producer", bn: "আমি একজন কৃষক বা উৎপাদক" } },
   { value: "partner", label: { en: "Bank, MFI or institutional partner", bn: "ব্যাংক, এমএফআই বা প্রাতিষ্ঠানিক অংশীদার" } },
   { value: "buyer", label: { en: "B2B buyer or supplier", bn: "বিটুবি ক্রেতা বা সরবরাহকারী" } },
-  { value: "feed", label: { en: "Shadhin Cattle Feed enquiry", bn: "স্বাধীন গো-খাদ্য সংক্রান্ত" } },
+  { value: "feed", label: { en: "Shadhin Cattle Feed enquiry", bn: "স্বাধীন গরুর খাবার সংক্রান্ত" } },
   { value: "press", label: { en: "Press or media", bn: "সংবাদমাধ্যম" } },
   { value: "other", label: { en: "Something else", bn: "অন্য কিছু" } },
 ];

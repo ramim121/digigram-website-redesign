@@ -89,16 +89,16 @@ export function ReturnCalculator({ project, locale }: { project: Project; locale
 
       <dl className="mt-7 grid gap-px overflow-hidden rounded-md border border-stone-200 bg-stone-200 sm:grid-cols-3">
         <Cell
-          label={en ? "Estimated return" : "প্রাক্কলিত রিটার্ন"}
+          label={en ? "Estimated return" : "আনুমানিক রিটার্ন"}
           value={`${formatBdt(low, locale, { variant: "data" })} – ${formatBdt(high, locale, { variant: "data" })}`}
           emphasis
         />
         <Cell
-          label={en ? "Estimated profit" : "প্রাক্কলিত মুনাফা"}
+          label={en ? "Estimated profit" : "আনুমানিক মুনাফা"}
           value={`${formatBdt(profitLow, locale, { variant: "data" })} – ${formatBdt(profitHigh, locale, { variant: "data" })}`}
         />
         <Cell
-          label={en ? "Maturity" : "মেয়াদপূর্তি"}
+          label={en ? "Maturity" : "মেয়াদ শেষ"}
           value={
             formatDate(maturity, locale) ??
             `${formatNumber(project.tenureMonths, locale, "data")} ${en ? "months" : "মাস"}`
@@ -109,7 +109,7 @@ export function ReturnCalculator({ project, locale }: { project: Project; locale
       <Note tone="risk" icon="alert-triangle" className="mt-6">
         {en
           ? "These figures are estimates based on the project's production plan and expected sale price. They are not a guarantee, not an offer, and not financial advice. Actual returns can be lower, and your capital is at risk."
-          : "এই হিসাব প্রকল্পের উৎপাদন পরিকল্পনা ও প্রত্যাশিত বিক্রয়মূল্যের ভিত্তিতে প্রাক্কলিত। এটি কোনো নিশ্চয়তা নয়, প্রস্তাব নয়, আর্থিক পরামর্শও নয়। প্রকৃত রিটার্ন কম হতে পারে এবং আপনার পুঁজি ঝুঁকিতে থাকে।"}
+          : "এই হিসাব প্রকল্পের উৎপাদন পরিকল্পনা ও প্রত্যাশিত বিক্রয়মূল্যের ভিত্তিতে আনুমানিক। এটি কোনো নিশ্চয়তা নয়, প্রস্তাব নয়, আর্থিক পরামর্শও নয়। প্রকৃত রিটার্ন কম হতে পারে এবং আপনার পুঁজি ঝুঁকিতে থাকে।"}
       </Note>
     </div>
   );

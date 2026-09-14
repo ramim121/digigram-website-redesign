@@ -114,7 +114,7 @@ export function BookingCard({ locale, booking }: { locale: Locale; booking: Book
                     }
                 />
                 <Figure
-                    label={en ? "Matures" : "মেয়াদপূর্তি"}
+                    label={en ? "Matures" : "মেয়াদ শেষ"}
                     value={
                         booking.maturityDate
                             ? (formatDate(booking.maturityDate, locale) ?? "—")

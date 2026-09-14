@@ -13,7 +13,9 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema, buildMetadata } from "@/lib/seo";
 import { isLocale, localePath, t, type Bi, type Locale } from "@/lib/i18n";
 import { routes } from "@/lib/site";
+import { shebaCapabilities } from "@/content/sheba";
 import { ProductSignIn } from "@/components/auth/ProductSignIn";
+import { ScrollingPhone } from "@/components/app/ScrollingPhone";
 
 export async function generateMetadata({
   params,
@@ -100,7 +102,7 @@ export default async function ShathiShebaPage({
       title: { en: "Grow — advisory, climate and training", bn: "প্রবৃদ্ধি — পরামর্শ, আবহাওয়া ও প্রশিক্ষণ" },
       body: {
         en: "Free content for livestock, crop, business and financial literacy; project-specific SOP tasks; live weather and climate-smart advisories; and quizzes whose completion updates finance readiness. Development is recorded as evidence, not filed as a separate training activity.",
-        bn: "পশুসম্পদ, ফসল, ব্যবসা ও আর্থিক সাক্ষরতার বিনামূল্যের কনটেন্ট; প্রকল্পভিত্তিক এসওপি কাজ; সরাসরি আবহাওয়া ও জলবায়ু-সহনশীল পরামর্শ; এবং কুইজ, যার সম্পন্নতা অর্থায়ন প্রস্তুতি হালনাগাদ করে। উন্নয়ন নথিভুক্ত হয় প্রমাণ হিসেবে, আলাদা প্রশিক্ষণ কার্যক্রম হিসেবে নয়।",
+        bn: "গবাদিপশু, ফসল, ব্যবসা ও আর্থিক সাক্ষরতার বিনামূল্যের কনটেন্ট; প্রকল্পভিত্তিক এসওপি কাজ; সরাসরি আবহাওয়া ও জলবায়ু-সহনশীল পরামর্শ; এবং কুইজ, যার সম্পন্নতা অর্থায়ন প্রস্তুতি হালনাগাদ করে। উন্নয়ন নথিভুক্ত হয় প্রমাণ হিসেবে, আলাদা প্রশিক্ষণ কার্যক্রম হিসেবে নয়।",
       },
       image: "/assets/app/sheba/learning-1.png",
       alt: { en: "Training modules in the Shathi Sheba app", bn: "সাথী সেবা অ্যাপে প্রশিক্ষণ মডিউল" },
@@ -211,17 +213,47 @@ export default async function ShathiShebaPage({
             </div>
           </div>
 
+          {/*
+            The home screen, scrolling inside a real phone shape.
+
+            It was a static frame at `h-auto`, which took a 1:2.8 capture and
+            rendered a phone nearly three times taller than the copy beside it —
+            legible only if you zoomed, and out of proportion with everything
+            else in the hero. Cropping it to a phone aspect would have hidden the
+            readiness score, the service tiles, the buyer strip and the market
+            rates, which between them are the whole argument that this is a
+            finished product rather than a mockup.
+
+            Scrolling keeps both: correct proportions, and every section of the
+            screen arriving in turn. It pauses on hover and on keyboard focus,
+            and does not move at all under `prefers-reduced-motion`.
+          */}
           <div className="lg:col-span-5">
-            <div className="mx-auto w-full max-w-[17rem] overflow-hidden rounded-[2rem] ring-8 ring-white/10">
-              <Image
-                src="/assets/app/sheba/home.png"
-                alt={en ? "The Shathi Sheba app home screen" : "সাথী সেবা অ্যাপের হোম স্ক্রিন"}
-                width={1080}
-                height={2340}
-                priority
-                className="h-auto w-full"
-              />
-            </div>
+            {/*
+              The capture matches the page's language.
+
+              A Bangla reader being shown an English home screen undercuts the
+              whole claim the section is making — that this is a product built
+              for rural Bangladesh in the language people there actually use.
+              The two files are different lengths (3379px and 3458px), and
+              `ScrollingPhone` derives its travel from the dimensions passed
+              here, so both must be declared accurately or the pan stops short
+              of the bottom or runs past it into white space.
+            */}
+            <ScrollingPhone
+              src={en ? "/assets/app/sheba/home.png" : "/assets/app/sheba/home-bn.png"}
+              alt={
+                en
+                  ? "The Shathi Sheba app home screen, scrolling through the readiness score, services, buyers and market rates"
+                  : "সাথী সেবা অ্যাপের হোম স্ক্রিন — প্রস্তুতির স্কোর, সেবা, ক্রেতা ও বাজারদর একে একে"
+              }
+              width={1080}
+              height={en ? 3379 : 3458}
+              priority
+              duration={34}
+              className="max-w-[17rem]"
+              sizes="(min-width: 1024px) 272px, 70vw"
+            />
           </div>
         </div>
       </section>
@@ -392,6 +424,94 @@ export default async function ShathiShebaPage({
                 </div>
               </Reveal>
             ))}
+          </div>
+        </div>
+      </Section>
+
+      {/*
+        What the app does today.
+
+        The sections above describe architecture — rails, scores, pathways —
+        which is the right level for a partner or a lender and the wrong level
+        for anyone asking whether the thing exists. This section answers that
+        in the present tense, against two screens from the shipped build.
+      */}
+      <Section tone="page" id="in-the-app">
+        <div className="container-page">
+          <SectionHead
+            eyebrow={en ? "In the app" : "অ্যাপে"}
+            title={en ? "What a farmer can do today" : "একজন কৃষক আজ যা করতে পারেন"}
+            lead={
+              en
+                ? "Not a roadmap. Every item below is in the build that is running in Natore now, in Bangla, on the phones people already own."
+                : "এটি কোনো পরিকল্পনা নয়। নিচের প্রতিটি সুবিধাই এখন নাটোরে চালু বিল্ডে আছে — বাংলায়, মানুষের হাতে থাকা ফোনেই।"
+            }
+          />
+
+          <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
+            <div className="lg:col-span-7">
+              <div className="grid gap-x-8 gap-y-7 sm:grid-cols-2">
+                {shebaCapabilities.map((capability, index) => (
+                  <Reveal key={capability.title.en} delay={index * 50}>
+                    <div className="flex gap-3.5">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-brand-tint text-brand-strong">
+                        <Icon name={capability.icon} size={18} />
+                      </span>
+                      <div className="min-w-0">
+                        <h3 className="font-display text-[15px] font-bold text-stone-900">
+                          {t(capability.title, locale)}
+                        </h3>
+                        <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
+                          {t(capability.body, locale)}
+                        </p>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+
+            {/* The Sell rail end to end: the price the farmer sees before
+                agreeing, then the same sale tracked to settlement. Chosen over
+                a home screen because the transparency of the first screen is
+                the product's actual argument. */}
+            <div className="lg:col-span-5">
+              <div className="flex justify-center gap-4 sm:gap-5">
+                <div className="mt-8 w-1/2 max-w-[13rem] overflow-hidden rounded-[1.5rem] ring-8 ring-brand-tint">
+                  <Image
+                    src="/assets/app/sheba/sale-earnings.png"
+                    alt={
+                      en
+                        ? "The Shathi Sheba app showing the B2B rate, each deduction and the net price per kilogram before a sale is agreed"
+                        : "সাথী সেবা অ্যাপে বিটুবি দর, প্রতিটি কর্তন ও বিক্রি চূড়ান্ত হওয়ার আগেই প্রতি কেজির নিট দাম"
+                    }
+                    width={1080}
+                    height={2180}
+                    sizes="(min-width: 1024px) 208px, 45vw"
+                    className="h-auto w-full"
+                  />
+                </div>
+                <div className="w-1/2 max-w-[13rem] overflow-hidden rounded-[1.5rem] ring-8 ring-brand-tint">
+                  <Image
+                    src="/assets/app/sheba/sale-progress.png"
+                    alt={
+                      en
+                        ? "The same sale tracked through six verified steps, from submission to payment"
+                        : "একই বিক্রি ছয়টি যাচাইকৃত ধাপে — জমা থেকে পেমেন্ট পর্যন্ত"
+                    }
+                    width={1080}
+                    height={2180}
+                    sizes="(min-width: 1024px) 208px, 45vw"
+                    className="h-auto w-full"
+                  />
+                </div>
+              </div>
+              <p className="mt-6 text-center text-sm leading-relaxed text-stone-500">
+                {en
+                  ? "The Sell rail end to end — a published rate before the farmer commits, and six tracked steps to settlement."
+                  : "বিক্রয় রেল শুরু থেকে শেষ — রাজি হওয়ার আগেই প্রকাশিত দর, আর নিষ্পত্তি পর্যন্ত ছয়টি ধাপ।"}
+              </p>
+            </div>
           </div>
         </div>
       </Section>

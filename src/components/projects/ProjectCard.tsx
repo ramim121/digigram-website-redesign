@@ -150,7 +150,7 @@ export function ProjectCard({
               {formatRange(project.returnPct.min, project.returnPct.max, locale)}
             </p>
             <p className="mt-1 font-display text-[10px] font-semibold tracking-wide text-stone-500 uppercase">
-              {en ? "Est. return" : "প্রাক্কলিত"}
+              {en ? "Est. return" : "আনুমানিক"}
             </p>
           </div>
         </div>

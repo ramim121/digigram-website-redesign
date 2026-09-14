@@ -7,6 +7,7 @@ import { buildMetadata } from "@/lib/seo";
 import { isLocale, localePath, type Locale } from "@/lib/i18n";
 import { routes } from "@/lib/site";
 import { loginUrlFor } from "@/lib/auth/returnTo";
+import { s3Url } from "@/lib/api/config";
 
 export async function generateMetadata({
   params,
@@ -44,6 +45,20 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
 
   const banks = await fetchBankAccounts(user.idUsers);
 
+  /*
+   * NID image URLs are built here, on the server, rather than inside the form.
+   *
+   * `s3Url` reads `SHATHI_S3_URL`, which carries no NEXT_PUBLIC_ prefix by
+   * design — in a client component that variable is undefined and the helper
+   * would quietly fall back to the default bucket, serving images from the
+   * wrong environment. Resolving it server-side and passing strings down keeps
+   * the bucket origin out of the browser bundle and the URLs correct.
+   */
+  const nidImages = {
+    front: s3Url("nid", user.nidImageFront),
+    back: s3Url("nid", user.nidImageBack),
+  };
+
   return (
     <div className="container-page py-12 lg:py-16">
       <h1 className="font-display text-3xl font-extrabold tracking-tight text-stone-900">
@@ -62,7 +77,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         caps its own form column; the grid handles the rest.
       */}
       <div className="mt-8">
-        <ProfileForms locale={locale} user={user} hasBank={(banks?.length ?? 0) > 0} />
+        <ProfileForms
+          locale={locale}
+          user={user}
+          hasBank={(banks?.length ?? 0) > 0}
+          nidImages={nidImages}
+        />
       </div>
     </div>
   );

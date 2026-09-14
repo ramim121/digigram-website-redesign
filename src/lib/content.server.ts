@@ -12,6 +12,7 @@ import {
 import type { ApiBlog, ApiPartnership, ApiTestimonial } from "@/lib/api/types";
 import { posts as seedPosts, type Post } from "@/content/blog";
 import { partners as seedPartners } from "@/content/company";
+import { mergePartnerLogos } from "@/content/partnerLogos";
 
 /**
  * Server-side fetchers for admin-managed content.
@@ -37,20 +38,26 @@ export async function fetchPartners(): Promise<{ data: PartnerLogo[]; stale: boo
     const res = await apiGet<ApiPartnership[]>("partnerships/all-partnerships");
 
     if (!res.ok || !Array.isArray(res.data)) {
-        // The drafted list has no logos, so it renders as the name-only band.
+        // The drafted list has no logos of its own, but the locally held marks
+        // do not depend on the API being up — so a failed fetch still renders a
+        // real, in-colour band rather than a row of grey names.
         return {
-            data: seedPartners.map((partner, index) => ({
-                id: `seed-${index}`,
-                name: { en: partner.name, bn: partner.name },
-                logo: null,
-                priority: index,
-            })),
+            data: mergePartnerLogos(
+                seedPartners.map((partner, index) => ({
+                    id: `seed-${index}`,
+                    name: { en: partner.name, bn: partner.name },
+                    logo: null,
+                    priority: index,
+                })),
+            ),
             stale: true,
         };
     }
 
     return {
-        data: res.data.map(mapPartnership).sort((a, b) => a.priority - b.priority),
+        data: mergePartnerLogos(
+            res.data.map(mapPartnership).sort((a, b) => a.priority - b.priority),
+        ),
         stale: false,
     };
 }

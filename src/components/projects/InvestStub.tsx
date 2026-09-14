@@ -109,7 +109,7 @@ export function InvestStub({
         <p className="mt-6 text-xs leading-relaxed text-stone-500">
           {en
             ? "Payment is accepted by bKash, Nagad, bank transfer, cheque collection or direct deposit. Returns are estimated, not guaranteed, and your capital is at risk."
-            : "পেমেন্ট নেওয়া হয় বিকাশ, নগদ, ব্যাংক ট্রান্সফার, চেক সংগ্রহ বা সরাসরি জমার মাধ্যমে। রিটার্ন প্রাক্কলিত, নিশ্চিত নয়, এবং আপনার পুঁজি ঝুঁকিতে থাকে।"}
+            : "পেমেন্ট নেওয়া হয় বিকাশ, নগদ, ব্যাংক ট্রান্সফার, চেক সংগ্রহ বা সরাসরি জমার মাধ্যমে। রিটার্ন আনুমানিক, নিশ্চিত নয়, এবং আপনার পুঁজি ঝুঁকিতে থাকে।"}
         </p>
       </div>
     </div>

@@ -7,7 +7,7 @@ import { Card, StatBlock, Badge } from "@/components/ui/Primitives";
 import { ButtonLink, ArrowLink } from "@/components/ui/Button";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
-import { BrandDot } from "@/components/brand/Logo";
+import { BrandDot, ShathiLogo, ShathiShebaLogo } from "@/components/brand/Logo";
 import { headlineStats, pillars, stakeholders, partners as seedPartners } from "@/content/company";
 import { fetchPartners, fetchInvestorVoices } from "@/lib/content.server";
 import { localePath, t, type Locale } from "@/lib/i18n";
@@ -229,7 +229,7 @@ export function ProductCards({ locale }: { locale: Locale }) {
     {
       brand: "digigram" as const,
       href: routes.shadhinFeed,
-      name: { en: "Shadhin Cattle Feed", bn: "স্বাধীন গো-খাদ্য" },
+      name: { en: "Shadhin Cattle Feed", bn: "স্বাধীন গরুর খাবার" },
       line: { en: "Quality input distribution", bn: "মানসম্পন্ন উপকরণ বিতরণ" },
       bullets: [
         { en: "DLS-compliant compound feed", bn: "ডিএলএস-অনুমোদিত কম্পাউন্ড ফিড" },
@@ -371,6 +371,20 @@ function PartnerLogoItem({ name, logo }: { name: string; logo: string | null }) 
           and towers over it — the row looked like a set of unrelated sizes. A
           common height with width left to flex is what makes a logo strip read
           as one band. `max-w` only catches the extreme outliers.
+
+          LOGOS RENDER IN THEIR OWN COLOURS.
+          This carried `grayscale opacity-70 mix-blend-multiply`, desaturating
+          to grey and restoring colour on hover. It is a common pattern and it
+          was the wrong one here. These are not interchangeable client badges:
+          BRAC Bank's magenta, Bengal Meat's red and the cooperatives' seals are
+          how each is recognised, and a band of identical grey shapes says the
+          partners are decoration. `mix-blend-multiply` made it worse — it
+          multiplies the mark against the section background, so any logo on a
+          white plate went muddy rather than clean.
+
+          Hover now scales instead of recolouring: the same "this one is
+          alive" feedback, with nothing hidden in the resting state. Only the
+          transform transitions, so no repaint of the image itself.
         */
         <Image
           src={logo}
@@ -378,7 +392,7 @@ function PartnerLogoItem({ name, logo }: { name: string; logo: string | null }) 
           width={320}
           height={120}
           sizes="200px"
-          className="h-10 w-auto max-w-[11rem] object-contain opacity-70 mix-blend-multiply grayscale transition duration-500 ease-standard group-hover:opacity-100 group-hover:grayscale-0 lg:h-12 lg:max-w-[13rem]"
+          className="h-10 w-auto max-w-[11rem] object-contain transition-transform duration-500 ease-standard group-hover:scale-110 lg:h-12 lg:max-w-[13rem]"
         />
       ) : (
         <span className="flex h-10 items-center justify-center lg:h-12">
@@ -416,13 +430,13 @@ export async function PartnerBand({ locale }: { locale: Locale }) {
           eyebrow={locale === "en" ? "Partners & supporters" : "অংশীদার ও সহযোগী"}
           title={
             locale === "en"
-              ? "We do not do this alone"
-              : "এই কাজ আমরা একা করি না"
+              ? "Building resilient rural livelihoods, together"
+              : "একসঙ্গে গড়ছি সহনশীল গ্রামীণ জীবিকা"
           }
           lead={
             locale === "en"
-              ? "Cooperatives mobilise and verify. Development partners fund and challenge us. Lenders decide credit. Our job is to make each of those handoffs work."
-              : "সমবায় সংগঠিত ও যাচাই করে। উন্নয়ন সহযোগীরা অর্থায়ন করেন এবং প্রশ্ন তোলেন। ঋণদাতারা ঋণের সিদ্ধান্ত নেন। আমাদের কাজ এই প্রতিটি হস্তান্তর কার্যকর করা।"
+              ? "Cooperatives mobilise and verify. Development partners fund and challenge us. Banks decide credit, and offtake buyers guarantee the sale. Our work is to make every one of those handoffs hold."
+              : "সমবায় সংগঠিত ও যাচাই করে। উন্নয়ন সহযোগীরা অর্থায়ন করেন এবং প্রশ্ন তোলেন। ব্যাংক ঋণের সিদ্ধান্ত নেয়, আর ক্রেতা প্রতিষ্ঠান বিক্রি নিশ্চিত করে। আমাদের কাজ এই প্রতিটি হস্তান্তর যেন অটুট থাকে তা নিশ্চিত করা।"
           }
         />
         {/*
@@ -475,27 +489,59 @@ export async function PartnerBand({ locale }: { locale: Locale }) {
 
 /* -------------------------------------------------------- app / CTA band -- */
 
+/**
+ * The two apps, side by side.
+ *
+ * This band used to advertise the Shathi app alone, which made it the last
+ * thing on the homepage and the one that framed DigiGram as an investment
+ * product with an app attached. There are two apps, they serve opposite ends of
+ * the same cycle, and a reader who has just scrolled the Shathi Sheba band
+ * needs somewhere to act on it.
+ *
+ * Each card carries its own token layer — purple for Shathi, wine for Shathi
+ * Sheba — so the pair reads as two products rather than one with a variant.
+ *
+ * Shathi Sheba is pre-launch: `site.app.shebaPlayStore` is an empty string
+ * until the listing exists, and the card renders a "coming soon" line instead
+ * of a store button rather than linking to a page that 404s. Filling in that
+ * one constant in `lib/site.ts` turns it into a real button.
+ */
 export function AppDownloadBand({ locale }: { locale: Locale }) {
+  const en = locale === "en";
+
   return (
     <Section tone="surface">
       <div className="container-page">
-        <div
-          data-brand="shathi"
-          className="grid items-center gap-10 overflow-hidden rounded-xl bg-brand-canvas p-8 lg:grid-cols-2 lg:p-14"
-        >
-          <div>
-            <p className="eyebrow">{locale === "en" ? "The Shathi app" : "সাথী অ্যাপ"}</p>
-            <h2 className="mt-3 font-display text-3xl leading-tight font-bold tracking-tight text-stone-900 lg:text-4xl">
-              {locale === "en"
-                ? "Track every project from your phone"
-                : "প্রতিটি প্রকল্প দেখুন আপনার ফোনেই"}
-            </h2>
-            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-stone-600">
-              {locale === "en"
+        <SectionHead
+          eyebrow={en ? "Our apps" : "আমাদের অ্যাপ"}
+          title={en ? "Two apps, one cycle" : "দুটি অ্যাপ, একটি চক্র"}
+          lead={
+            en
+              ? "One for the person putting capital in, one for the household turning it into production. They share a backend, so evidence collected in the field is the same evidence an investor sees."
+              : "একটি যিনি পুঁজি দিচ্ছেন তাঁর জন্য, আরেকটি যে পরিবার সেই পুঁজিকে উৎপাদনে রূপ দেয় তার জন্য। দুটির ব্যাকএন্ড অভিন্ন, তাই মাঠে সংগৃহীত প্রমাণই বিনিয়োগকারী দেখতে পান।"
+          }
+        />
+
+        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+          {/* ------------------------------------------------- Shathi -- */}
+          <div
+            data-brand="shathi"
+            className="flex h-full flex-col overflow-hidden rounded-xl bg-brand-canvas p-8 lg:p-10"
+          >
+            <ShathiLogo className="h-7 w-auto" />
+            <h3 className="mt-5 font-display text-2xl leading-tight font-bold tracking-tight text-stone-900">
+              {en ? "Track every project from your phone" : "প্রতিটি প্রকল্প দেখুন আপনার ফোনেই"}
+            </h3>
+            <p className="mt-3 text-[15px] leading-relaxed text-stone-600">
+              {en
                 ? "Browse open projects, fund a unit, and follow milestones, financial summaries and impact updates through the cycle."
                 : "চলমান প্রকল্প দেখুন, ইউনিট কিনুন, আর চক্র জুড়ে মাইলফলক, আর্থিক সারসংক্ষেপ ও প্রভাবের হালনাগাদ অনুসরণ করুন।"}
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <p className="mt-4 font-display text-xs font-bold tracking-wide text-brand-strong uppercase">
+              {en ? "For investors" : "বিনিয়োগকারীদের জন্য"}
+            </p>
+
+            <div className="mt-auto flex flex-wrap gap-3 pt-7">
               <ButtonLink href={site.app.playStore} external icon="download" iconPosition="left">
                 Google Play
               </ButtonLink>
@@ -510,18 +556,47 @@ export function AppDownloadBand({ locale }: { locale: Locale }) {
               </ButtonLink>
             </div>
           </div>
-          <div className="relative mx-auto w-full max-w-md">
-            <Image
-              src="/assets/app/shathi-mockup-1.webp"
-              alt={
-                locale === "en"
-                  ? "The Shathi app showing the open projects list"
-                  : "সাথী অ্যাপে চলমান প্রকল্পের তালিকা"
-              }
-              width={900}
-              height={780}
-              className="h-auto w-full"
-            />
+
+          {/* -------------------------------------------- Shathi Sheba -- */}
+          <div
+            data-brand="shathi-sheba"
+            className="flex h-full flex-col overflow-hidden rounded-xl bg-brand-canvas p-8 lg:p-10"
+          >
+            <ShathiShebaLogo locale={locale} className="h-7" />
+            <h3 className="mt-5 font-display text-2xl leading-tight font-bold tracking-tight text-stone-900">
+              {en
+                ? "Apply, buy, sell and get paid — from the village"
+                : "আবেদন, কেনা, বিক্রি ও পেমেন্ট — গ্রাম থেকেই"}
+            </h3>
+            <p className="mt-3 text-[15px] leading-relaxed text-stone-600">
+              {en
+                ? "Join a partner project, order inputs at a published price, list cattle or produce against a real buyer rate, and follow the sale through to settlement."
+                : "পার্টনার প্রকল্পে যুক্ত হোন, প্রকাশিত দামে উপকরণ নিন, প্রকৃত ক্রেতার দরে গবাদিপশু বা ফসল তালিকাভুক্ত করুন, আর বিক্রি অনুসরণ করুন নিষ্পত্তি পর্যন্ত।"}
+            </p>
+            <p className="mt-4 font-display text-xs font-bold tracking-wide text-brand-strong uppercase">
+              {en ? "For farmers & rural entrepreneurs" : "কৃষক ও গ্রামীণ উদ্যোক্তাদের জন্য"}
+            </p>
+
+            <div className="mt-auto flex flex-wrap items-center gap-3 pt-7">
+              {site.app.shebaPlayStore ? (
+                <ButtonLink
+                  href={site.app.shebaPlayStore}
+                  external
+                  icon="download"
+                  iconPosition="left"
+                >
+                  Google Play
+                </ButtonLink>
+              ) : (
+                <p className="inline-flex items-center gap-2 rounded-md border border-dashed border-brand-line px-4 py-2.5 font-display text-sm font-semibold text-brand-strong">
+                  <Icon name="clock" size={15} />
+                  {en ? "Coming to Google Play" : "শীঘ্রই গুগল প্লেতে"}
+                </p>
+              )}
+              <ArrowLink href={localePath(locale, routes.shathiSheba)}>
+                {en ? "How it works" : "কীভাবে কাজ করে"}
+              </ArrowLink>
+            </div>
           </div>
         </div>
       </div>

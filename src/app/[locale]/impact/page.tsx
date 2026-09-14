@@ -7,13 +7,20 @@ import { Card, Note, StatBlock } from "@/components/ui/Primitives";
 import { Accordion, AccordionItem } from "@/components/ui/Accordion";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { ImpactFocusDiagram, TheoryOfChange } from "@/components/sections/Diagrams";
+import {
+  ImpactFocusDiagram,
+  TheoryOfChange,
+  ReadinessPathways,
+} from "@/components/sections/Diagrams";
 import { SdgTiles, type GoalNumber } from "@/components/sections/Sdg";
 import { CtaBand, SdgRow } from "@/components/sections/Shared";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema, buildMetadata, faqSchema } from "@/lib/seo";
 import { headlineStats, faqs } from "@/content/company";
-import { isLocale, t, type Bi, type Locale } from "@/lib/i18n";
+import { shebaGapStats, shebaOutputs, shebaLenderPrinciple } from "@/content/sheba";
+import { ShathiShebaLogo } from "@/components/brand/Logo";
+import { ButtonLink } from "@/components/ui/Button";
+import { isLocale, localePath, t, type Bi, type Locale } from "@/lib/i18n";
 import { routes } from "@/lib/site";
 
 export async function generateMetadata({
@@ -30,9 +37,9 @@ export async function generateMetadata({
     title: locale === "en" ? "Our impact" : "আমাদের প্রভাব",
     description:
       locale === "en"
-        ? "How DigiGram measures impact: eleven stated outcomes, four value drivers, a theory of change and the methodology behind every number we publish."
-        : "ডিজিগ্রাম কীভাবে প্রভাব পরিমাপ করে: এগারোটি ঘোষিত ফলাফল, চারটি মূল চালিকাশক্তি, পরিবর্তনের তত্ত্ব এবং প্রকাশিত প্রতিটি সংখ্যার পেছনের পদ্ধতি।",
-    image: "/assets/photos/micro-enterprise-1.webp",
+        ? "How DigiGram measures impact: eleven stated outcomes, four value drivers, a theory of change, the finance-readiness gap Shathi Sheba closes, and the methodology behind every number we publish."
+        : "ডিজিগ্রাম কীভাবে প্রভাব পরিমাপ করে: এগারোটি ঘোষিত ফলাফল, চারটি মূল চালিকাশক্তি, পরিবর্তনের তত্ত্ব, সাথী সেবা যে অর্থায়ন-প্রস্তুতির ফাঁক পূরণ করে, এবং প্রকাশিত প্রতিটি সংখ্যার পেছনের পদ্ধতি।",
+    image: "/assets/photos/hero/impact-producer.webp",
   });
 }
 
@@ -49,7 +56,7 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
       title: { en: "Rural poverty", bn: "গ্রামীণ দারিদ্র্য" },
       body: {
         en: "20.5% of Bangladesh's population lives below the poverty line and 10.5% in extreme poverty (BBS 2022). 75% of the rural population — the base of the pyramid — depends on agriculture, livestock and small-scale production, held back by limited access to finance, markets, quality inputs and training.",
-        bn: "বাংলাদেশের জনসংখ্যার ২০.৫% দারিদ্র্যসীমার নিচে এবং ১০.৫% চরম দারিদ্র্যে বাস করে (বিবিএস ২০২২)। গ্রামীণ জনসংখ্যার ৭৫% — পিরামিডের ভিত্তি — কৃষি, পশুসম্পদ ও ক্ষুদ্র উৎপাদনের ওপর নির্ভরশীল, যাঁরা অর্থায়ন, বাজার, মানসম্পন্ন উপকরণ ও প্রশিক্ষণের সীমিত সুযোগে আটকে আছেন।",
+        bn: "বাংলাদেশের জনসংখ্যার ২০.৫% দারিদ্র্যসীমার নিচে এবং ১০.৫% চরম দারিদ্র্যে বাস করে (বিবিএস ২০২২)। গ্রামীণ জনসংখ্যার ৭৫% — পিরামিডের ভিত্তি — কৃষি, গবাদিপশু ও ক্ষুদ্র উৎপাদনের ওপর নির্ভরশীল, যাঁরা অর্থায়ন, বাজার, মানসম্পন্ন উপকরণ ও প্রশিক্ষণের সীমিত সুযোগে আটকে আছেন।",
       },
     },
     {
@@ -84,7 +91,7 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
   const reasons: { title: Bi; body: Bi; icon: IconName }[] = [
     {
       icon: "sprout",
-      title: { en: "Inclusive innovation", bn: "অন্তর্ভুক্তিমূলক উদ্ভাবন" },
+      title: { en: "Inclusive innovation", bn: "সবাইকে নিয়ে উদ্ভাবন" },
       body: {
         en: "Gender and disability inclusion is a design constraint on every journey, not a reporting line at the end.",
         bn: "লিঙ্গ ও প্রতিবন্ধিতা অন্তর্ভুক্তি প্রতিটি প্রক্রিয়ার নকশার শর্ত, শেষের কোনো প্রতিবেদন লাইন নয়।",
@@ -134,6 +141,7 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
       <PageHero
         locale={locale}
         tone="dark"
+        image="/assets/photos/hero/impact-producer.webp"
         crumbs={[{ label: en ? "Impact" : "প্রভাব" }]}
         eyebrow={en ? "Our impact" : "আমাদের প্রভাব"}
         title={en ? "Impact you can check" : "যাচাই করা যায় এমন প্রভাব"}
@@ -176,7 +184,7 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
             lead={
               en
                 ? "DigiGram Ventures Ltd. was established to deliver inclusive finance, quality and affordable inputs, periodic training and market access — in order to produce the following changes for 50,000 smallholder farmers, particularly women and persons with disabilities, living below or near the poverty line in rural Bangladesh."
-                : "ডিজিগ্রাম ভেঞ্চারস লিমিটেড প্রতিষ্ঠিত হয়েছে অন্তর্ভুক্তিমূলক অর্থায়ন, মানসম্পন্ন ও সাশ্রয়ী উপকরণ, নিয়মিত প্রশিক্ষণ ও বাজারে প্রবেশাধিকার দিতে — যাতে গ্রামীণ বাংলাদেশে দারিদ্র্যসীমার নিচে বা কাছাকাছি থাকা ৫০,০০০ ক্ষুদ্র কৃষকের, বিশেষত নারী ও প্রতিবন্ধী ব্যক্তির জীবনে নিচের পরিবর্তনগুলো ঘটে।"
+                : "ডিজিগ্রাম ভেঞ্চারস লিমিটেড প্রতিষ্ঠিত হয়েছে সবার জন্য অর্থায়ন, মানসম্পন্ন ও সাশ্রয়ী উপকরণ, নিয়মিত প্রশিক্ষণ ও বাজারে প্রবেশাধিকার দিতে — যাতে গ্রামীণ বাংলাদেশে দারিদ্র্যসীমার নিচে বা কাছাকাছি থাকা ৫০,০০০ ক্ষুদ্র কৃষকের, বিশেষত নারী ও প্রতিবন্ধী ব্যক্তির জীবনে নিচের পরিবর্তনগুলো ঘটে।"
             }
           />
           <ImpactFocusDiagram locale={locale} />
@@ -222,6 +230,109 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
           <TheoryOfChange locale={locale} />
         </div>
       </Section>
+
+      {/*
+        Finance readiness — the Shathi Sheba half of the impact story.
+
+        Capital mobilised and farmers connected are the outcomes this page
+        already reports. They are not the whole picture: most smallholders never
+        reach the point of *being able* to receive capital, and an impact page
+        that only counts the ones who did skips the constraint. This section
+        states the gap in figures and then shows what the platform does about
+        it — including what happens to an application that fails, which is the
+        question a development partner asks first.
+
+        Wine token layer, because this is Shathi Sheba's contribution and the
+        page should show that DigiGram's impact runs on two products.
+      */}
+      <section data-brand="shathi-sheba" className="section bg-brand-canvas" id="readiness">
+        <div className="container-page">
+          <div className="max-w-3xl">
+            <ShathiShebaLogo locale={locale} className="h-8" />
+            <h2 className="mt-6 font-display text-3xl leading-tight font-bold tracking-tight text-balance text-stone-900 lg:text-4xl">
+              {en
+                ? "Most smallholders are not rejected. They are never assessed."
+                : "বেশিরভাগ ক্ষুদ্র কৃষক প্রত্যাখ্যাত হন না। তাঁদের মূল্যায়নই হয় না।"}
+            </h2>
+            <p className="mt-4 text-[17px] leading-relaxed text-stone-600">
+              {en
+                ? "A household with land, livestock and a decade of production can still be commercially invisible: no credit record, no published price, no buyer on paper. Shathi Sheba exists to close that gap, and the gap is measurable."
+                : "জমি, গবাদিপশু ও এক দশকের উৎপাদন থাকা সত্ত্বেও একটি পরিবার বাণিজ্যিকভাবে অদৃশ্য থেকে যেতে পারে — ঋণের নথি নেই, প্রকাশিত দাম নেই, কাগজে ক্রেতা নেই। সেই ফাঁক পূরণেই সাথী সেবা, আর ফাঁকটি মাপা যায়।"}
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {shebaGapStats.map((stat, index) => (
+              <Reveal key={stat.label.en} delay={index * 60}>
+                <Card className="flex h-full flex-col p-7">
+                  <span className="flex size-10 items-center justify-center rounded-md bg-brand-tint text-brand-strong">
+                    <Icon name={stat.icon} size={20} />
+                  </span>
+                  <p className="mt-5 font-display text-4xl leading-none font-extrabold text-brand-strong">
+                    {t(stat.value, locale)}
+                  </p>
+                  <p className="mt-2 font-display text-[15px] font-bold text-stone-900">
+                    {t(stat.label, locale)}
+                  </p>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
+                    {t(stat.body, locale)}
+                  </p>
+                  <p className="mt-5 border-t border-stone-100 pt-4 text-xs text-stone-400">
+                    {en ? "Source: " : "সূত্র: "}
+                    {stat.source}
+                  </p>
+                </Card>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* What the assessment returns, and the pathway a failure leads to. */}
+          <div className="mt-16 grid gap-10 lg:grid-cols-12 lg:gap-12">
+            <div className="lg:col-span-5">
+              <h3 className="font-display text-2xl leading-tight font-bold tracking-tight text-stone-900">
+                {en
+                  ? "Every application ends with a next step"
+                  : "প্রতিটি আবেদন শেষ হয় পরবর্তী পদক্ষেপ দিয়ে"}
+              </h3>
+              <p className="mt-4 text-[15px] leading-relaxed text-stone-600">
+                {en
+                  ? "The assessment separates credit risk from readiness, and readiness from the quality of the evidence behind it. A profile that is not yet financeable gets a development plan rather than a closed door — which is what turns a decline into a future applicant."
+                  : "মূল্যায়ন আলাদা করে দেখে ঋণঝুঁকি, প্রস্তুতি এবং তার পেছনের প্রমাণের মান। যে প্রোফাইল এখনও অর্থায়নযোগ্য নয়, সে বন্ধ দরজা নয় — পায় একটি উন্নয়ন পরিকল্পনা। এভাবেই একটি প্রত্যাখ্যান হয়ে ওঠে ভবিষ্যতের আবেদন।"}
+              </p>
+
+              <dl className="mt-8 space-y-4">
+                {shebaOutputs.map((output) => (
+                  <div key={output.label.en} className="border-s-2 border-brand-line ps-4">
+                    <dt className="font-display text-sm font-bold text-brand-strong">
+                      {t(output.label, locale)}
+                    </dt>
+                    <dd className="mt-1 text-sm leading-relaxed text-stone-600">
+                      {t(output.value, locale)}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+
+              <Note tone="info" icon="shield" className="mt-8">
+                {t(shebaLenderPrinciple, locale)}
+              </Note>
+
+              <div className="mt-8">
+                <ButtonLink
+                  href={localePath(locale, routes.shathiSheba)}
+                  icon="arrow-right"
+                >
+                  {en ? "How the assessment works" : "মূল্যায়ন যেভাবে কাজ করে"}
+                </ButtonLink>
+              </div>
+            </div>
+
+            <div className="lg:col-span-7">
+              <ReadinessPathways locale={locale} variant="panel" />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Why choose */}
       <Section tone="page">

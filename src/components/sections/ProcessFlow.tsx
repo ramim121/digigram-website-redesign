@@ -46,7 +46,7 @@ const STEPS: Step[] = [
         title: { en: "Explore projects", bn: "প্রকল্প দেখুন" },
         body: {
             en: "Filter by livestock, agriculture or agri inputs. Every card shows unit price, location, tenure, return band and how many units are left.",
-            bn: "পশুসম্পদ, কৃষি বা কৃষি উপকরণ অনুযায়ী বাছুন। প্রতিটি কার্ডে থাকে ইউনিট মূল্য, অবস্থান, মেয়াদ, রিটার্ন পরিসর ও কতটি ইউনিট বাকি।",
+            bn: "গবাদিপশু, কৃষি বা কৃষি উপকরণ অনুযায়ী বাছুন। প্রতিটি কার্ডে থাকে ইউনিট মূল্য, অবস্থান, মেয়াদ, রিটার্ন পরিসর ও কতটি ইউনিট বাকি।",
         },
         bullets: [
             {
@@ -241,7 +241,7 @@ function ProjectCardFragment({ locale }: { locale: Locale }) {
                 <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-xl">
                     <div className="flex items-center justify-between">
                         <span className="rounded bg-brand-tint px-2 py-1 font-display text-[11px] font-bold text-brand-strong uppercase">
-                            {en ? "Livestock" : "পশুসম্পদ"}
+                            {en ? "Livestock" : "গবাদিপশু"}
                         </span>
                         <span className="font-display text-xs font-semibold text-stone-400">
                             {en ? "281 units left" : "২৮১ ইউনিট বাকি"}

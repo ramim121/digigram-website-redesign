@@ -143,7 +143,7 @@ export function BookingProgress({
                 <div className="border-t border-stone-100 pt-4">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                         <span className="font-display text-xs font-semibold tracking-wide text-stone-500 uppercase">
-                            {en ? "Maturity" : "মেয়াদপূর্তি"}
+                            {en ? "Maturity" : "মেয়াদ শেষ"}
                         </span>
                         <span className="font-display text-sm font-bold text-stone-900">
                             {formatDate(maturityDate, locale) ?? maturityDate}
@@ -158,7 +158,7 @@ export function BookingProgress({
                                 aria-valuenow={Math.round(elapsedPercent)}
                                 aria-valuemin={0}
                                 aria-valuemax={100}
-                                aria-label={en ? "Time to maturity" : "মেয়াদপূর্তির সময়"}
+                                aria-label={en ? "Time to maturity" : "মেয়াদ শেষের সময়"}
                             >
                                 <div
                                     className="h-full rounded-full bg-brand-strong"

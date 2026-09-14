@@ -144,7 +144,7 @@ export const mainNav: NavItem[] = [
         },
       },
       {
-        label: { en: "Shadhin Cattle Feed", bn: "স্বাধীন গো-খাদ্য" },
+        label: { en: "Shadhin Cattle Feed", bn: "স্বাধীন গরুর খাবার" },
         href: routes.shadhinFeed,
         brand: "digigram",
         description: {
@@ -182,7 +182,7 @@ export const footerNav: { heading: Bi; links: NavLink[] }[] = [
         brand: "shathi-sheba",
       },
       {
-        label: { en: "Shadhin Cattle Feed", bn: "স্বাধীন গো-খাদ্য" },
+        label: { en: "Shadhin Cattle Feed", bn: "স্বাধীন গরুর খাবার" },
         href: routes.shadhinFeed,
         brand: "digigram",
       },

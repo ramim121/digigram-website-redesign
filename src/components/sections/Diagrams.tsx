@@ -13,7 +13,7 @@ import { t, type Bi, type Locale } from "@/lib/i18n";
 
 const focusAreas: { title: Bi; outcomes: number[] }[] = [
   {
-    title: { en: "Increased volume of inclusive finance", bn: "অন্তর্ভুক্তিমূলক অর্থায়নের পরিমাণ বৃদ্ধি" },
+    title: { en: "Increased volume of inclusive finance", bn: "সবার জন্য অর্থায়নের পরিমাণ বৃদ্ধি" },
     outcomes: [5, 6],
   },
   {
@@ -31,7 +31,7 @@ const focusAreas: { title: Bi; outcomes: number[] }[] = [
 ];
 
 const outcomes: Record<number, Bi> = {
-  1: { en: "Increased volume of inclusive finance", bn: "অন্তর্ভুক্তিমূলক অর্থায়নের পরিমাণ বৃদ্ধি" },
+  1: { en: "Increased volume of inclusive finance", bn: "সবার জন্য অর্থায়নের পরিমাণ বৃদ্ধি" },
   2: { en: "Quality and affordable inputs", bn: "মানসম্পন্ন ও সাশ্রয়ী উপকরণ" },
   3: { en: "Effectiveness of training", bn: "প্রশিক্ষণের কার্যকারিতা" },
   4: { en: "Increased market access", bn: "বাজারে প্রবেশাধিকার বৃদ্ধি" },
@@ -196,7 +196,7 @@ export function TheoryOfChange({ locale }: { locale: Locale }) {
       title: { en: "Activity", bn: "কার্যক্রম" },
       body: {
         en: "Inclusive projects in agriculture, livestock, crafts and eco-friendly goods; SOPs for risk mitigation; partnerships for market expansion.",
-        bn: "কৃষি, পশুসম্পদ, হস্তশিল্প ও পরিবেশবান্ধব পণ্যে অন্তর্ভুক্তিমূলক প্রকল্প; ঝুঁকি প্রশমনে এসওপি; বাজার সম্প্রসারণে অংশীদারিত্ব।",
+        bn: "কৃষি, গবাদিপশু, হস্তশিল্প ও পরিবেশবান্ধব পণ্যে সবাইকে নিয়ে প্রকল্প; ঝুঁকি কমাতে এসওপি; বাজার বাড়াতে অংশীদারিত্ব।",
       },
     },
     {
@@ -366,7 +366,23 @@ export function RailsDiagram({ locale }: { locale: Locale }) {
 
 /* ------------------------------------------- Finance-readiness pathways -- */
 
-export function ReadinessPathways({ locale }: { locale: Locale }) {
+/**
+ * The four finance-readiness pathways.
+ *
+ * `variant` exists because this is now used in two shapes. On the product page
+ * it runs the full width of the container and four across is right. On the
+ * impact page it sits in a seven-column panel beside body copy, where four
+ * across would set four columns of three-word lines — so `panel` drops it to
+ * two and removes the standalone top margin the section layout already
+ * provides.
+ */
+export function ReadinessPathways({
+  locale,
+  variant = "full",
+}: {
+  locale: Locale;
+  variant?: "full" | "panel";
+}) {
   const paths: { key: string; title: Bi; body: Bi; dot: string }[] = [
     {
       key: "A",
@@ -407,7 +423,12 @@ export function ReadinessPathways({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div
+      className={clsx(
+        "grid gap-4 sm:grid-cols-2",
+        variant === "full" ? "mt-12 lg:grid-cols-4" : "mt-0",
+      )}
+    >
       {paths.map((path) => (
         <div key={path.key} className="rounded-lg border border-brand-line bg-white p-6">
           <div className="flex items-center gap-3">

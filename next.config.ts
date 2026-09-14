@@ -37,6 +37,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "saathi-production-2025.s3.ap-southeast-1.amazonaws.com" },
       { protocol: "https", hostname: "saathi-staging-2026.s3.ap-southeast-1.amazonaws.com" },
       { protocol: "https", hostname: "saathi-files-production-new.s3.ap-southeast-1.amazonaws.com" },
+      /*
+       * Shathi Sheba platform media — partner project artwork and lender logos.
+       * A different system with its own bucket, so it needs its own entry; see
+       * `lib/api/sheba.ts` for why the two backends are kept apart.
+       */
+      { protocol: "https", hostname: "shathi-sheba.s3.ap-southeast-1.amazonaws.com" },
     ],
   },
   experimental: {

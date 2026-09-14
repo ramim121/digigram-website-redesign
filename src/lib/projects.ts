@@ -133,7 +133,7 @@ export function fundedPct(project: Project): number {
 
 export const categoryLabel: Record<ProjectCategory | "all", Bi> = {
   all: { en: "All", bn: "সব" },
-  agriculture_livestock: { en: "Agriculture and livestock", bn: "কৃষি ও পশুসম্পদ" },
+  agriculture_livestock: { en: "Agriculture and livestock", bn: "কৃষি ও গবাদিপশু" },
   artisanal: { en: "Artisanal", bn: "কারুশিল্প" },
   environmental: { en: "Environmental", bn: "পরিবেশ" },
 };

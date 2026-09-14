@@ -87,7 +87,7 @@ export function organizationSchema(locale: Locale) {
     description:
       locale === "en"
         ? "A for-profit impact enterprise in Bangladesh turning rural homes into micro-enterprises through inclusive finance, quality inputs, training and market access."
-        : "বাংলাদেশের একটি মুনাফাভিত্তিক ইমপ্যাক্ট প্রতিষ্ঠান, যা অন্তর্ভুক্তিমূলক অর্থায়ন, মানসম্পন্ন উপকরণ, প্রশিক্ষণ ও বাজারে প্রবেশাধিকারের মাধ্যমে গ্রামীণ ঘরকে ক্ষুদ্র উদ্যোগে রূপান্তর করে।",
+        : "বাংলাদেশের একটি মুনাফাভিত্তিক ইমপ্যাক্ট প্রতিষ্ঠান, যা সবার জন্য অর্থায়ন, মানসম্পন্ন উপকরণ, প্রশিক্ষণ ও বাজারে প্রবেশাধিকারের মাধ্যমে গ্রামীণ ঘরকে ক্ষুদ্র উদ্যোগে রূপান্তর করে।",
     address: {
       "@type": "PostalAddress",
       streetAddress: site.address.street,

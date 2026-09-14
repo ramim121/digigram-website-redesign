@@ -62,14 +62,66 @@ const HERO_ROUTES = [
   routes.projects,
 ];
 
+/**
+ * Where the account cluster — "Log in" / the account menu, and "Invest now" —
+ * appears in the header.
+ *
+ * The cluster used to render on every page except the homepage, which put an
+ * investment CTA on top of pages whose job is the company, not the product:
+ * /about, /impact, /blog, /contact, the legal pages. Marketing chrome and a
+ * transactional account control were competing in the same 40px of bar.
+ *
+ * It now appears in exactly two kinds of place:
+ *
+ *   1. `/products/shathi` — the one marketing page that is *about* investing,
+ *      and so the one page where "Log in" and "Invest now" are the subject
+ *      rather than an interruption.
+ *
+ *   2. The routes where it is functionally required. Hiding the account menu
+ *      on /account would leave a signed-in person with no visible way to log
+ *      out, and hiding it mid-checkout would drop the session affordance at
+ *      the exact moment it matters most.
+ *
+ * Everywhere else the header carries navigation, Contact and the language
+ * toggle only. The footer and each page's own body still link to sign-in, so
+ * nothing becomes unreachable — it just stops shouting from the chrome.
+ */
+function showsAccountCluster(bare: string): boolean {
+  // The Shathi product page. Its sibling Shathi Sheba page is deliberately
+  // absent: Sheba is a farmer-facing service with no web account behind it.
+  if (bare === routes.shathi) return true;
+
+  // Account area, sign-in and the registration flow, including every nested
+  // step (/login/otp, /account/bookings/…, /register/profile).
+  for (const prefix of [routes.account, routes.login, "/register"]) {
+    if (bare === prefix || bare.startsWith(`${prefix}/`)) return true;
+  }
+
+  /*
+   * Any individual project: the detail page and the checkout under it.
+   *
+   * The detail page was excluded at first on the reasoning that it is public
+   * reading. That was wrong in practice — it is the page carrying the "Invest"
+   * button, so it is exactly where someone decides to act, and it was the one
+   * place a reader could reach that decision with no way to sign in from the
+   * chrome. The listing at `/projects` stays clean; a specific project does
+   * not.
+   *
+   * Matched by prefix, so `/projects/[slug]` and `/projects/[slug]/invest`
+   * both qualify while `/projects` itself does not.
+   */
+  if (bare.startsWith(`${routes.projects}/`)) return true;
+
+  return false;
+}
+
 export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: HeaderUser | null }) {
   const pathname = usePathname() || "/";
   const bare = stripLocale(pathname);
   const { user, signOut } = useSession();
 
   const overlayCapable = HERO_ROUTES.includes(bare);
-  // `/` and `/bn` both strip to `/`.
-  const isHome = bare === "/";
+  const accountCluster = showsAccountCluster(bare);
   const loginHref = useLoginHref(locale);
   const [scrolled, setScrolled] = useState(false);
   const [drawer, setDrawer] = useState(false);
@@ -149,8 +201,26 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
           </Link>
 
           {/* ------------------------------------------------ desktop nav -- */}
+          {/*
+            THE NAV SITS NEXT TO THE LOGO; THE CLUSTER IS PINNED RIGHT.
+
+            This used to be `ms-auto` on the nav with `lg:ms-0` on the cluster —
+            i.e. everything packed against the right edge, with the nav's
+            position decided by however wide the account cluster happened to be.
+            That looked balanced only by coincidence, while the cluster held
+            four items (Contact, language, account, "Invest now").
+
+            Once the cluster became route-dependent, the coincidence broke: on a
+            page without it the cluster is just Contact and the language toggle,
+            the nav slid hard right, and a signed-in visitor saw the whole menu
+            shunted over with a hole after the wordmark.
+
+            Now the two ends are independent. The nav starts after the logo and
+            the cluster is pushed right by its own `ms-auto`, so adding or
+            removing anything on the right cannot move the navigation.
+          */}
           <nav
-            className="ms-auto hidden items-center gap-1 lg:flex"
+            className="hidden items-center gap-1 lg:flex"
             aria-label={locale === "en" ? "Main" : "প্রধান"}
           >
             {mainNav.map((item) => (
@@ -168,7 +238,7 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
           </nav>
 
           {/* -------------------------------------------- account cluster -- */}
-          <div className="ms-auto flex items-center gap-2 lg:ms-0 lg:gap-3">
+          <div className="ms-auto flex items-center gap-2 lg:gap-3">
             {/* Contact sits here rather than in the primary nav: it is an
                 action, not a destination competing with Products and Impact. */}
             <Link
@@ -186,27 +256,19 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
                 server and passed down — client script cannot see that cookie,
                 and rendering from it server-side avoids a logged-out flash. */}
             {/*
-              Signed in: the account menu. Signed out: a "Log in" link on every
-              page except the homepage.
+              The whole cluster — account menu, "Log in" and "Invest now" — is
+              gated on the route. See `showsAccountCluster` above for which
+              pages get it and why.
 
-              The header used to show nothing at all when signed out, on the
-              reasoning that most visitors are reading marketing pages and an
-              account only becomes meaningful on the two product pages, which
-              carry their own sign-in band.
-
-              That held while accounts could only be created in the app. Now
-              that registering happens here too, it left a signed-out reader on
-              /projects, /impact or /about with no way in from anywhere on the
-              page — the two product pages were the only door, and nothing said
-              so.
-
-              The homepage still stays clean: it is the one page whose job is
-              the pitch, not the product.
+              Note this hides the *control*, never the session: the cookie is
+              untouched, so someone signed in who walks from /products/shathi
+              to /about is still signed in and finds their menu again the
+              moment they return. The mobile drawer applies the same rule.
             */}
-            {sessionUser ? (
-              <AccountMenu locale={locale} user={sessionUser} />
-            ) : (
-              !isHome && (
+            {accountCluster &&
+              (sessionUser ? (
+                <AccountMenu locale={locale} user={sessionUser} />
+              ) : (
                 <Link
                   href={loginHref}
                   className="hidden items-center gap-1.5 rounded-md border border-white/25 px-3 py-1.5 font-display text-sm font-semibold text-white/85 transition-colors hover:border-white/50 hover:text-white sm:inline-flex"
@@ -215,24 +277,25 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
                   {locale === "en" ? "Log in" : "লগ ইন"}
                   <Icon name="arrow-right" size={15} />
                 </Link>
-              )
-            )}
+              ))}
 
             {/* Wrapped rather than given `hidden sm:inline-flex` directly: the
                 button's own `inline-flex` and a `hidden` utility are both
                 display rules, and which one wins depends on stylesheet order,
                 not class order. A wrapper makes it deterministic. On mobile the
                 CTA lives at the bottom of the drawer instead. */}
-            <span className="hidden sm:block">
-              <ButtonLink
-                href={localePath(locale, routes.projects)}
-                size="sm"
-                variant="inverse"
-                icon="arrow-right"
-              >
-                {locale === "en" ? "Invest now" : "বিনিয়োগ করুন"}
-              </ButtonLink>
-            </span>
+            {accountCluster && (
+              <span className="hidden sm:block">
+                <ButtonLink
+                  href={localePath(locale, routes.projects)}
+                  size="sm"
+                  variant="inverse"
+                  icon="arrow-right"
+                >
+                  {locale === "en" ? "Invest now" : "বিনিয়োগ করুন"}
+                </ButtonLink>
+              </span>
+            )}
 
             <button
               type="button"
@@ -254,6 +317,7 @@ export function Header({ locale, sessionUser }: { locale: Locale; sessionUser: H
           user={user}
           onSignOut={signOut}
           loginHref={loginHref}
+          accountCluster={accountCluster}
         />
       )}
     </header>
@@ -393,6 +457,7 @@ function MobileDrawer({
   user,
   onSignOut,
   loginHref,
+  accountCluster,
 }: {
   locale: Locale;
   onClose: () => void;
@@ -400,6 +465,8 @@ function MobileDrawer({
   /** Where "Log in" goes, already carrying ?next= for the current page. */
   loginHref: string;
   onSignOut: () => void;
+  /** Same route rule as the desktop bar, so the two never disagree. */
+  accountCluster: boolean;
 }) {
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
@@ -460,6 +527,7 @@ function MobileDrawer({
             ),
           )}
 
+          {accountCluster && (
           <div className="mt-4 px-2">
             {user ? (
               <div className="flex flex-col gap-2">
@@ -491,18 +559,21 @@ function MobileDrawer({
               </Link>
             )}
           </div>
+          )}
         </nav>
 
-        <div className="border-t border-stone-200 p-4">
-          <ButtonLink
-            href={localePath(locale, routes.projects)}
-            fullWidth
-            icon="arrow-right"
-            size="lg"
-          >
-            {locale === "en" ? "Invest now" : "বিনিয়োগ করুন"}
-          </ButtonLink>
-        </div>
+        {accountCluster && (
+          <div className="border-t border-stone-200 p-4">
+            <ButtonLink
+              href={localePath(locale, routes.projects)}
+              fullWidth
+              icon="arrow-right"
+              size="lg"
+            >
+              {locale === "en" ? "Invest now" : "বিনিয়োগ করুন"}
+            </ButtonLink>
+          </div>
+        )}
       </div>
     </div>
   );

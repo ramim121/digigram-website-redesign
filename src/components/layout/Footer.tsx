@@ -32,7 +32,7 @@ export function Footer({ locale }: { locale: Locale }) {
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/70">
               {locale === "en"
                 ? "Turning rural homes into micro-enterprises through inclusive finance, quality inputs, training and market access."
-                : "অন্তর্ভুক্তিমূলক অর্থায়ন, মানসম্পন্ন উপকরণ, প্রশিক্ষণ ও বাজারে প্রবেশাধিকারের মাধ্যমে গ্রামীণ ঘরকে ক্ষুদ্র উদ্যোগে রূপান্তর।"}
+                : "সবার জন্য অর্থায়ন, মানসম্পন্ন উপকরণ, প্রশিক্ষণ ও বাজারে প্রবেশাধিকারের মাধ্যমে গ্রামীণ ঘরকে ক্ষুদ্র উদ্যোগে রূপান্তর।"}
             </p>
 
             <div className="mt-6 flex items-center gap-2">

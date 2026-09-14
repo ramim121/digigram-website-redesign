@@ -179,7 +179,7 @@ export default async function BookingPage({
                                 }
                             />
                             <Row
-                                label={en ? "Matures" : "মেয়াদপূর্তি"}
+                                label={en ? "Matures" : "মেয়াদ শেষ"}
                                 value={
                                     summary.maturityDate
                                         ? (formatDate(summary.maturityDate, locale) ?? "—")
