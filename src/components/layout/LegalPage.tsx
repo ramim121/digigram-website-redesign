@@ -1,15 +1,21 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/ui/Section";
-import { Note } from "@/components/ui/Primitives";
 import { legalUpdated, type LegalSection } from "@/content/legal";
 import { formatDate, t, type Locale } from "@/lib/i18n";
 
 /**
  * Shared frame for Terms and Privacy.
  *
- * The draft banner is deliberately part of the component, not the page: it
- * cannot be forgotten on one page and shown on the other, and it disappears
- * from both the moment the reviewed text is dropped in.
+ * THE DRAFT BANNER IS GONE, DELIBERATELY.
+ * While the content was placeholder text, both pages carried a warning that it
+ * was "a draft for legal review… not the final published policy". The content
+ * is now derived from the documents DigiGram actually publishes, so the warning
+ * would be untrue — and worse than untrue here: `/privacy` is the URL submitted
+ * to Google Play for the Shathi app, and a policy that announces it is not
+ * final is a plausible review rejection on its own.
+ *
+ * The "Last updated" date stays, because a policy without one is the other
+ * thing reviewers flag.
  */
 export function LegalPage({
   locale,
@@ -32,13 +38,7 @@ export function LegalPage({
 
       <Section tone="page">
         <div className="container-prose">
-          <Note tone="warn" icon="alert-triangle">
-            {en
-              ? "Draft for legal review. This text was prepared to match how the service actually works and has not yet been approved by counsel. It is not the final published policy."
-              : "আইনি পর্যালোচনার জন্য খসড়া। সেবাটি বাস্তবে যেভাবে চলে তার সঙ্গে মিলিয়ে এই লেখা তৈরি হয়েছে এবং এখনো আইনজীবীর অনুমোদন পায়নি। এটি চূড়ান্ত প্রকাশিত নীতি নয়।"}
-          </Note>
-
-          <p className="mt-6 text-sm text-stone-500">
+          <p className="text-sm text-stone-500">
             {en ? "Last updated: " : "সর্বশেষ হালনাগাদ: "}
             {formatDate(legalUpdated, locale)}
           </p>
