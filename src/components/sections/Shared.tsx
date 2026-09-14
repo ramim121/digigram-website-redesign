@@ -528,7 +528,12 @@ export function AppDownloadBand({ locale }: { locale: Locale }) {
             data-brand="shathi"
             className="flex h-full flex-col overflow-hidden rounded-xl bg-brand-canvas p-8 lg:p-10"
           >
-            <ShathiLogo className="h-7 w-auto" />
+            {/* `self-start` is load-bearing. The card is `flex flex-col`, so the
+                default `align-items: stretch` sets each child's *width* to the
+                full card — and with `h-7` pinning the height, the wordmark was
+                being stretched into a distorted band. `w-auto` cannot prevent
+                it, because stretch overrides an auto cross-size. */}
+            <ShathiLogo className="h-7 w-auto self-start" />
             <h3 className="mt-5 font-display text-2xl leading-tight font-bold tracking-tight text-stone-900">
               {en ? "Track every project from your phone" : "প্রতিটি প্রকল্প দেখুন আপনার ফোনেই"}
             </h3>
@@ -562,7 +567,7 @@ export function AppDownloadBand({ locale }: { locale: Locale }) {
             data-brand="shathi-sheba"
             className="flex h-full flex-col overflow-hidden rounded-xl bg-brand-canvas p-8 lg:p-10"
           >
-            <ShathiShebaLogo locale={locale} className="h-7" />
+            <ShathiShebaLogo locale={locale} className="h-7 self-start" />
             <h3 className="mt-5 font-display text-2xl leading-tight font-bold tracking-tight text-stone-900">
               {en
                 ? "Apply, buy, sell and get paid — from the village"

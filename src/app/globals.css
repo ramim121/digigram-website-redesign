@@ -539,6 +539,23 @@
     justify-content: center;
     row-gap: 2rem;
   }
+
+  /*
+   * AND THE SECOND COPY GOES AWAY.
+   *
+   * The track holds the list twice so the slide can loop without a seam. That
+   * is the only reason the duplicate exists — and with the animation off there
+   * is no loop, so wrapping it simply printed every partner on screen twice.
+   * BRAC Bank, Heifer and the rest each appeared in two rows, which reads as a
+   * data bug rather than a design choice.
+   *
+   * The duplicate already carries `aria-hidden="true"` for exactly this reason
+   * (assistive tech must not read the list twice either), so it is the right
+   * thing to select on: hide it visually wherever it is not doing its one job.
+   */
+  .marquee__track > [aria-hidden="true"] {
+    display: none;
+  }
 }
 
 /* ------------------------------------------------ app screen auto-scroll -- */
