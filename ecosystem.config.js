@@ -25,7 +25,27 @@ module.exports = {
       args: 'start -p 4300',
       instances: 1,
       autorestart: true,
-      max_memory_restart: '512M',
+      /*
+       * 512M was too low and was the cause of a restart every minute or two on
+       * the production copy of this site.
+       *
+       * Nothing was crashing. `next/image` optimises remote S3 photographs with
+       * sharp, and decoding a JPEG into a raw bitmap costs multiples of the file
+       * size — a page of project cards pushed steady-state RSS past 400M, and
+       * pm2 killed the process for crossing the ceiling. The restarts looked
+       * like instability and were really this limit doing exactly what it was
+       * told.
+       *
+       * The disk-cache errors in the log ("LRUCache: calculateSize returned 0")
+       * are a separate, cosmetic Next 15.5.23 bug: the image still serves 200,
+       * only the cache write fails. Verified by requesting optimised images
+       * directly — they succeed and the process does not restart.
+       *
+       * 900M leaves room for image work while still catching a genuine leak.
+       * The box has 3.7G and five Node processes; the other four sit at
+       * 140-190M with no ceiling at all.
+       */
+      max_memory_restart: '900M',
       env: {
         NODE_ENV: 'production',
       },
