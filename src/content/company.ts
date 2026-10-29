@@ -328,11 +328,11 @@ export const leadership: TeamMember[] = [
     role: { en: "Co-founder & CTO", bn: "সহ-প্রতিষ্ঠাতা ও সিটিও" },
     years: "12 years",
   },
-  {
-    name: { en: "Asif Abdullah", bn: "আসিফ আবদুল্লাহ" },
-    role: { en: "Co-founder & Director — Tech", bn: "সহ-প্রতিষ্ঠাতা ও পরিচালক — প্রযুক্তি" },
-    years: "12 years",
-  },
+  /*
+   * Asif Abdullah (Co-founder & Director — Tech) was removed from the live
+   * sites on 2026-09-20 by a hand edit on the server that never reached git.
+   * Carried into git here so that a deploy does not quietly put him back.
+   */
   {
     name: { en: "Md. Imrul Hossain", bn: "মো. ইমরুল হোসেন" },
     role: { en: "Director, Supply Chain Operations", bn: "পরিচালক, সরবরাহ চেইন পরিচালনা" },
