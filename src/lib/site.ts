@@ -10,7 +10,15 @@ import type { Bi } from "@/lib/i18n";
 export const site = {
   name: "DigiGram Ventures Ltd.",
   shortName: "DigiGram Ventures",
-  tagline: { en: "Invest Now, Shape Tomorrow", bn: "আজ বিনিয়োগ করুন, আগামী গড়ুন" } as Bi,
+  /*
+   * The homepage headline. It was "Invest Now, Shape Tomorrow", which framed the
+   * whole company as an investment product; the front door now leads with what
+   * DigiGram is for. Investing keeps its own voice on the Shathi pages.
+   */
+  tagline: {
+    en: "Turning rural homes into thriving enterprises",
+    bn: "গ্রামের ঘরকে সমৃদ্ধ উদ্যোগে রূপ দিচ্ছি",
+  } as Bi,
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://digigramventures.com",
   legalName: "DigiGram Ventures Ltd.",
   foundingLocation: "Dhaka, Bangladesh",

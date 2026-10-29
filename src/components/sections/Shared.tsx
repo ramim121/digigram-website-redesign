@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import type { CSSProperties, ReactNode } from "react";
-import { Section, SectionHead } from "@/components/ui/Section";
+import { Section, SectionHead, type SectionTone } from "@/components/ui/Section";
 import { Card, StatBlock, Badge } from "@/components/ui/Primitives";
 import { ButtonLink, ArrowLink } from "@/components/ui/Button";
 import { Icon, type IconName } from "@/components/ui/Icon";
@@ -146,7 +146,9 @@ export function PillarGrid({
 /* --------------------------------------------------------- stakeholders -- */
 
 export function StakeholderGrid({ locale }: { locale: Locale }) {
-  const icons: IconName[] = ["sprout", "wallet", "truck", "users"];
+  // Icons travel with each entry in `content/company.ts`. They used to be a
+  // separate array matched by position, which silently put a wallet on the
+  // "Women and people with disabilities" card when the list was reordered.
   return (
     <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {stakeholders.map((group, index) => (
@@ -166,7 +168,7 @@ export function StakeholderGrid({ locale }: { locale: Locale }) {
             />
             <div className="flex items-center gap-3">
               <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-tint text-brand-strong transition-colors duration-300 group-hover:bg-brand-strong group-hover:text-white">
-                <Icon name={icons[index]} size={22} />
+                <Icon name={group.icon} size={22} />
               </span>
               <h3 className="font-display text-lg leading-tight font-bold text-stone-900">
                 {t(group.title, locale)}
@@ -297,14 +299,21 @@ export function ProductCards({ locale }: { locale: Locale }) {
  *
  * Renders nothing when the CMS has no rows — an empty band is worse than none.
  */
-export async function InvestorVoiceBand({ locale }: { locale: Locale }) {
+export async function InvestorVoiceBand({
+  locale,
+  tone = "surface",
+}: {
+  locale: Locale;
+  /** Set by the host page so the band alternates with its neighbours. */
+  tone?: SectionTone;
+}) {
   const voices = await fetchInvestorVoices();
   if (voices.length === 0) return null;
 
   const en = locale === "en";
 
   return (
-    <Section tone="surface">
+    <Section tone={tone}>
       <div className="container-page">
         <SectionHead
           eyebrow={en ? "Investors" : "বিনিয়োগকারী"}

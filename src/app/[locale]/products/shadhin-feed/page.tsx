@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/layout/PageHero";
+import { FeedRange } from "@/components/sections/FeedSection";
+import { feedMaker } from "@/content/feed";
 import { Section, SectionHead } from "@/components/ui/Section";
 import { Card, Note, StatBlock } from "@/components/ui/Primitives";
 import { ButtonLink } from "@/components/ui/Button";
@@ -174,6 +176,70 @@ export default async function ShadhinFeedPage({
         </div>
       </Section>
 
+      {/* The products themselves. The page described Shadhin's specification
+          and channels but never showed the three formulas a farmer actually
+          chooses between; this is that catalogue, transcribed from the same
+          product records the Shathi Sheba app sells from. */}
+      <FeedRange locale={locale} />
+
+      {/* Where it is made, and by whom. */}
+      <Section tone="tint" id="made-in-natore">
+        <div className="container-page">
+          <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-6">
+              <p className="eyebrow">{en ? "Where it is made" : "কোথায় তৈরি হয়"}</p>
+              <h2 className="mt-4 font-display text-3xl leading-tight font-bold tracking-tight text-balance text-stone-900 lg:text-4xl">
+                {en ? "Made in Natore, with women's cooperatives" : "নাটোরে তৈরি, নারী সমবায়ের হাতে"}
+              </h2>
+              <p className="mt-5 text-[17px] leading-relaxed text-stone-700">
+                {en
+                  ? "Shadhin is produced at DigiGram's own factory in Natore, together with rural women's cooperatives — so the work it creates sits in the same villages as the farms it feeds. Feed made close to the farms that use it travels less and reaches them sooner."
+                  : "স্বাধীন তৈরি হয় নাটোরে ডিজিগ্রামের নিজস্ব কারখানায়, গ্রামীণ নারী সমবায়ের সঙ্গে মিলে — তাই এর তৈরি কাজ থাকে সেই গ্রামগুলোতেই, যেখানকার খামারে এটি খাওয়ানো হয়। যে খামারে খাবার লাগে তার কাছেই তৈরি হলে তা কম পথ পাড়ি দেয় আর আগে পৌঁছায়।"}
+              </p>
+              <dl className="mt-8 grid gap-5 sm:grid-cols-2">
+                <div className="border-s-2 border-brand-line ps-4">
+                  <dt className="font-display text-xs font-bold tracking-wide text-stone-500 uppercase">
+                    {en ? "Maker" : "প্রস্তুতকারক"}
+                  </dt>
+                  <dd className="mt-1 text-[15px] font-semibold text-stone-900">{t(feedMaker.name, locale)}</dd>
+                </div>
+                <div className="border-s-2 border-brand-line ps-4">
+                  <dt className="font-display text-xs font-bold tracking-wide text-stone-500 uppercase">
+                    {en ? "Factory" : "কারখানা"}
+                  </dt>
+                  <dd className="mt-1 text-[15px] font-semibold text-stone-900">{t(feedMaker.factory, locale)}</dd>
+                </div>
+                <div className="border-s-2 border-brand-line ps-4 sm:col-span-2">
+                  <dt className="font-display text-xs font-bold tracking-wide text-stone-500 uppercase">
+                    {en ? "Distributed through" : "বিতরণ"}
+                  </dt>
+                  <dd className="mt-1 text-[15px] leading-relaxed text-stone-800">
+                    {en
+                      ? "Local cooperatives such as Walia Shimul Mohila Samabaya Samity in Lalpur, Natore — each listing in the app names the distributor and the area it serves."
+                      : "স্থানীয় সমবায়ের মাধ্যমে, যেমন নাটোরের লালপুরে ওয়ালিয়া শিমুল মহিলা সমবায় সমিতি — অ্যাপের প্রতিটি তালিকায় পরিবেশক ও তাঁদের সেবা-এলাকার নাম থাকে।"}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+            <div className="lg:col-span-6">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-stone-100 shadow-lg">
+                <Image
+                  src="/assets/photos/hero/hero-cattle.webp"
+                  alt={
+                    en
+                      ? "A woman farmer with well-fed cattle in a shed stacked with feed sacks"
+                      : "খাবারের বস্তা সাজানো গোয়ালে সুস্থ-সবল গরুর পাশে এক নারী কৃষক"
+                  }
+                  fill
+                  sizes="(min-width: 1024px) 560px, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
       <Section tone="surface">
         <div className="container-page">
           <div className="grid items-center gap-12 lg:grid-cols-2">
@@ -256,7 +322,20 @@ export default async function ShadhinFeedPage({
         </div>
       </Section>
 
-      <CtaBand locale={locale} />
+      {/* Not the default "Explore projects" band: this page sells feed, and
+          the order buttons are directly above. This one is for the people who
+          could carry it further — cooperatives and input dealers. */}
+      <CtaBand
+        locale={locale}
+        title={en ? "Want Shadhin in your district?" : "আপনার জেলায় স্বাধীন চান?"}
+        lead={
+          en
+            ? "Cooperatives and agri-input dealers interested in stocking it — tell us where you are."
+            : "যেসব সমবায় ও কৃষি-উপকরণ বিক্রেতা এটি রাখতে আগ্রহী — আপনার এলাকা জানান।"
+        }
+        primary={{ href: `${routes.contact}?topic=feed`, label: en ? "Talk to us" : "যোগাযোগ করুন" }}
+        secondary={{ href: routes.impact, label: en ? "Our impact" : "আমাদের প্রভাব" }}
+      />
     </>
   );
 }

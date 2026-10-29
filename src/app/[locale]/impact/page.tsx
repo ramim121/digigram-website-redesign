@@ -13,10 +13,10 @@ import {
   ReadinessPathways,
 } from "@/components/sections/Diagrams";
 import { SdgTiles, type GoalNumber } from "@/components/sections/Sdg";
-import { CtaBand, SdgRow } from "@/components/sections/Shared";
+import { CtaBand } from "@/components/sections/Shared";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema, buildMetadata, faqSchema } from "@/lib/seo";
-import { headlineStats, faqs } from "@/content/company";
+import { careStats, headlineStats, faqs } from "@/content/company";
 import { shebaGapStats, shebaOutputs, shebaLenderPrinciple } from "@/content/sheba";
 import { ShathiShebaLogo } from "@/components/brand/Logo";
 import { ButtonLink } from "@/components/ui/Button";
@@ -49,7 +49,14 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
   const locale = raw as Locale;
   const en = locale === "en";
 
-  const drivers: { title: Bi; body: Bi; icon: IconName; goals: GoalNumber[] }[] = [
+  const drivers: {
+    title: Bi;
+    body: Bi;
+    response: Bi;
+    track: Bi;
+    icon: IconName;
+    goals: GoalNumber[];
+  }[] = [
     {
       icon: "users",
       goals: [1, 2],
@@ -57,6 +64,14 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
       body: {
         en: "20.5% of Bangladesh's population lives below the poverty line and 10.5% in extreme poverty (BBS 2022). 75% of the rural population — the base of the pyramid — depends on agriculture, livestock and small-scale production, held back by limited access to finance, markets, quality inputs and training.",
         bn: "বাংলাদেশের জনসংখ্যার ২০.৫% দারিদ্র্যসীমার নিচে এবং ১০.৫% চরম দারিদ্র্যে বাস করে (বিবিএস ২০২২)। গ্রামীণ জনসংখ্যার ৭৫% — পিরামিডের ভিত্তি — কৃষি, গবাদিপশু ও ক্ষুদ্র উৎপাদনের ওপর নির্ভরশীল, যাঁরা অর্থায়ন, বাজার, মানসম্পন্ন উপকরণ ও প্রশিক্ষণের সীমিত সুযোগে আটকে আছেন।",
+      },
+      response: {
+        en: "Finance, graded inputs, training and a committed buyer for each production cycle — arranged before it starts, not chased after it ends.",
+        bn: "প্রতিটি উৎপাদন চক্রের জন্য অর্থায়ন, মানসম্পন্ন উপকরণ, প্রশিক্ষণ ও নিশ্চিত ক্রেতা — চক্র শুরুর আগেই ঠিক করা, শেষ হওয়ার পরে খোঁজা নয়।",
+      },
+      track: {
+        en: "Household income against the baseline recorded at enrolment.",
+        bn: "নিবন্ধনের সময় নথিভুক্ত ভিত্তিরেখার সাপেক্ষে পারিবারিক আয়।",
       },
     },
     {
@@ -67,6 +82,14 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
         en: "Women are central to agriculture and the RMG industry yet face a 22% gender pay gap. Despite a 136% increase in female agricultural labour in Bangladesh, women still lack resources and face socio-cultural barriers. Closing these gaps could raise farm yields by 20–30%.",
         bn: "কৃষি ও তৈরি পোশাক শিল্পে নারীরা কেন্দ্রীয় ভূমিকায় থাকলেও ২২% মজুরি ব্যবধানের মুখোমুখি। বাংলাদেশে নারী কৃষিশ্রমিক ১৩৬% বাড়লেও নারীরা এখনো সম্পদবঞ্চিত এবং সামাজিক-সাংস্কৃতিক বাধার সম্মুখীন। এই ব্যবধান পূরণ হলে খামারের ফলন ২০–৩০% বাড়তে পারে।",
       },
+      response: {
+        en: "Livelihoods built around care work, advice on the phone in Bangla, and women's cooperatives that produce and distribute our feed.",
+        bn: "সেবাকাজের সঙ্গে মানিয়ে গড়া জীবিকা, ফোনে বাংলায় পরামর্শ, আর আমাদের খাবার উৎপাদন ও বিতরণে নারী সমবায়।",
+      },
+      track: {
+        en: "Share of women and caregivers among participants, recorded per project.",
+        bn: "অংশগ্রহণকারীদের মধ্যে নারী ও সেবাদানকারীর হার, প্রকল্পভিত্তিক নথিভুক্ত।",
+      },
     },
     {
       icon: "shield",
@@ -76,14 +99,30 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
         en: "Over 9% of Bangladesh's population lives with a disability, yet only 1 in 10 participates in the labour force. Barriers to education, employment and financial services block economic participation and financial independence.",
         bn: "বাংলাদেশের জনসংখ্যার ৯%-এর বেশি প্রতিবন্ধিতা নিয়ে বাস করে, অথচ তাঁদের মাত্র ১০ জনে ১ জন শ্রমশক্তিতে অংশ নেন। শিক্ষা, কর্মসংস্থান ও আর্থিক সেবায় বাধা তাঁদের অর্থনৈতিক অংশগ্রহণ ও আর্থিক স্বাধীনতা আটকে রাখে।",
       },
+      response: {
+        en: "Home-based enterprises, voice-first advice that does not depend on reading, and field officers who come to the farmer.",
+        bn: "ঘরে বসে চালানোর মতো উদ্যোগ, পড়তে না জানলেও চলে এমন কণ্ঠভিত্তিক পরামর্শ, আর কৃষকের কাছে নিজে যাওয়া মাঠ কর্মকর্তা।",
+      },
+      track: {
+        en: "Share of persons with disabilities among participants, recorded per project.",
+        bn: "অংশগ্রহণকারীদের মধ্যে প্রতিবন্ধী ব্যক্তির হার, প্রকল্পভিত্তিক নথিভুক্ত।",
+      },
     },
     {
       icon: "leaf",
       goals: [13, 12],
       title: { en: "Environment", bn: "পরিবেশ" },
       body: {
-        en: "Inefficient waste management in the production and use of single-use plastics degrades the environment and holds back progress on climate action. We promote sustainable agriculture, waste management and reduced single-use plastic across our projects.",
-        bn: "এককবার ব্যবহার্য প্লাস্টিকের উৎপাদন ও ব্যবহারে অদক্ষ বর্জ্য ব্যবস্থাপনা পরিবেশের ক্ষতি করছে এবং জলবায়ু পদক্ষেপের অগ্রগতি আটকে রাখছে। আমাদের প্রকল্পজুড়ে আমরা টেকসই কৃষি, বর্জ্য ব্যবস্থাপনা ও এককবার ব্যবহার্য প্লাস্টিক হ্রাসে কাজ করি।",
+        en: "Inefficient waste management in the production and use of single-use plastics degrades the environment and holds back progress on climate action, while smallholder farms bear the brunt of increasingly erratic weather.",
+        bn: "এককবার ব্যবহার্য প্লাস্টিকের উৎপাদন ও ব্যবহারে অদক্ষ বর্জ্য ব্যবস্থাপনা পরিবেশের ক্ষতি করছে এবং জলবায়ু পদক্ষেপের অগ্রগতি আটকে রাখছে, আর ক্রমশ অনিয়মিত আবহাওয়ার ধাক্কা সবচেয়ে বেশি লাগে ক্ষুদ্র খামারে।",
+      },
+      response: {
+        en: "Weather alerts and climate-smart advice in Shathi Sheba, feed made close to the farms that use it, and sustainable agriculture, waste management and less single-use plastic across our projects.",
+        bn: "সাথী সেবায় আবহাওয়ার সতর্কতা ও জলবায়ু-সহনশীল পরামর্শ, যে খামারে খাবার লাগে তার কাছেই তৈরি, আর আমাদের প্রকল্পজুড়ে টেকসই কৃষি, বর্জ্য ব্যবস্থাপনা ও কম একবার-ব্যবহার্য প্লাস্টিক।",
+      },
+      track: {
+        en: "Training and advisory completion, recorded in each farmer's profile.",
+        bn: "প্রশিক্ষণ ও পরামর্শ সম্পন্ন হওয়ার নথি, প্রতিটি কৃষকের প্রোফাইলে।",
       },
     },
   ];
@@ -109,16 +148,162 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
       icon: "users",
       title: { en: "Empowering communities", bn: "জনপদের ক্ষমতায়ন" },
       body: {
-        en: "Investors connect directly with rural producers, with capital, markets and training moving through one accountable channel.",
-        bn: "বিনিয়োগকারীরা সরাসরি গ্রামীণ উৎপাদকের সঙ্গে যুক্ত হন, আর পুঁজি, বাজার ও প্রশিক্ষণ চলে একটি জবাবদিহিমূলক পথে।",
+        en: "Producers connect directly with the funders, buyers and lenders they need, with capital, markets and training moving through one accountable channel.",
+        bn: "উৎপাদকেরা সরাসরি যুক্ত হন প্রয়োজনীয় অর্থদাতা, ক্রেতা ও ঋণদাতার সঙ্গে, আর পুঁজি, বাজার ও প্রশিক্ষণ চলে একটি জবাবদিহিমূলক পথে।",
       },
     },
     {
       icon: "layers",
       title: { en: "Digital innovation", bn: "ডিজিটাল উদ্ভাবন" },
       body: {
-        en: "Digital literacy for Shathi partners, and real-time project monitoring and transparency for investors.",
-        bn: "সাথী অংশীদারদের জন্য ডিজিটাল সাক্ষরতা, আর বিনিয়োগকারীদের জন্য রিয়েল-টাইম প্রকল্প তদারকি ও স্বচ্ছতা।",
+        en: "Tools built for low-literacy users — voice, photos and Bangla — with real-time monitoring and transparency for every partner.",
+        bn: "কম পড়তে-জানা মানুষের জন্য তৈরি টুল — কণ্ঠ, ছবি ও বাংলা — সঙ্গে প্রতিটি অংশীদারের জন্য রিয়েল-টাইম তদারকি ও স্বচ্ছতা।",
+      },
+    },
+  ];
+
+  /** Jump links for the sticky bar, in page order. */
+  const anchors: { id: string; label: Bi }[] = [
+    { id: "at-a-glance", label: { en: "At a glance", bn: "এক নজরে" } },
+    { id: "statement", label: { en: "Outcomes", bn: "ফলাফল" } },
+    { id: "impact-areas", label: { en: "Impact areas", bn: "প্রভাবের ক্ষেত্র" } },
+    { id: "inclusion", label: { en: "Inclusion", bn: "অন্তর্ভুক্তি" } },
+    { id: "readiness", label: { en: "Finance readiness", bn: "অর্থায়ন প্রস্তুতি" } },
+    { id: "methodology", label: { en: "Methodology", bn: "পদ্ধতি" } },
+    { id: "sdgs", label: { en: "SDG targets", bn: "এসডিজি লক্ষ্য" } },
+    { id: "faq", label: { en: "FAQ", bn: "জিজ্ঞাসা" } },
+  ];
+
+  /**
+   * How the products are built for women and persons with disabilities. Every
+   * item describes shipped behaviour: Shathi Apa's voice, read-aloud and
+   * gender-neutral persona; the field-officer contact the app shows while
+   * verification is pending; the women's cooperatives in the feed chain.
+   */
+  const inclusionCommitments: { title: Bi; body: Bi; icon: IconName }[] = [
+    {
+      icon: "handshake",
+      title: { en: "Work that fits around care", bn: "সেবাকাজের সঙ্গে মানানসই কাজ" },
+      body: {
+        en: "Enterprises run from the homestead — livestock, kitchen gardens, crafts — with inputs delivered and output collected through the cooperative, so nobody gives up a day at home to reach a market.",
+        bn: "উদ্যোগ চলে বাড়ি থেকেই — গবাদিপশু, আঙিনার বাগান, হস্তশিল্প — আর উপকরণ পৌঁছায় ও উৎপাদন সংগ্রহ হয় সমবায়ের মাধ্যমে, তাই বাজারে যেতে কাউকে ঘরের একটি দিন ছাড়তে হয় না।",
+      },
+    },
+    {
+      icon: "play",
+      title: { en: "Advice that does not depend on reading", bn: "পড়ার ওপর নির্ভর করে না এমন পরামর্শ" },
+      body: {
+        en: "Shathi Apa takes spoken questions, reads every answer aloud in Bangla and accepts a photo where words are hard. It is even written never to assume that a farmer is a man.",
+        bn: "সাথী আপা মুখে বলা প্রশ্ন নেন, প্রতিটি উত্তর বাংলায় পড়ে শোনান, আর কথায় বোঝানো কঠিন হলে ছবি নেন। এমনকি কৃষক মানেই পুরুষ — এমন ধারণা না করতেও তাঁকে লেখা হয়েছে।",
+      },
+    },
+    {
+      icon: "users",
+      title: { en: "Someone local to ask", bn: "জিজ্ঞেস করার মতো কাছের মানুষ" },
+      body: {
+        en: "Cooperatives and field officers onboard, verify and visit. While a farmer's verification is pending, the app shows the name and number of their area's field officer.",
+        bn: "সমবায় ও মাঠ কর্মকর্তারা নিবন্ধন করান, যাচাই করেন, খামারে যান। কৃষকের যাচাই চলার সময় অ্যাপে এলাকার মাঠ কর্মকর্তার নাম ও নম্বর দেখানো থাকে।",
+      },
+    },
+    {
+      icon: "layers",
+      title: { en: "Women in the value chain, not only at its end", bn: "শুধু শেষ প্রান্তে নয়, পুরো ভ্যালু চেইনে নারী" },
+      body: {
+        en: "Shadhin feed is produced with rural women's cooperatives and distributed through local ones such as Walia Shimul Mohila Samabaya Samity — so the jobs the chain creates go to women too.",
+        bn: "স্বাধীন খাবার উৎপাদিত হয় গ্রামীণ নারী সমবায়ের সঙ্গে, আর বিতরণ হয় ওয়ালিয়া শিমুল মহিলা সমবায় সমিতির মতো স্থানীয় সমবায়ের মাধ্যমে — তাই এই শৃঙ্খলে তৈরি কাজ নারীরাও পান।",
+      },
+    },
+  ];
+
+  /**
+   * SDG alignment at target level. Wording paraphrases the UN targets; only
+   * goals already named elsewhere on the site (1, 2, 5, 10, 12, 13) are used,
+   * so the homepage's "aligned with" list and this table cannot disagree.
+   * Colours are the official SDG palette.
+   */
+  const sdgTargets: { target: string; colour: string; asks: Bi; ours: Bi }[] = [
+    {
+      target: "1.4",
+      colour: "#E5243B",
+      asks: {
+        en: "Equal rights to economic resources and access to financial services, including microfinance, for the poor and vulnerable.",
+        bn: "দরিদ্র ও ঝুঁকিপূর্ণ মানুষের জন্য অর্থনৈতিক সম্পদে সমান অধিকার এবং ক্ষুদ্রঋণসহ আর্থিক সেবায় প্রবেশাধিকার।",
+      },
+      ours: {
+        en: "Verified enterprise profiles and lender-ready applications that bring thin-file farmers within reach of formal credit.",
+        bn: "যাচাইকৃত উদ্যোগ প্রোফাইল ও ঋণদাতার উপযোগী আবেদন, যা স্বল্প-তথ্যের কৃষককে প্রাতিষ্ঠানিক ঋণের নাগালে আনে।",
+      },
+    },
+    {
+      target: "2.3",
+      colour: "#DDA63A",
+      asks: {
+        en: "Double the productivity and incomes of small-scale food producers, in particular women, through access to inputs, knowledge, finance and markets.",
+        bn: "ক্ষুদ্র খাদ্য উৎপাদকদের, বিশেষ করে নারীদের, উৎপাদনশীলতা ও আয় দ্বিগুণ করা — উপকরণ, জ্ঞান, অর্থায়ন ও বাজারে প্রবেশাধিকারের মাধ্যমে।",
+      },
+      ours: {
+        en: "Graded feed and inputs, training, finance and a committed buyer for each production cycle.",
+        bn: "প্রতিটি উৎপাদন চক্রের জন্য মানসম্পন্ন খাবার ও উপকরণ, প্রশিক্ষণ, অর্থায়ন ও নিশ্চিত ক্রেতা।",
+      },
+    },
+    {
+      target: "5.4",
+      colour: "#FF3A21",
+      asks: {
+        en: "Recognise and value unpaid care and domestic work.",
+        bn: "অবৈতনিক সেবা ও গৃহস্থালি কাজের স্বীকৃতি ও মূল্যায়ন।",
+      },
+      ours: {
+        en: "Home-based livelihoods designed around care responsibilities instead of in competition with them.",
+        bn: "সেবাকাজের দায়িত্বের সঙ্গে প্রতিযোগিতা নয়, তার সঙ্গে মানিয়ে গড়া ঘরভিত্তিক জীবিকা।",
+      },
+    },
+    {
+      target: "5.a",
+      colour: "#FF3A21",
+      asks: {
+        en: "Give women equal rights to economic resources and access to financial services.",
+        bn: "নারীদের অর্থনৈতিক সম্পদে সমান অধিকার ও আর্থিক সেবায় প্রবেশাধিকার দেওয়া।",
+      },
+      ours: {
+        en: "70% women participation, and women's cooperatives that produce and distribute Shadhin feed.",
+        bn: "৭০% নারীর অংশগ্রহণ, আর স্বাধীন খাবার উৎপাদন ও বিতরণে নারী সমবায়।",
+      },
+    },
+    {
+      target: "10.2",
+      colour: "#DD1367",
+      asks: {
+        en: "Promote the economic inclusion of all, irrespective of sex, disability or economic status.",
+        bn: "লিঙ্গ, প্রতিবন্ধিতা বা অর্থনৈতিক অবস্থা নির্বিশেষে সবার অর্থনৈতিক অন্তর্ভুক্তি।",
+      },
+      ours: {
+        en: "15% of participants are persons with disabilities, and advice is spoken aloud so reading is never the barrier.",
+        bn: "অংশগ্রহণকারীদের ১৫% প্রতিবন্ধী ব্যক্তি, আর পরামর্শ পড়ে শোনানো হয় — তাই পড়তে না পারা কখনো বাধা হয় না।",
+      },
+    },
+    {
+      target: "12.5",
+      colour: "#BF8B2E",
+      asks: {
+        en: "Substantially reduce waste generation through prevention, reduction, recycling and reuse.",
+        bn: "প্রতিরোধ, হ্রাস, পুনর্ব্যবহার ও পুনঃপ্রক্রিয়াকরণের মাধ্যমে বর্জ্য উৎপাদন উল্লেখযোগ্যভাবে কমানো।",
+      },
+      ours: {
+        en: "Waste management and reduced single-use plastic across our projects.",
+        bn: "আমাদের প্রকল্পজুড়ে বর্জ্য ব্যবস্থাপনা ও একবার-ব্যবহার্য প্লাস্টিক হ্রাস।",
+      },
+    },
+    {
+      target: "13.3",
+      colour: "#3F7E44",
+      asks: {
+        en: "Improve awareness and capacity on climate adaptation, impact reduction and early warning.",
+        bn: "জলবায়ু অভিযোজন, ক্ষতি হ্রাস ও আগাম সতর্কতা বিষয়ে সচেতনতা ও সক্ষমতা বাড়ানো।",
+      },
+      ours: {
+        en: "Weather alerts and climate-smart farming advice delivered in Shathi Sheba.",
+        bn: "সাথী সেবায় আবহাওয়ার সতর্কতা ও জলবায়ু-সহনশীল কৃষি পরামর্শ।",
       },
     },
   ];
@@ -152,13 +337,39 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
         }
       />
 
-      {/* Impact numbers */}
-      <Section tone="page">
+      {/* On-this-page navigation, the same pattern as the About page. A long
+          impact page without one makes a reader scroll to find out whether
+          what they came for is even here. */}
+      <nav
+        aria-label={en ? "On this page" : "এই পাতায়"}
+        className="sticky top-15 z-30 border-b border-stone-200 bg-white/95 backdrop-blur lg:top-18"
+      >
         <div className="container-page">
+          <ul className="no-scrollbar flex gap-1 overflow-x-auto py-2">
+            {anchors.map((anchor) => (
+              <li key={anchor.id}>
+                <a
+                  href={`#${anchor.id}`}
+                  className="block rounded-md px-3 py-2 font-display text-sm font-semibold whitespace-nowrap text-stone-600 transition-colors hover:bg-stone-100 hover:text-brand-strong"
+                >
+                  {t(anchor.label, locale)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+
+      {/* At a glance: reach to date, then the goals it is measured against */}
+      <Section tone="page" id="at-a-glance">
+        <div className="container-page">
+          <p className="font-display text-xs font-bold tracking-widest text-stone-500 uppercase">
+            {en ? "Reach to date" : "এ পর্যন্ত"}
+          </p>
           {/* Divided rather than merely gridded: five numbers in five equal
               cells with no separators read as a table of unrelated values.
               Hairlines between them make it one band of related figures. */}
-          <Card className="grid gap-8 divide-stone-200 p-8 sm:grid-cols-2 lg:grid-cols-5 lg:divide-x lg:p-10">
+          <Card className="mt-4 grid gap-8 divide-stone-200 p-8 sm:grid-cols-2 lg:grid-cols-5 lg:divide-x lg:p-10">
             {headlineStats.map((stat, index) => (
               <div key={stat.label.en} className={index > 0 ? "lg:ps-6" : undefined}>
                 <StatBlock value={t(stat.value, locale)} label={t(stat.label, locale)} />
@@ -167,10 +378,78 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
             ))}
           </Card>
 
+          {/*
+            THE GOALS, WITH HONEST PROGRESS.
+            Only the first goal gets a bar, because it is the only one where
+            "reached so far" and "the goal" measure the same thing. The pilot
+            income figure is a result from pilot cohorts, not progress across
+            the whole base, and drawing it as a bar toward 30% would imply a
+            comparison the numbers do not support. A 2% bar is not flattering;
+            it is accurate, and a goal that is visibly far away is the point of
+            stating one.
+          */}
+          <p className="mt-12 font-display text-xs font-bold tracking-widest text-stone-500 uppercase">
+            {en ? "What we are working toward" : "আমাদের লক্ষ্য"}
+          </p>
+          <div className="mt-4 grid gap-5 lg:grid-cols-3">
+            <Card className="flex flex-col p-7">
+              <p className="font-display text-3xl font-extrabold text-stone-900">{en ? "50,000" : "৫০,০০০"}</p>
+              <p className="mt-1 font-display text-[15px] font-bold text-stone-900">
+                {en ? "smallholder farmers reached" : "ক্ষুদ্র কৃষকের কাছে পৌঁছানো"}
+              </p>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
+                {en
+                  ? "Particularly women and persons with disabilities living below or near the poverty line."
+                  : "বিশেষ করে দারিদ্র্যসীমার নিচে বা কাছাকাছি থাকা নারী ও প্রতিবন্ধী ব্যক্তি।"}
+              </p>
+              <div className="mt-5">
+                <div
+                  className="h-2 overflow-hidden rounded-full bg-stone-100"
+                  role="progressbar"
+                  aria-valuenow={2}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={en ? "Progress toward 50,000 farmers" : "৫০,০০০ কৃষকের লক্ষ্যে অগ্রগতি"}
+                >
+                  <div className="h-full w-[2%] rounded-full bg-brand" />
+                </div>
+                <p className="mt-2 text-xs text-stone-500">
+                  {en ? "1,000+ connected so far — about 2% of the goal" : "এ পর্যন্ত ১,০০০+ সংযুক্ত — লক্ষ্যের প্রায় ২%"}
+                </p>
+              </div>
+            </Card>
+            <Card className="flex flex-col p-7">
+              <p className="font-display text-3xl font-extrabold text-stone-900">{en ? "20,000" : "২০,০০০"}</p>
+              <p className="mt-1 font-display text-[15px] font-bold text-stone-900">
+                {en ? "rural input partners by 2030" : "২০৩০ সালের মধ্যে গ্রামীণ উপকরণ অংশীদার"}
+              </p>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
+                {en
+                  ? "Each with improved, sustainable livelihoods and access to markets."
+                  : "প্রত্যেকের জন্য উন্নত, টেকসই জীবিকা ও বাজারে প্রবেশাধিকার।"}
+              </p>
+              <p className="mt-5 text-xs text-stone-500">{en ? "DigiGram 2030 commitment" : "ডিজিগ্রামের ২০৩০ অঙ্গীকার"}</p>
+            </Card>
+            <Card className="flex flex-col p-7">
+              <p className="font-display text-3xl font-extrabold text-stone-900">{en ? "Up to 30%" : "৩০% পর্যন্ত"}</p>
+              <p className="mt-1 font-display text-[15px] font-bold text-stone-900">
+                {en ? "income increase from baseline" : "ভিত্তিরেখা থেকে আয় বৃদ্ধি"}
+              </p>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
+                {en
+                  ? "Through fair and transparent pricing. Pilot cohorts have recorded a 20% increase so far."
+                  : "ন্যায্য ও স্বচ্ছ দামের মাধ্যমে। পাইলট দলগুলোতে এ পর্যন্ত ২০% বৃদ্ধি নথিভুক্ত হয়েছে।"}
+              </p>
+              <p className="mt-5 text-xs text-stone-500">
+                {en ? "Impact statement · pilot results, Overview Deck July 2026" : "প্রভাব বিবৃতি · পাইলট ফলাফল, জুলাই ২০২৬"}
+              </p>
+            </Card>
+          </div>
+
           <Note tone="info" icon="info" className="mt-6">
             {en
-              ? "Figures are as reported in the June and July 2026 investor decks. Independently verified figures will replace them as the measurement framework matures."
-              : "সংখ্যাগুলো জুন ও জুলাই ২০২৬-এর বিনিয়োগকারী ডেকে প্রকাশিত। পরিমাপ কাঠামো পরিণত হলে স্বাধীনভাবে যাচাইকৃত সংখ্যা এগুলোর স্থান নেবে।"}
+              ? "Figures are as reported in DigiGram's June and July 2026 company decks. Independently verified figures will replace them as the measurement framework matures."
+              : "সংখ্যাগুলো ডিজিগ্রামের জুন ও জুলাই ২০২৬-এর কোম্পানি ডেকে প্রকাশিত। পরিমাপ কাঠামো পরিণত হলে স্বাধীনভাবে যাচাইকৃত সংখ্যা এগুলোর স্থান নেবে।"}
           </Note>
         </div>
       </Section>
@@ -191,31 +470,98 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
         </div>
       </Section>
 
-      {/* Key value drivers */}
-      <Section tone="page">
+      {/* Impact areas: the challenge, our response, and what we track */}
+      <Section tone="page" id="impact-areas">
         <div className="container-page">
           <SectionHead
-            eyebrow={en ? "Key value drivers" : "মূল চালিকাশক্তি"}
-            title={en ? "The problems we solve" : "যে সমস্যাগুলো আমরা সমাধান করি"}
+            eyebrow={en ? "Impact areas" : "প্রভাবের ক্ষেত্র"}
+            title={en ? "Four problems, and what we do about each" : "চারটি সমস্যা, আর প্রতিটির জন্য আমরা যা করি"}
+            lead={
+              en
+                ? "Each area is stated the same way: the problem as it stands in Bangladesh, the part of it our work addresses, and the indicator we record to show whether it is working."
+                : "প্রতিটি ক্ষেত্র একইভাবে বলা হয়েছে: বাংলাদেশে সমস্যাটি এখন যেমন, আমাদের কাজ এর কোন অংশে হাত দেয়, আর কাজ হচ্ছে কি না তা দেখাতে আমরা কোন সূচক নথিভুক্ত করি।"
+            }
           />
           <div className="mt-12 grid gap-5 lg:grid-cols-2">
             {drivers.map((driver, index) => (
               <Reveal key={driver.title.en} delay={index * 60}>
-                {/* Laid out like the existing site: the goal tiles lead, the
-                    heading sits under them, the body follows. The tiles are the
-                    recognisable element, so they get the top of the card rather
-                    than a mono-type footnote in the corner. */}
-                <Card className="flex h-full flex-col items-center p-7 text-center">
-                  <SdgTiles goals={driver.goals} locale={locale} size={96} />
-                  <h3 className="mt-6 font-display text-xl font-bold text-stone-900">
-                    {t(driver.title, locale)}
-                  </h3>
-                  <p className="mt-3 text-[15px] leading-relaxed text-stone-700">
-                    {t(driver.body, locale)}
+                <Card className="flex h-full flex-col p-7">
+                  <div className="flex items-center gap-5">
+                    <SdgTiles goals={driver.goals} locale={locale} size={64} />
+                    <h3 className="font-display text-xl font-bold text-stone-900">{t(driver.title, locale)}</h3>
+                  </div>
+                  <dl className="mt-6 flex-1 space-y-4">
+                    <div>
+                      <dt className="font-display text-xs font-bold tracking-wide text-terracotta-700 uppercase">
+                        {en ? "The challenge" : "চ্যালেঞ্জ"}
+                      </dt>
+                      <dd className="mt-1 text-[15px] leading-relaxed text-stone-700">{t(driver.body, locale)}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-display text-xs font-bold tracking-wide text-brand-strong uppercase">
+                        {en ? "Our response" : "আমাদের পদক্ষেপ"}
+                      </dt>
+                      <dd className="mt-1 text-[15px] leading-relaxed text-stone-700">{t(driver.response, locale)}</dd>
+                    </div>
+                  </dl>
+                  <p className="mt-6 flex items-start gap-2 border-t border-stone-100 pt-4 text-sm text-stone-600">
+                    <Icon name="bar-chart" size={16} className="mt-0.5 shrink-0 text-stone-400" />
+                    <span>
+                      <span className="font-semibold text-stone-800">{en ? "We track: " : "আমরা মাপি: "}</span>
+                      {t(driver.track, locale)}
+                    </span>
                   </p>
                 </Card>
               </Reveal>
             ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Inclusion: how the products are built for the people most often left out */}
+      <Section tone="tint" id="inclusion">
+        <div className="container-page">
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-5">
+              <p className="eyebrow">{en ? "Gender and disability inclusion" : "লিঙ্গ ও প্রতিবন্ধিতা অন্তর্ভুক্তি"}</p>
+              <h2 className="mt-4 font-display text-3xl leading-tight font-bold tracking-tight text-balance text-stone-900 lg:text-4xl">
+                {en ? "Designed for the people most often left out" : "যাঁরা প্রায়ই বাদ পড়ে যান, তাঁদের কথা ভেবেই নকশা"}
+              </h2>
+              <p className="mt-5 text-[17px] leading-relaxed text-stone-700">
+                {en
+                  ? "Seven in ten of the people we work with are women, and more than one in seven live with a disability. That stays true only if every product is built for the constraints they actually face — time, literacy, mobility — rather than adapted for them afterwards."
+                  : "আমরা যাঁদের সঙ্গে কাজ করি তাঁদের প্রতি দশজনে সাতজন নারী, আর প্রতি সাতজনে একজনের বেশি প্রতিবন্ধিতা নিয়ে বাস করেন। এটি তখনই সত্য থাকে, যখন প্রতিটি পণ্য তাঁদের প্রকৃত সীমাবদ্ধতা — সময়, পড়ালেখা, চলাচল — মাথায় রেখে শুরু থেকেই তৈরি হয়, পরে জোড়াতালি দিয়ে নয়।"}
+              </p>
+              <dl className="mt-8 grid grid-cols-2 gap-5">
+                {careStats
+                  .filter((stat) => stat.kind === "base")
+                  .map((stat) => (
+                    <div key={stat.value.en} className="rounded-lg bg-white p-5 shadow-sm ring-1 ring-stone-200">
+                      <dt className="sr-only">{t(stat.label, locale)}</dt>
+                      <dd>
+                        <span className="block font-display text-3xl leading-none font-extrabold text-brand-strong">
+                          {t(stat.value, locale)}
+                        </span>
+                        <span className="mt-1.5 block text-sm leading-snug text-stone-600">{t(stat.label, locale)}</span>
+                      </dd>
+                    </div>
+                  ))}
+              </dl>
+            </div>
+
+            <ul className="grid gap-5 sm:grid-cols-2 lg:col-span-7">
+              {inclusionCommitments.map((item, index) => (
+                <Reveal key={item.title.en} delay={index * 60} as="li">
+                  <div className="flex h-full flex-col rounded-lg bg-white p-6 shadow-sm ring-1 ring-stone-200">
+                    <span className="flex size-10 items-center justify-center rounded-md bg-brand-tint text-brand-strong">
+                      <Icon name={item.icon} size={20} />
+                    </span>
+                    <h3 className="mt-4 font-display text-lg font-bold text-stone-900">{t(item.title, locale)}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-stone-600">{t(item.body, locale)}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </ul>
           </div>
         </div>
       </Section>
@@ -478,18 +824,107 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
                 </ul>
                 <p className="text-sm text-white/60">
                   {en
-                    ? "Reporting cadence: monthly project updates to investors, and an annual impact report. We do not claim attribution for change we cannot trace to a project cohort."
-                    : "প্রতিবেদনের ছন্দ: বিনিয়োগকারীদের কাছে মাসিক প্রকল্প হালনাগাদ এবং বার্ষিক প্রভাব প্রতিবেদন। যে পরিবর্তন কোনো প্রকল্প দলের সঙ্গে যুক্ত করা যায় না, তার কৃতিত্ব আমরা দাবি করি না।"}
+                    ? "We do not claim attribution for change we cannot trace to a project cohort."
+                    : "যে পরিবর্তন কোনো প্রকল্প দলের সঙ্গে যুক্ত করা যায় না, তার কৃতিত্ব আমরা দাবি করি না।"}
                 </p>
               </div>
             </div>
+            {/* Reporting and governance: what a funder or partner receives,
+                and the rules the numbers are held to. SDG alignment has its own
+                section below, at target level. */}
             <div className="lg:col-span-5">
-              <p className="mb-4 font-display text-xs font-bold tracking-widest text-white/60 uppercase">
-                {en ? "Aligned with" : "সামঞ্জস্যপূর্ণ"}
-              </p>
-              <SdgRow locale={locale} />
+              <div className="rounded-xl bg-white/[0.06] p-7 ring-1 ring-white/15">
+                <p className="font-display text-xs font-bold tracking-widest text-white/60 uppercase">
+                  {en ? "Reporting and governance" : "প্রতিবেদন ও পরিচালনা"}
+                </p>
+                <ul className="mt-5 space-y-5">
+                  {[
+                    {
+                      icon: "calendar" as IconName,
+                      title: { en: "Monthly project updates", bn: "মাসিক প্রকল্প হালনাগাদ" },
+                      body: { en: "To funders and partners, for every active cycle.", bn: "প্রতিটি চলমান চক্রের জন্য অর্থদাতা ও অংশীদারদের কাছে।" },
+                    },
+                    {
+                      icon: "file-text" as IconName,
+                      title: { en: "Annual impact report", bn: "বার্ষিক প্রভাব প্রতিবেদন" },
+                      body: { en: "Outcomes against the baselines recorded at enrolment.", bn: "নিবন্ধনের সময়ের ভিত্তিরেখার সাপেক্ষে ফলাফল।" },
+                    },
+                    {
+                      icon: "check-circle" as IconName,
+                      title: { en: "Verified at source", bn: "উৎসেই যাচাই" },
+                      body: { en: "Cooperative and field-officer sign-off on every recorded value.", bn: "প্রতিটি নথিভুক্ত তথ্যে সমবায় ও মাঠ কর্মকর্তার অনুমোদন।" },
+                    },
+                    {
+                      icon: "shield" as IconName,
+                      title: { en: "Consent and privacy", bn: "সম্মতি ও গোপনীয়তা" },
+                      body: {
+                        en: "Named stories only with the producer's consent; personal data handled under our Privacy Policy.",
+                        bn: "উৎপাদকের সম্মতি ছাড়া নামসহ কোনো গল্প নয়; ব্যক্তিগত তথ্য আমাদের গোপনীয়তা নীতি অনুযায়ী পরিচালিত।",
+                      },
+                    },
+                  ].map((item) => (
+                    <li key={item.title.en} className="flex gap-3.5">
+                      <Icon name={item.icon} size={18} className="mt-0.5 shrink-0 text-brand-accent" />
+                      <div>
+                        <p className="font-display text-[15px] font-bold text-white">{t(item.title, locale)}</p>
+                        <p className="mt-0.5 text-sm leading-relaxed text-white/70">{t(item.body, locale)}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={localePath(locale, routes.privacy)}
+                  className="mt-6 inline-flex items-center gap-1.5 font-display text-sm font-semibold text-white hover:underline"
+                >
+                  {en ? "Read the Privacy Policy" : "গোপনীয়তা নীতি পড়ুন"}
+                  <Icon name="arrow-right" size={15} />
+                </a>
+              </div>
             </div>
           </div>
+        </div>
+      </Section>
+
+      {/* SDG alignment at target level */}
+      <Section tone="surface" id="sdgs">
+        <div className="container-page">
+          <SectionHead
+            eyebrow={en ? "SDG alignment" : "এসডিজি সামঞ্জস্য"}
+            title={en ? "Aligned to specific targets, not just goals" : "শুধু লক্ষ্য নয়, নির্দিষ্ট টার্গেটের সঙ্গে সামঞ্জস্য"}
+            lead={
+              en
+                ? "Claiming a whole goal says very little. These are the seven Sustainable Development Goal targets our work contributes to, and the part of the work that does it."
+                : "পুরো একটি লক্ষ্য দাবি করায় তেমন কিছু বোঝায় না। এগুলো টেকসই উন্নয়ন লক্ষ্যের সেই সাতটি নির্দিষ্ট টার্গেট, যেখানে আমাদের কাজ অবদান রাখে — আর কাজের কোন অংশ তা করে।"
+            }
+          />
+          <div className="mt-12 overflow-hidden rounded-xl border border-stone-200">
+            <div className="hidden bg-stone-50 px-6 py-3 font-display text-xs font-bold tracking-wide text-stone-500 uppercase lg:grid lg:grid-cols-12 lg:gap-6">
+              <span className="lg:col-span-2">{en ? "Target" : "টার্গেট"}</span>
+              <span className="lg:col-span-5">{en ? "What it asks" : "যা চাওয়া হয়েছে"}</span>
+              <span className="lg:col-span-5">{en ? "Our contribution" : "আমাদের অবদান"}</span>
+            </div>
+            <ul className="divide-y divide-stone-200">
+              {sdgTargets.map((row) => (
+                <li key={row.target} className="grid gap-3 px-6 py-5 lg:grid-cols-12 lg:gap-6">
+                  <div className="lg:col-span-2">
+                    <span
+                      className="inline-flex items-center rounded-md px-2.5 py-1 font-display text-sm font-bold text-white"
+                      style={{ backgroundColor: row.colour }}
+                    >
+                      SDG {row.target}
+                    </span>
+                  </div>
+                  <p className="text-[15px] leading-relaxed text-stone-600 lg:col-span-5">{t(row.asks, locale)}</p>
+                  <p className="text-[15px] leading-relaxed font-medium text-stone-900 lg:col-span-5">{t(row.ours, locale)}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="mt-4 text-xs text-stone-400">
+            {en
+              ? "Target wording paraphrased from the United Nations Sustainable Development Goals framework."
+              : "টার্গেটের ভাষা জাতিসংঘের টেকসই উন্নয়ন লক্ষ্য কাঠামো থেকে সংক্ষেপে নেওয়া।"}
+          </p>
         </div>
       </Section>
 
@@ -517,7 +952,17 @@ export default async function ImpactPage({ params }: { params: Promise<{ locale:
         </div>
       </Section>
 
-      <CtaBand locale={locale} />
+      <CtaBand
+        locale={locale}
+        title={en ? "Partner with us on impact you can measure." : "পরিমাপযোগ্য প্রভাবের জন্য আমাদের সঙ্গী হোন।"}
+        lead={
+          en
+            ? "Development partners, lenders and buyers: talk to us about pilots, shared data and programmes designed around the indicators that matter to you."
+            : "উন্নয়ন সহযোগী, ঋণদাতা ও ক্রেতা: পাইলট, তথ্য বিনিময় আর আপনার কাছে গুরুত্বপূর্ণ সূচক ঘিরে সাজানো কর্মসূচি নিয়ে কথা বলুন।"
+        }
+        primary={{ href: routes.contact, label: en ? "Partner with us" : "অংশীদার হোন" }}
+        secondary={{ href: routes.about, label: en ? "About DigiGram" : "ডিজিগ্রাম সম্পর্কে" }}
+      />
     </>
   );
 }

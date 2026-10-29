@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Section, SectionHead } from "@/components/ui/Section";
+import { ProcessFlow } from "@/components/sections/ProcessFlow";
 import { Card, Note } from "@/components/ui/Primitives";
 import { ButtonLink } from "@/components/ui/Button";
 import { Accordion, AccordionItem } from "@/components/ui/Accordion";
@@ -10,7 +11,7 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { ShathiLogo } from "@/components/brand/Logo";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ScrollCarousel } from "@/components/sections/Carousels";
-import { CtaBand, ViewAllLink } from "@/components/sections/Shared";
+import { CtaBand, ViewAllLink, InvestorVoiceBand } from "@/components/sections/Shared";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { fetchProjects } from "@/lib/projects.server";
 import { breadcrumbSchema, buildMetadata } from "@/lib/seo";
@@ -188,6 +189,18 @@ export default async function ShathiPage({ params }: { params: Promise<{ locale:
           </div>
         </div>
       </Section>
+
+      {/*
+        How investing works, and why people have done it.
+
+        Both used to be on the homepage. The homepage now leads with what the
+        company is for rather than with an investment funnel, so the investor's
+        journey lives here, on the page that is about investing. Tones are set
+        so the page keeps alternating: canvas (why) → surface (how) → canvas
+        (voices) → surface (live projects).
+      */}
+      <ProcessFlow locale={locale} tone="surface" />
+      <InvestorVoiceBand locale={locale} tone="canvas" />
 
       {/* Live projects */}
       <Section tone="surface">

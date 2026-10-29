@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Section, SectionHead } from "@/components/ui/Section";
+import { Section, SectionHead, type SectionTone } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { formatBdt, t, type Locale } from "@/lib/i18n";
@@ -103,11 +103,16 @@ const STEPS: Step[] = [
     },
 ];
 
-export function ProcessFlow({ locale }: { locale: Locale }) {
+/**
+ * `tone` exists because this section now lives on the Shathi product page,
+ * where it sits between two other sections and has to alternate with them. It
+ * used to be on the homepage, which is no longer an investment funnel.
+ */
+export function ProcessFlow({ locale, tone = "surface" }: { locale: Locale; tone?: SectionTone }) {
     const en = locale === "en";
 
     return (
-        <Section tone="surface" id="how-it-works">
+        <Section tone={tone} id="how-it-works">
             <div className="container-page">
                 <SectionHead
                     eyebrow={en ? "How investing works" : "বিনিয়োগ যেভাবে কাজ করে"}

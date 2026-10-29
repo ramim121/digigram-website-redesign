@@ -11,22 +11,19 @@ import { routes } from "@/lib/site";
  * The Shathi Sheba band on the homepage.
  *
  * WHY IT IS HERE
- * The homepage told one story — invest in a Shathi project — and mentioned
- * Shathi Sheba once, inside a sentence about the product range. A reader could
- * scroll the entire page and not learn that DigiGram builds the software the
- * farmer side runs on. This band is the counterweight: a full-width section
- * that states what Shathi Sheba is, shows it running, and hands off to the
- * product page.
+ * Shathi Sheba is the company's flagship platform, and this is where the
+ * homepage introduces it: what it is for, the four rails, two screens from the
+ * shipped app, and a hand-off to the product page. The Shathi Apa section that
+ * follows goes one level deeper, into the assistant inside the app.
  *
  * WHY IT LOOKS DIFFERENT FROM EVERYTHING AROUND IT
  * It carries `data-brand="shathi-sheba"`, which swaps the token layer to wine,
- * and it sits on a solid `bg-brand-strong` rather than the tinted canvas the
- * Shathi projects band uses. That is deliberate contrast, not decoration: the
- * two bands are adjacent on the page, both are product bands, and if they
- * shared a treatment the reader would scroll past the second assuming it was
- * more of the first. Wine on dark also lets the app screenshots — which are
- * themselves wine-on-cream — sit in the section as artwork rather than as two
- * pale rectangles.
+ * and sits on a solid `bg-brand-strong`: the one dark, full-bleed product band
+ * on a page of light sections, so the flagship reads as the flagship. The Apa
+ * section after it uses the light wine canvas, so the two read as one product
+ * at two depths rather than as two products. Wine on dark also lets the app
+ * screenshots — themselves wine-on-cream — sit in the section as artwork
+ * rather than as two pale rectangles.
  *
  * The rails are the four in `content/sheba.ts`, the same four words as the
  * company pillars, because Shathi Sheba is the software under the model rather
@@ -61,16 +58,20 @@ export function ShebaBand({ locale }: { locale: Locale }) {
           <div className="lg:col-span-6">
             <ShathiShebaLogo invert locale={locale} className="h-8" />
 
+            {/* Stands on its own. This band used to open "The other side of the
+                cycle" and "Investment reaches a farmer…", which only made sense
+                straight after an investment carousel. The homepage no longer
+                has one, so the band now says what the app is for, unprompted. */}
             <h2 className="mt-6 font-display text-3xl leading-tight font-bold tracking-tight text-balance text-white lg:text-4xl">
               {en
-                ? "The other side of the cycle now has software"
-                : "চক্রের অন্য প্রান্তেও এখন সফটওয়্যার"}
+                ? "One app for every part of a rural enterprise"
+                : "গ্রামীণ উদ্যোগের সব কাজের জন্য একটি অ্যাপ"}
             </h2>
 
             <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-white/80">
               {en
-                ? "Investment reaches a farmer who is already commercially invisible — no credit record, no published price, no buyer on paper. Shathi Sheba is the app that changes that: it turns scattered field information into one verified enterprise profile a bank, a buyer and a project can all read."
-                : "বিনিয়োগ পৌঁছায় এমন কৃষকের কাছে, যিনি বাণিজ্যিকভাবে ইতিমধ্যেই অদৃশ্য — ঋণের নথি নেই, প্রকাশিত দাম নেই, কাগজে ক্রেতা নেই। সাথী সেবা সেটাই বদলায়: ছড়িয়ে থাকা মাঠের তথ্যকে এটি একটি যাচাইকৃত উদ্যোগ প্রোফাইলে রূপ দেয়, যা ব্যাংক, ক্রেতা ও প্রকল্প — সবাই পড়তে পারে।"}
+                ? "Most smallholders are commercially invisible — no credit record, no published price, no buyer on paper. Shathi Sheba changes that: it turns scattered field information into one verified enterprise profile that a bank, a buyer and a project can all read, and puts finance, inputs, advice and a market in the same app."
+                : "বেশিরভাগ ক্ষুদ্র কৃষক বাণিজ্যিকভাবে অদৃশ্য — ঋণের নথি নেই, প্রকাশিত দাম নেই, কাগজে ক্রেতা নেই। সাথী সেবা সেটাই বদলায়: ছড়িয়ে থাকা মাঠের তথ্যকে এটি একটি যাচাইকৃত উদ্যোগ প্রোফাইলে রূপ দেয়, যা ব্যাংক, ক্রেতা ও প্রকল্প — সবাই পড়তে পারে, আর একই অ্যাপে এনে দেয় অর্থায়ন, উপকরণ, পরামর্শ ও বাজার।"}
             </p>
 
             {/* Four rails as rows rather than a 2×2 of cards: at this width a

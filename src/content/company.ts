@@ -1,4 +1,5 @@
 import type { Bi } from "@/lib/i18n";
+import type { IconName } from "@/components/ui/Icon";
 
 /**
  * Company-wide content used on more than one page.
@@ -30,7 +31,7 @@ export const headlineStats: Stat[] = [
   },
   {
     value: { en: "৳ 1.02 Cr", bn: "৳ ১.০২ কোটি" },
-    label: { en: "Capital mobilised", bn: "সংগৃহীত পুঁজি" },
+    label: { en: "Mobilised into farming", bn: "কৃষিতে সংগৃহীত" },
     source: "Email Deck, June 2026 — Funding",
   },
   {
@@ -59,12 +60,12 @@ export const pillars: {
     title: { en: "Fund", bn: "ফান্ড" },
     line: { en: "Inclusive & accessible finance", bn: "সবার জন্য সহজলভ্য অর্থায়ন" },
     detail: {
-      en: "Only 15% of rural households reach formal credit; the rest borrow informally and expensively. We fund production directly through investor capital and project-linked finance, and we build the verified profile a bank needs before it will lend.",
-      bn: "গ্রামীণ পরিবারের মাত্র ১৫% আনুষ্ঠানিক ঋণ পান; বাকিরা চড়া সুদে অনানুষ্ঠানিকভাবে ঋণ নেন। আমরা বিনিয়োগকারীর পুঁজি ও প্রকল্প-সংযুক্ত অর্থায়নের মাধ্যমে সরাসরি উৎপাদনে অর্থায়ন করি, এবং ব্যাংক ঋণ দেওয়ার আগে যে যাচাইকৃত প্রোফাইল দরকার সেটিও তৈরি করি।",
+      en: "Only 15% of rural households reach formal credit; the rest borrow informally and expensively. We open the door from both sides: project-linked loans from partner banks, and impact capital from people who fund production cycles — while Shathi Sheba builds the verified profile a lender needs before it will say yes.",
+      bn: "গ্রামীণ পরিবারের মাত্র ১৫% আনুষ্ঠানিক ঋণ পান; বাকিরা চড়া সুদে অনানুষ্ঠানিকভাবে ঋণ নেন। আমরা দুই দিক থেকে দরজা খুলি: অংশীদার ব্যাংকের প্রকল্প-সংযুক্ত ঋণ, আর উৎপাদন চক্রে অর্থ জোগানো মানুষের ইমপ্যাক্ট পুঁজি — সঙ্গে সাথী সেবা তৈরি করে সেই যাচাইকৃত প্রোফাইল, যা দেখে ঋণদাতা হ্যাঁ বলতে পারেন।",
     },
     example: {
-      en: "A cattle-fattening cycle in Rangunia funded by 55 urban investors, with the animals, feed and vet cover paid for up front.",
-      bn: "রাঙ্গুনিয়ায় একটি গরু মোটাতাজাকরণ চক্রে ৫৫ জন শহুরে বিনিয়োগকারীর অর্থায়ন — পশু, খাদ্য ও পশুচিকিৎসার ব্যয় আগেই পরিশোধিত।",
+      en: "A cattle-fattening project in Natore for 100 farmers per upazila, with the loan from BRAC Bank and DigiGram and a guaranteed buy-back at the end.",
+      bn: "নাটোরে প্রতি উপজেলায় ১০০ কৃষকের গরু মোটাতাজাকরণ প্রকল্প — ঋণ দিচ্ছে ব্র্যাক ব্যাংক ও ডিজিগ্রাম, আর শেষে নিশ্চিত বাই-ব্যাক।",
     },
   },
   {
@@ -142,54 +143,159 @@ export const problemCards: { title: Bi; body: Bi; source: Bi }[] = [
   },
 ];
 
-export const stakeholders: { title: Bi; body: Bi; bullets: Bi[] }[] = [
+export const stakeholders: { title: Bi; body: Bi; bullets: Bi[]; icon: IconName }[] = [
+  /*
+   * Who the model is for, in the order the company's purpose names them.
+   *
+   * This used to open with Farmers and Investors as equals. The homepage now
+   * leads with what DigiGram is for — rural households, and women and people
+   * with disabilities in particular — so the people who fund and buy appear as
+   * partners to that purpose, not as its audience. Investing still has its own
+   * home on the Shathi pages.
+   */
   {
-    title: { en: "Farmers", bn: "কৃষক" },
+    icon: "sprout",
+    title: { en: "Farmers and rural entrepreneurs", bn: "কৃষক ও গ্রামীণ উদ্যোক্তা" },
     body: {
-      en: "Finance, quality inputs, advice and a buyer arranged before the cycle ends.",
-      bn: "অর্থায়ন, মানসম্পন্ন উপকরণ, পরামর্শ এবং চক্র শেষের আগেই নির্ধারিত ক্রেতা।",
+      en: "Finance, quality inputs, training and a committed buyer — arranged before the cycle starts, not chased after it ends.",
+      bn: "অর্থায়ন, মানসম্পন্ন উপকরণ, প্রশিক্ষণ ও নিশ্চিত ক্রেতা — চক্র শুরুর আগেই ঠিক করা, শেষ হওয়ার পরে খোঁজা নয়।",
     },
     bullets: [
-      { en: "Up to 50% of project profit", bn: "প্রকল্প মুনাফার ৫০% পর্যন্ত" },
-      { en: "Published price before sale", bn: "বিক্রির আগেই প্রকাশিত দাম" },
-      { en: "A reusable enterprise profile", bn: "বারবার ব্যবহারযোগ্য উদ্যোগ প্রোফাইল" },
+      { en: "A published price before every sale", bn: "প্রতিটি বিক্রির আগেই প্রকাশিত দাম" },
+      { en: "Feed and inputs delivered to the village", bn: "গ্রামেই পৌঁছে দেওয়া খাদ্য ও উপকরণ" },
+      { en: "A verified profile a bank can read", bn: "ব্যাংকের পড়ার মতো যাচাইকৃত প্রোফাইল" },
     ],
   },
   {
-    title: { en: "Investors", bn: "বিনিয়োগকারী" },
+    icon: "users",
+    title: { en: "Women and people with disabilities", bn: "নারী ও প্রতিবন্ধী ব্যক্তি" },
     body: {
-      en: "Transparent rural projects with a stated mechanism, a monitored cycle and a disclosed risk.",
-      bn: "স্বচ্ছ গ্রামীণ প্রকল্প — নির্দিষ্ট প্রক্রিয়া, তদারকি করা চক্র ও প্রকাশিত ঝুঁকিসহ।",
+      en: "Livelihoods that fit around a day already full of care work — homestead livestock, kitchen gardens and crafts, run from home.",
+      bn: "এমন জীবিকা যা ঘরের সেবাকাজে ভরা দিনের সঙ্গে মানিয়ে চলে — বাড়ির গবাদিপশু, আঙিনার বাগান ও হস্তশিল্প, ঘরে বসেই।",
     },
     bullets: [
-      { en: "Project-level reporting", bn: "প্রকল্পভিত্তিক প্রতিবেদন" },
-      { en: "Estimated return bands, never guarantees", bn: "আনুমানিক রিটার্ন, কখনো নিশ্চয়তা নয়" },
-      { en: "Impact you can trace to a household", bn: "পরিবার পর্যন্ত অনুসরণযোগ্য প্রভাব" },
+      { en: "70% women participation", bn: "৭০% নারীর অংশগ্রহণ" },
+      { en: "15% persons with disabilities", bn: "১৫% প্রতিবন্ধী ব্যক্তি" },
+      { en: "Advice spoken aloud in Bangla", bn: "বাংলায় পড়ে শোনানো পরামর্শ" },
     ],
   },
   {
-    title: { en: "B2B buyers", bn: "বিটুবি ক্রেতা" },
+    icon: "store",
+    title: { en: "Buyers and consumers", bn: "ক্রেতা ও ভোক্তা" },
     body: {
-      en: "Reliable quantity, consistent quality, traceable source and a delivery record.",
-      bn: "নির্ভরযোগ্য পরিমাণ, ধারাবাহিক মান, অনুসরণযোগ্য উৎস ও সরবরাহের নথি।",
+      en: "Reliable quantity, consistent quality and a source that can be traced back to the household that produced it.",
+      bn: "নির্ভরযোগ্য পরিমাণ, নিয়মিত মান, আর এমন উৎস যা উৎপাদনকারী পরিবার পর্যন্ত খুঁজে বের করা যায়।",
     },
     bullets: [
-      { en: "Aggregated cooperative supply", bn: "সমবায় থেকে একত্রিত সরবরাহ" },
+      { en: "Supply aggregated by cooperatives", bn: "সমবায়ের মাধ্যমে একত্রিত সরবরাহ" },
       { en: "Producer, input and training records", bn: "উৎপাদক, উপকরণ ও প্রশিক্ষণের নথি" },
       { en: "Standing agreements, not spot deals", bn: "স্থায়ী চুক্তি, তাৎক্ষণিক লেনদেন নয়" },
     ],
   },
   {
-    title: { en: "Institutional partners", bn: "প্রাতিষ্ঠানিক অংশীদার" },
+    icon: "building",
+    title: { en: "Lenders and development partners", bn: "ঋণদাতা ও উন্নয়ন সহযোগী" },
     body: {
-      en: "Lower acquisition and verification cost, better thin-file visibility, monitored use of funds.",
-      bn: "কম অধিগ্রহণ ও যাচাই ব্যয়, স্বল্প-তথ্য গ্রাহকের ভালো দৃশ্যমানতা, তহবিল ব্যবহারের তদারকি।",
+      en: "Lower acquisition and verification cost, visibility into thin-file borrowers, and monitored use of funds.",
+      bn: "কম অধিগ্রহণ ও যাচাই খরচ, স্বল্প-তথ্যের ঋণগ্রহীতাকে বোঝার সুযোগ, আর তহবিল ব্যবহারের তদারকি।",
     },
     bullets: [
       { en: "Structured, verified applications", bn: "কাঠামোবদ্ধ, যাচাইকৃত আবেদন" },
       { en: "Risk grade with reason codes", bn: "কারণসহ ঝুঁকি গ্রেড" },
       { en: "Post-disbursement performance data", bn: "বিতরণ-পরবর্তী কর্মক্ষমতার তথ্য" },
     ],
+  },
+];
+
+/**
+ * What DigiGram is, in its own words — the homepage leads with this.
+ *
+ * Adapted from the company's standing description: a for-profit impact
+ * startup that uses sustainable agriculture, eco-friendly value chains and the
+ * care economy to benefit underprivileged rural communities, especially women
+ * and people with disabilities, and that offers market access, training and
+ * funding to improve rural livelihoods.
+ */
+export const companyPurpose: Bi = {
+  en: "DigiGram Ventures is a for-profit impact company. We use sustainable agriculture, eco-friendly value chains and the care economy to raise incomes in rural Bangladesh — for underprivileged communities, and above all for women and people with disabilities. Our platforms connect farmers and rural micro-entrepreneurs with the investors, buyers and consumers who value what they produce, and bring them the market access, training and funding that turn a homestead into an enterprise.",
+  bn: "ডিজিগ্রাম ভেঞ্চারস একটি মুনাফাভিত্তিক ইমপ্যাক্ট কোম্পানি। টেকসই কৃষি, পরিবেশবান্ধব ভ্যালু চেইন ও কেয়ার ইকোনমির মাধ্যমে আমরা গ্রামীণ বাংলাদেশের মানুষের আয় বাড়াই — সুবিধাবঞ্চিত জনগোষ্ঠীর জন্য, বিশেষ করে নারী ও প্রতিবন্ধী ব্যক্তিদের জন্য। আমাদের প্ল্যাটফর্ম কৃষক ও গ্রামীণ ক্ষুদ্র উদ্যোক্তাদের যুক্ত করে সেই বিনিয়োগকারী, ক্রেতা ও ভোক্তাদের সঙ্গে, যাঁরা তাঁদের উৎপাদনের মূল্য বোঝেন — আর পৌঁছে দেয় বাজারে প্রবেশাধিকার, প্রশিক্ষণ ও অর্থায়ন, যা একটি বসতবাড়িকে উদ্যোগে রূপ দেয়।",
+};
+
+export type CoreValue = { key: string; title: Bi; body: Bi };
+
+/** The four commitments the purpose rests on. Icons are assigned where rendered. */
+export const coreValues: CoreValue[] = [
+  {
+    key: "agriculture",
+    title: { en: "Sustainable agriculture", bn: "টেকসই কৃষি" },
+    body: {
+      en: "Farming a household can keep running after the cycle ends: graded inputs, climate-smart advice, and production planned against a buyer rather than a hope.",
+      bn: "এমন চাষাবাদ যা চক্র শেষেও পরিবার চালিয়ে যেতে পারে: মানসম্পন্ন উপকরণ, জলবায়ু-সহনশীল পরামর্শ, আর আশার ওপর নয়, ক্রেতাকে সামনে রেখে উৎপাদনের পরিকল্পনা।",
+    },
+  },
+  {
+    key: "value-chains",
+    title: { en: "Eco-friendly value chains", bn: "পরিবেশবান্ধব ভ্যালু চেইন" },
+    body: {
+      en: "Shorter, cleaner chains from shed to buyer: feed made near the farms that use it, supply pooled by cooperatives, and less single-use plastic along the way.",
+      bn: "গোয়াল থেকে ক্রেতা পর্যন্ত ছোট ও পরিচ্ছন্ন সরবরাহ শৃঙ্খল: যে খামারে খাদ্য লাগে তার কাছেই তৈরি, সমবায়ের মাধ্যমে একত্রিত সরবরাহ, আর পথে কম একবার-ব্যবহার্য প্লাস্টিক।",
+    },
+  },
+  {
+    key: "care",
+    title: { en: "The care economy", bn: "কেয়ার ইকোনমি" },
+    body: {
+      en: "Rural women carry three times the unpaid care work of men. We build work that fits around it — from the homestead, with training on the phone — instead of asking anyone to choose.",
+      bn: "গ্রামের নারীরা পুরুষের তিন গুণ অবৈতনিক সেবাকাজ করেন। কাউকে একটি বেছে নিতে না বলে আমরা এমন কাজ গড়ি যা এর সঙ্গে মানিয়ে চলে — বাড়ি থেকেই, ফোনে প্রশিক্ষণসহ।",
+    },
+  },
+  {
+    key: "inclusion",
+    title: { en: "Inclusion by design", bn: "নকশাতেই অন্তর্ভুক্তি" },
+    body: {
+      en: "Women are 70% of the people we work with and persons with disabilities 15%. Inclusion is a constraint on how every product is built, not a line added to a report.",
+      bn: "আমরা যাঁদের সঙ্গে কাজ করি তাঁদের ৭০% নারী এবং ১৫% প্রতিবন্ধী ব্যক্তি। অন্তর্ভুক্তি প্রতিটি পণ্য তৈরির শর্ত, প্রতিবেদনে যোগ করা কোনো লাইন নয়।",
+    },
+  },
+];
+
+/**
+ * The care-economy figures, paired as "the gap" and "our base".
+ *
+ * The gap figures are as cited in the July 2026 product overview's problem
+ * statement. They are kept separate from `headlineStats` because they describe
+ * the context, not DigiGram's own traction, and must never be read as either.
+ */
+export const careStats: { value: Bi; label: Bi; kind: "gap" | "base"; source: string }[] = [
+  {
+    kind: "gap",
+    value: { en: "3×", bn: "৩ গুণ" },
+    label: {
+      en: "more time rural women spend on unpaid care work than men",
+      bn: "পুরুষের তুলনায় বেশি সময় গ্রামের নারীরা অবৈতনিক সেবাকাজে দেন",
+    },
+    source: "Shathi Sheba Product Deck v0.1 — The problem",
+  },
+  {
+    kind: "gap",
+    value: { en: "85%", bn: "৮৫%" },
+    label: {
+      en: "of women farmers are cut off from the advice and extension services men receive",
+      bn: "নারী কৃষক পুরুষেরা যে পরামর্শ ও সম্প্রসারণ সেবা পান, তা থেকে বঞ্চিত",
+    },
+    source: "Shathi Sheba Product Deck v0.1 — The problem",
+  },
+  {
+    kind: "base",
+    value: { en: "70%", bn: "৭০%" },
+    label: { en: "of the people we work with are women", bn: "আমরা যাঁদের সঙ্গে কাজ করি তাঁদের মধ্যে নারী" },
+    source: "Overview Deck, July 2026 — Traction",
+  },
+  {
+    kind: "base",
+    value: { en: "15%", bn: "১৫%" },
+    label: { en: "are persons with disabilities", bn: "প্রতিবন্ধী ব্যক্তি" },
+    source: "Overview Deck, July 2026 — Traction",
   },
 ];
 

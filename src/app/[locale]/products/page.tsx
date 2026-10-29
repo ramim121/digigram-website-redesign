@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section, SectionHead } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
-import { ProductCards, CtaBand } from "@/components/sections/Shared";
+import { ProductCards, CtaBand, AppDownloadBand } from "@/components/sections/Shared";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema, buildMetadata } from "@/lib/seo";
 import { pillars } from "@/content/company";
@@ -206,6 +206,10 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
           </div>
         </div>
       </section>
+
+      {/* Both apps side by side. This band used to close the homepage; the
+          products hub is where comparing the two apps is the point. */}
+      <AppDownloadBand locale={locale} />
 
       <CtaBand locale={locale} />
     </>

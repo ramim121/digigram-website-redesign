@@ -16,6 +16,7 @@ import { routes } from "@/lib/site";
 import { shebaCapabilities } from "@/content/sheba";
 import { ProductSignIn } from "@/components/auth/ProductSignIn";
 import { ScrollingPhone } from "@/components/app/ScrollingPhone";
+import { ApaSection } from "@/components/sections/ApaSection";
 
 export async function generateMetadata({
   params,
@@ -515,6 +516,10 @@ export default async function ShathiShebaPage({
           </div>
         </div>
       </Section>
+
+      {/* Shathi Apa, in full: every capability, the rules she answers by, and
+          how access works. The homepage carries a summary that links here. */}
+      <ApaSection locale={locale} variant="full" tone="surface" />
 
       {/* Operating model */}
       <Section tone="canvas">

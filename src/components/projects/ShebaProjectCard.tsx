@@ -195,7 +195,7 @@ function ShebaApplyCta({ locale, open }: { locale: Locale; open: boolean }) {
     return (
       <p className="flex items-center justify-center gap-1.5 rounded-md border border-dashed border-stone-300 px-3 py-2.5 text-center font-display text-[13px] font-semibold text-stone-500">
         <Icon name="clock" size={14} className="shrink-0" />
-        {en ? "Applications open in the Shathi Sheba app soon" : "শীঘ্রই শাথী সেবা অ্যাপে আবেদন শুরু"}
+        {en ? "Applications open in the Shathi Sheba app soon" : "শীঘ্রই সাথী সেবা অ্যাপে আবেদন শুরু"}
       </p>
     );
   }
@@ -210,7 +210,7 @@ function ShebaApplyCta({ locale, open }: { locale: Locale; open: boolean }) {
       {open
         ? en
           ? "Apply in the Shathi Sheba app"
-          : "শাথী সেবা অ্যাপে আবেদন করুন"
+          : "সাথী সেবা অ্যাপে আবেদন করুন"
         : en
           ? "Get notified in the app"
           : "অ্যাপে জানিয়ে দিন"}
