@@ -9,9 +9,9 @@ import { setSessionCookie, type SessionUser } from "@/lib/auth/session";
  * returned in the response body, so no client script ever sees it.
  *
  * Calls `v2/web/otp` (PUT). That route now *creates* the account when a number
- * verifies for the first time — registration on the web is allowed. The
- * financial bar is unmoved: `bookingBlockers` still requires a verified NID
- * before any money moves.
+ * verifies for the first time — registration on the web is allowed. Proving
+ * the number is also what `bookingBlockers` asks for, so an account created
+ * here can book; an approved NID stopped being required on 2026-11-13.
  *
  * `needsProfile` is passed through so the client can send a new account to the
  * name-and-gender step rather than dropping it on a dashboard with a blank

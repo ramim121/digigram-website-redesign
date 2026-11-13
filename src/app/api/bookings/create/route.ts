@@ -5,11 +5,11 @@ import { getSessionToken } from "@/lib/auth/session";
 /**
  * POST { idProjects, units, partners[] } → place a booking.
  *
- * Talks to `v2/web/bookings/create`, which enforces **both** eligibility rules
- * (verified contact and verified NID) before delegating to the shared booking
- * implementation. The original `bookings/create` has the NID check commented
- * out for the mobile app's sake, so the site must not call it directly — the
- * gate in the UI would then be advisory rather than enforced.
+ * Talks to `v2/web/bookings/create`, which enforces the eligibility rule — a
+ * verified phone or email — before delegating to the shared booking
+ * implementation, and answers a refusal with a machine-readable
+ * `CONTACT_UNVERIFIED` code. NID is not checked there or here: an approved NID
+ * stopped being required on 2026-11-13, on the website and in the app alike.
  *
  * The unit → partner split is decided here rather than in the browser: it
  * determines how much money each Shathi partner is recorded against, and a

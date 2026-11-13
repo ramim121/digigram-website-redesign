@@ -62,9 +62,11 @@ export default async function InvestPage({
   const project = await fetchProject(slug);
   if (!project) notFound();
 
-  // Eligibility is decided on the server. A signed-out or unverified visitor
-  // never receives the booking UI at all, so there is nothing to bypass from
-  // the browser — the backend re-checks on submission regardless.
+  // Eligibility is decided on the server. A signed-out visitor, or one with no
+  // verified phone or email, never receives the booking UI at all, so there is
+  // nothing to bypass from the browser — the backend re-checks on submission
+  // regardless. NID status is not part of this: an approved NID stopped being
+  // required on 2026-11-13.
   const user = await getSessionUser();
   if (!user || bookingBlockers(user).length > 0) {
     return (

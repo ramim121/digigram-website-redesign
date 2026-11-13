@@ -66,8 +66,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
       </h1>
       <p className="mt-2 max-w-2xl text-stone-600">
         {locale === "en"
-          ? "A verified contact and a verified NID are what an investment needs. Everything else can wait."
-          : "বিনিয়োগের জন্য দরকার একটি যাচাইকৃত যোগাযোগ ও যাচাইকৃত এনআইডি। বাকি সব পরে করলেও চলবে।"}
+          ? "A verified phone or email is what an investment needs. Everything else can wait."
+          : "বিনিয়োগের জন্য দরকার একটি যাচাইকৃত ফোন বা ইমেইল। বাকি সব পরে করলেও চলবে।"}
       </p>
       {/*
         No max-width here. It used to be `max-w-2xl`, which was right when this

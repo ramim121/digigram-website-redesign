@@ -3,6 +3,21 @@
 Companion to `web-auth.md`, which covers sign-in. This covers what an account
 must have before it can invest, and how the profile screen collects it.
 
+> **Changed on 2026-11-13: an approved NID is no longer required to book.**
+> The only thing between an account and a booking is now a verified phone or
+> email. `bookingBlockers()` reports `contact` only, `BookingGate` says nothing
+> about NID, and the backend's booking routes stopped checking it the same day.
+>
+> NID itself is unchanged: it is still uploaded on the profile page, still
+> reviewed by an admin, still listed in the profile checklist (where it counts
+> towards completion but is not named in "before you can invest"), and a
+> verified NID still cannot be re-uploaded from the web.
+>
+> Wording that presented NID as a condition of investing was removed with it:
+> the "Required to invest" badge on the NID section, the "required by the
+> financial rules we operate under" note on the gate, and two sentences in the
+> Privacy Policy. Everything below that says otherwise is kept as history.
+
 ## The rule
 
 Two things, and only two, stand between an account and a booking:

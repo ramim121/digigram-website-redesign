@@ -261,8 +261,8 @@ export const privacySections: LegalSection[] = [
         bn: "অ্যাকাউন্ট ও প্রোফাইল — আপনার নাম, মোবাইল নম্বর, ইমেইল ঠিকানা, জন্মতারিখ, লিঙ্গ ও প্রোফাইল ছবি। আপনার মোবাইল নম্বর এসএমএসে পাঠানো এককালীন কোড দিয়ে যাচাই হয়; গুগল সাইন-ইনের মাধ্যমে যাচাইকৃত ইমেইল ঠিকানা যাচাইকৃত হিসেবে নথিভুক্ত হয়।",
       },
       {
-        en: "Identity verification — your National ID number and photographs of the front and back of your NID card. These are required before an investment can be confirmed, and are reviewed by our verification team.",
-        bn: "পরিচয় যাচাই — আপনার জাতীয় পরিচয়পত্র নম্বর এবং এনআইডি কার্ডের সামনে ও পেছনের ছবি। বিনিয়োগ নিশ্চিত করার আগে এগুলো প্রয়োজন, এবং আমাদের যাচাইকারী দল তা পরীক্ষা করে।",
+        en: "Identity verification — your National ID number and photographs of the front and back of your NID card. These are reviewed by our verification team.",
+        bn: "পরিচয় যাচাই — আপনার জাতীয় পরিচয়পত্র নম্বর এবং এনআইডি কার্ডের সামনে ও পেছনের ছবি। আমাদের যাচাইকারী দল এগুলো পরীক্ষা করে।",
       },
       {
         en: "Financial — the bank name, branch and account number you register for payouts, and any payment receipt or proof of transfer you upload against a booking.",
@@ -290,8 +290,8 @@ export const privacySections: LegalSection[] = [
     heading: { en: "3. How we use it", bn: "৩. আমরা কীভাবে ব্যবহার করি" },
     body: [
       {
-        en: "To create and secure your account and sign you in; to verify your identity as the law requires before an investment is confirmed; to process bookings, payments and payouts; to show you the projects and services relevant to your area; to send transactional messages such as one-time codes, booking confirmations and project updates; to answer your enquiries; to meet legal, tax and anti-money-laundering obligations; and to keep the platform working, secure and free of abuse.",
-        bn: "আপনার অ্যাকাউন্ট তৈরি ও সুরক্ষিত করতে এবং সাইন ইন করাতে; বিনিয়োগ নিশ্চিত করার আগে আইন অনুযায়ী আপনার পরিচয় যাচাই করতে; বুকিং, পরিশোধ ও অর্থ প্রেরণ প্রক্রিয়া করতে; আপনার এলাকার উপযোগী প্রকল্প ও সেবা দেখাতে; এককালীন কোড, বুকিং নিশ্চিতকরণ ও প্রকল্পের হালনাগাদের মতো লেনদেন-সংক্রান্ত বার্তা পাঠাতে; আপনার জিজ্ঞাসার উত্তর দিতে; আইনি, কর ও মানি লন্ডারিং প্রতিরোধের বাধ্যবাধকতা পূরণ করতে; এবং প্ল্যাটফর্ম সচল, নিরাপদ ও অপব্যবহারমুক্ত রাখতে।",
+        en: "To create and secure your account and sign you in; to verify your identity; to process bookings, payments and payouts; to show you the projects and services relevant to your area; to send transactional messages such as one-time codes, booking confirmations and project updates; to answer your enquiries; to meet legal, tax and anti-money-laundering obligations; and to keep the platform working, secure and free of abuse.",
+        bn: "আপনার অ্যাকাউন্ট তৈরি ও সুরক্ষিত করতে এবং সাইন ইন করাতে; আপনার পরিচয় যাচাই করতে; বুকিং, পরিশোধ ও অর্থ প্রেরণ প্রক্রিয়া করতে; আপনার এলাকার উপযোগী প্রকল্প ও সেবা দেখাতে; এককালীন কোড, বুকিং নিশ্চিতকরণ ও প্রকল্পের হালনাগাদের মতো লেনদেন-সংক্রান্ত বার্তা পাঠাতে; আপনার জিজ্ঞাসার উত্তর দিতে; আইনি, কর ও মানি লন্ডারিং প্রতিরোধের বাধ্যবাধকতা পূরণ করতে; এবং প্ল্যাটফর্ম সচল, নিরাপদ ও অপব্যবহারমুক্ত রাখতে।",
       },
       {
         en: "In Shathi Sheba, the information you provide also produces your readiness assessment — a risk grade, a readiness status and a recommended next step. This is decision support shared with a lender only when you apply. It is not an automated credit decision: a licensed lender makes that.",

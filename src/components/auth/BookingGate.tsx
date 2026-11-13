@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, Note } from "@/components/ui/Primitives";
+import { Card } from "@/components/ui/Primitives";
 import { Icon } from "@/components/ui/Icon";
 import { bookingBlockers, type SessionUser } from "@/lib/auth/session";
 import { localePath, type Locale } from "@/lib/i18n";
@@ -12,12 +12,14 @@ import { loginUrlFor } from "@/lib/auth/returnTo";
  * The rule, enforced in one place (`bookingBlockers`) so the account page, this
  * gate and the booking submission cannot disagree:
  *
- *   1. a **verified phone or email** — earned by how you signed in, not by
- *      typing an address into a form;
- *   2. a **verified NID** — an admin decision; submitted is not enough.
+ *   a **verified phone or email** — earned by how you signed in, not by typing
+ *   an address into a form.
  *
- * A bank account is deliberately not required here. It is where returns are
- * paid, which matters before a payout, not before a booking.
+ * That is the whole rule. An approved NID used to be required as well and no
+ * longer is (removed 2026-11-13), so this gate says nothing about NID: someone
+ * whose NID is pending, rejected or not yet uploaded goes straight to the
+ * checkout. A bank account is not required here either — it is where returns
+ * are paid, which matters before a payout, not before a booking.
  *
  * Returning `null` means eligible: the caller renders the real flow.
  */
@@ -78,50 +80,27 @@ export function BookingGate({
                 {blockers.map((blocker) => (
                     <li key={blocker} className="flex gap-3">
                         <Icon
-                            name={blocker === "nid_pending" ? "info" : "alert-triangle"}
+                            name="alert-triangle"
                             size={18}
-                            className={
-                                blocker === "nid_pending"
-                                    ? "mt-0.5 shrink-0 text-brand-strong"
-                                    : "mt-0.5 shrink-0 text-amber-600"
-                            }
+                            className="mt-0.5 shrink-0 text-amber-600"
                         />
                         <span className="text-sm leading-relaxed text-stone-700">
                             {blocker === "contact" &&
                                 (en
                                     ? "Verify your phone or email. Signing in with an SMS code verifies your phone; signing in with Google verifies your email. Either one is enough."
                                     : "আপনার ফোন বা ইমেইল যাচাই করুন। এসএমএস কোড দিয়ে লগ ইন করলে ফোন যাচাই হয়; গুগল দিয়ে করলে ইমেইল। যেকোনো একটিই যথেষ্ট।")}
-                            {blocker === "nid" &&
-                                (en
-                                    ? "Submit both sides of your NID. Verification is usually quick, and you only do it once."
-                                    : "আপনার এনআইডির দুই দিকই জমা দিন। যাচাই সাধারণত দ্রুত হয়, আর একবারই করতে হয়।")}
-                            {blocker === "nid_pending" &&
-                                (en
-                                    ? "Your NID is submitted and under review. You will be able to invest as soon as it is approved — nothing more is needed from you."
-                                    : "আপনার এনআইডি জমা হয়েছে এবং পর্যালোচনায় আছে। অনুমোদন হলেই বিনিয়োগ করতে পারবেন — আপনার আর কিছু করার নেই।")}
                         </span>
                     </li>
                 ))}
             </ul>
 
-            {/* No action link when the only thing left is our review — sending
-                someone to a form they have already completed reads as though
-                their submission was lost. */}
-            {!(blockers.length === 1 && blockers[0] === "nid_pending") && (
-                <Link
-                    href={localePath(locale, routes.registerProfile)}
-                    className="mt-5 inline-flex items-center gap-2 rounded-md bg-brand-strong px-4 py-2 text-sm font-semibold text-white"
-                >
-                    {en ? "Complete my profile" : "প্রোফাইল সম্পূর্ণ করুন"}
-                    <Icon name="arrow-right" size={16} />
-                </Link>
-            )}
-
-            <Note tone="info" icon="info" className="mt-5">
-                {en
-                    ? "These checks are required by the financial rules we operate under, and they protect your payout from being sent to the wrong person."
-                    : "আমরা যে আর্থিক নিয়মের অধীনে কাজ করি তাতে এই যাচাইগুলো আবশ্যক, আর এগুলো আপনার পরিশোধ ভুল ব্যক্তির কাছে যাওয়া থেকেও রক্ষা করে।"}
-            </Note>
+            <Link
+                href={localePath(locale, routes.registerProfile)}
+                className="mt-5 inline-flex items-center gap-2 rounded-md bg-brand-strong px-4 py-2 text-sm font-semibold text-white"
+            >
+                {en ? "Complete my profile" : "প্রোফাইল সম্পূর্ণ করুন"}
+                <Icon name="arrow-right" size={16} />
+            </Link>
         </Card>
     );
 }

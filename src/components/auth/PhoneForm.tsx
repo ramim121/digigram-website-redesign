@@ -16,8 +16,8 @@ import { routes, site } from "@/lib/site";
  * This is sign-in AND sign-up. A number with no account gets one when the code
  * verifies, and is sent straight to the name-and-gender step. It used to refuse
  * an unknown number and point at the app stores; registration on the web is now
- * allowed, and the financial bar (a verified NID before any booking) is what
- * still holds.
+ * allowed. Entering the code proves the number, which is also all a booking
+ * asks for — an approved NID stopped being required on 2026-11-13.
  *
  * The +880 prefix is locked so a visitor cannot enter a country code twice,
  * and the field is numeric-only so a phone keyboard opens on mobile.

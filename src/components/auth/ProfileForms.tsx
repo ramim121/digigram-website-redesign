@@ -20,7 +20,10 @@ import type { Locale } from "@/lib/i18n";
  *
  *   - each item states whether it is **required to invest** or optional, so
  *     nobody fills in a bank account believing it is the thing standing in
- *     their way;
+ *     their way. NID carries no such label: it was required to invest until
+ *     2026-11-13 and is not now, but it is still asked for and still reviewed,
+ *     so calling it "optional" would undersell it and "required" would be
+ *     false;
  *   - a verified phone or email is shown as **already done**, with the reason
  *     ("verified when you signed in"), instead of being an editable field that
  *     looks unfinished;
@@ -103,22 +106,25 @@ function Section({
     children,
 }: {
     title: string;
-    requirement: { label: string; required: boolean };
+    /** Omit for a section that is neither a condition of investing nor optional. */
+    requirement?: { label: string; required: boolean };
     children: React.ReactNode;
 }) {
     return (
         <Card className="p-6">
             <div className="flex flex-wrap items-center gap-3">
                 <h2 className="font-display text-lg font-bold text-stone-900">{title}</h2>
-                <span
-                    className={
-                        requirement.required
-                            ? "rounded bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800"
-                            : "rounded bg-stone-100 px-2 py-0.5 text-xs font-bold text-stone-500"
-                    }
-                >
-                    {requirement.label}
-                </span>
+                {requirement && (
+                    <span
+                        className={
+                            requirement.required
+                                ? "rounded bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800"
+                                : "rounded bg-stone-100 px-2 py-0.5 text-xs font-bold text-stone-500"
+                        }
+                    >
+                        {requirement.label}
+                    </span>
+                )}
             </div>
             <div className="mt-4">{children}</div>
         </Card>
@@ -401,13 +407,7 @@ function NidSection({
     const pending = !verified && user.nidVerificationStatus === "pending";
 
     return (
-        <Section
-            title={en ? "NID verification" : "এনআইডি যাচাই"}
-            requirement={{
-                label: en ? "Required to invest" : "বিনিয়োগের জন্য আবশ্যক",
-                required: true,
-            }}
-        >
+        <Section title={en ? "NID verification" : "এনআইডি যাচাই"}>
             {verified ? (
                 <div className="space-y-4">
                     <Done>
@@ -448,8 +448,8 @@ function NidSection({
                             </p>
                             <p className="mt-1 text-sm leading-relaxed text-stone-700">
                                 {en
-                                    ? "Both sides are on file. Verification is usually quick, and you will be able to invest as soon as it is approved. Nothing more is needed from you."
-                                    : "দুই দিকই জমা আছে। যাচাই সাধারণত দ্রুত হয়, অনুমোদনের সঙ্গে সঙ্গেই বিনিয়োগ করতে পারবেন। আপনার আর কিছু করার নেই।"}
+                                    ? "Both sides are on file. Verification is usually quick. Nothing more is needed from you."
+                                    : "দুই দিকই জমা আছে। যাচাই সাধারণত দ্রুত হয়। আপনার আর কিছু করার নেই।"}
                             </p>
                         </div>
                     </div>

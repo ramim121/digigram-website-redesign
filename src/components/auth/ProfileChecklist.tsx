@@ -12,11 +12,17 @@ import type { Locale } from "@/lib/i18n";
  * and adding it up. This states it once.
  *
  * WHAT COUNTS AS REQUIRED
- * Only what actually blocks a booking: a verified contact channel and an
- * approved NID (BR-03). A bank account is listed because a payout has nowhere
- * to go without it, but it is marked optional — it is needed before money comes
- * back, not before money goes out. Overstating it would be a lie the booking
- * endpoint does not tell.
+ * Only what this list has always asked for before investing: a name and a
+ * verified contact channel. A bank account is listed because a payout has
+ * nowhere to go without it, but it is marked optional — it is needed before
+ * money comes back, not before money goes out. Overstating it would be a lie
+ * the booking endpoint does not tell.
+ *
+ * NID IS LISTED BUT DOES NOT BLOCK
+ * An approved NID was required to book until 2026-11-13. It is still part of
+ * the profile — still uploaded here, still reviewed by an admin — so it keeps
+ * its line and counts towards completion. It is no longer named in "before you
+ * can invest", because nothing stops an investor without one.
  *
  * A step under review is neither done nor outstanding, and says so: telling
  * somebody to "verify your NID" when it is sitting in a queue reads as though
@@ -29,7 +35,10 @@ type Step = {
     label: string;
     state: State;
     detail?: string;
+    /** Shown with an "optional" tag. */
     optional?: boolean;
+    /** Named in "before you can invest" while it is not done. */
+    blocksInvesting?: boolean;
 };
 
 function buildSteps(user: SessionUser, hasBank: boolean, en: boolean): Step[] {
@@ -42,10 +51,12 @@ function buildSteps(user: SessionUser, hasBank: boolean, en: boolean): Step[] {
         {
             label: en ? "Your name" : "আপনার নাম",
             state: named ? "done" : "todo",
+            blocksInvesting: true,
         },
         {
             label: en ? "Phone or email verified" : "ফোন বা ইমেইল যাচাই",
             state: contactDone ? "done" : "todo",
+            blocksInvesting: true,
             detail: contactDone
                 ? user.phoneVerified === "yes"
                     ? en
@@ -93,7 +104,7 @@ export function ProfileChecklist({
     const done = steps.filter((s) => s.state === "done").length;
     const percent = Math.round((done / steps.length) * 100);
 
-    const blockers = steps.filter((s) => !s.optional && s.state !== "done");
+    const blockers = steps.filter((s) => s.blocksInvesting && s.state !== "done");
     const canInvest = blockers.length === 0;
 
     return (

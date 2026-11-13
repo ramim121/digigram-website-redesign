@@ -143,30 +143,26 @@ export function isContactVerified(user: SessionUser): boolean {
     return user.phoneVerified === "yes" || user.emailVerified === "yes";
 }
 
-export type BookingBlocker = "contact" | "nid" | "nid_pending";
+export type BookingBlocker = "contact";
 
 /**
  * Whether this account may place a booking.
  *
- * Two hard requirements, per the product rule:
- *   1. phone **or** email verified;
- *   2. NID verified by an admin — submitted is not sufficient.
+ * One requirement: phone **or** email verified.
  *
- * A profile photo and a bank account are *not* blockers. The photo is
+ * An approved NID used to be the second. It was removed on 2026-11-13, here
+ * and in the backend's booking routes. NID is still collected on the profile
+ * page and still reviewed by an admin — see `profileGaps` above, which goes on
+ * listing it — but it no longer stands in front of a booking.
+ *
+ * A profile photo and a bank account are *not* blockers either. The photo is
  * cosmetic, and the bank account is where returns are paid — it is needed
  * before a payout, not before a booking, and demanding it up front would stop
  * people investing for a reason that does not yet apply.
- *
- * `nid_pending` is reported separately from `nid` so the UI can say "we are
- * reviewing it" instead of "you have not done this", which reads as though the
- * upload failed.
  */
 export function bookingBlockers(user: SessionUser): BookingBlocker[] {
     const blockers: BookingBlocker[] = [];
     if (!isContactVerified(user)) blockers.push("contact");
-    if (user.nidVerified !== "yes") {
-        blockers.push(user.nidVerificationStatus === "pending" ? "nid_pending" : "nid");
-    }
     return blockers;
 }
 

@@ -48,9 +48,12 @@ const GAP_COPY: Record<
     nid: {
         en: "Verify your NID",
         bn: "আপনার এনআইডি যাচাই করুন",
+        // Says what the NID is for, not that it is a condition of investing:
+        // an approved NID stopped being required to book on 2026-11-13. The
+        // wording is the same pair the profile form shows beside the upload.
         why: {
-            en: "Required before an investment can be confirmed.",
-            bn: "বিনিয়োগ নিশ্চিত করার আগে এটি প্রয়োজন।",
+            en: "Your NID images are used only to verify your identity, and are reviewed by our verification team.",
+            bn: "আপনার এনআইডির ছবি কেবল পরিচয় যাচাইয়ের জন্য ব্যবহার করা হয়, এবং আমাদের যাচাইকারী দল তা দেখে।",
         },
     },
     photo: {
@@ -120,11 +123,12 @@ export function AccountOverview({
                     <h2 className="font-display text-lg font-bold text-stone-900">
                         {en ? "Finish setting up your account" : "অ্যাকাউন্ট সেটআপ শেষ করুন"}
                     </h2>
-                    <p className="mt-1 text-sm text-stone-600">
-                        {en
-                            ? "You can browse and book without these, but an investment cannot be confirmed until they are done."
-                            : "এগুলো ছাড়াও দেখা ও বুকিং করা যায়, তবে এগুলো শেষ না হলে বিনিয়োগ নিশ্চিত করা যাবে না।"}
-                    </p>
+                    {/* A sentence used to sit here saying an investment
+                        "cannot be confirmed until they are done". That was
+                        never true of the photo, and stopped being true of the
+                        NID on 2026-11-13. Each item below states its own
+                        reason instead, which is the only claim that holds for
+                        all five. */}
                     <ul className="mt-5 space-y-3">
                         {gaps.map((gap) => (
                             <li key={gap} className="flex gap-3">
