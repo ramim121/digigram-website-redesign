@@ -23,12 +23,15 @@ export function LegalPage({
   crumb,
   intro,
   sections,
+  updated = legalUpdated,
 }: {
   locale: Locale;
   title: string;
   crumb: string;
   intro: string;
   sections: LegalSection[];
+  /** ISO date for "Last updated". Defaults to the Terms date. */
+  updated?: string;
 }) {
   const en = locale === "en";
 
@@ -40,7 +43,7 @@ export function LegalPage({
         <div className="container-prose">
           <p className="text-sm text-stone-500">
             {en ? "Last updated: " : "সর্বশেষ হালনাগাদ: "}
-            {formatDate(legalUpdated, locale)}
+            {formatDate(updated, locale)}
           </p>
 
           <div className="mt-10 space-y-10">

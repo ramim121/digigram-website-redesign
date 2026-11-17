@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LegalPage } from "@/components/layout/LegalPage";
-import { privacySections } from "@/content/legal";
+import { privacySections, privacyUpdated } from "@/content/legal";
 import { buildMetadata } from "@/lib/seo";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { routes } from "@/lib/site";
@@ -41,6 +41,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
           : "আমরা কী সংগ্রহ করি, কেন করি, এবং তা নিয়ে আপনি আমাদের কী করতে বলতে পারেন।"
       }
       sections={privacySections}
+      updated={privacyUpdated}
     />
   );
 }

@@ -29,8 +29,19 @@ import type { Bi } from "@/lib/i18n";
  * real system behaviour, but it has not been through legal review.
  */
 
-/** ISO date shown as "Last updated" on both pages. */
+/** ISO date shown as "Last updated" on the Terms page. */
 export const legalUpdated = "2026-09-14";
+
+/**
+ * ISO date shown as "Last updated" on the Privacy Policy.
+ *
+ * Separate from the Terms date because the two change independently. The
+ * policy last changed on 2026-11-17, when the sentences presenting an NID as
+ * a condition of confirming an investment were removed — an approved NID
+ * stopped being required to book that week. `/privacy` is the URL submitted to
+ * Google Play, so a stale date here is the one a reviewer sees.
+ */
+export const privacyUpdated = "2026-11-17";
 
 export type LegalSection = { heading: Bi; body: Bi[] };
 
