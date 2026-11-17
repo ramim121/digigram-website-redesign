@@ -121,6 +121,8 @@ type ApiInvestment = {
     } | null;
     ProjectPartnerInvestors?: {
         investedUnit?: number | string | null;
+        /** Money recorded against this partner when the booking was placed. */
+        amountInvested?: number | string | null;
         ProjectPartner?: {
             idProjectPartners?: number;
             Project?: { projectName?: string | null } | null;
@@ -160,9 +162,15 @@ function partnerPhoto(file: { fileName?: string | null; refType?: string | null;
 /**
  * Folds the flat investment list into one entry per booking.
  *
- * Money is derived, not read: there is no amount column on either table. The
- * booking total is units x the project's unit value, and the projected return
- * applies the project's own min/max percentages to that — matching BR-06.
+ * Money is read from what the booking recorded: the sum of its partner
+ * allocations (`project_partner_investors.amount_invested`). The projected
+ * return applies the project's own min/max percentages to that — BR-06.
+ *
+ * It used to be units x the project's unit value, which is the price TODAY.
+ * Projects are reused across cycles and repriced between them, so every booking
+ * made before a price change showed the wrong amount — the investors in
+ * Project Cattle 2 saw half of what they paid after its price was edited.
+ * Units x price remains only as a fallback for a line with no allocation.
  */
 function groupByBooking(rows: ApiInvestment[]): BookingSummary[] {
     const byReference = new Map<string, BookingSummary>();
@@ -175,8 +183,8 @@ function groupByBooking(rows: ApiInvestment[]): BookingSummary[] {
         if (!reference) continue;
 
         const units = n(row.unitPurchased);
-        const unitValue = n(row.Project?.unitInvestmentValue);
-        const amount = units * unitValue;
+        const recorded = (row.ProjectPartnerInvestors ?? []).reduce((sum, p) => sum + n(p.amountInvested), 0);
+        const amount = recorded > 0 ? recorded : units * n(row.Project?.unitInvestmentValue);
 
         let entry = byReference.get(reference);
         if (!entry) {
@@ -225,8 +233,9 @@ function groupByBooking(rows: ApiInvestment[]): BookingSummary[] {
                 location: partner.User?.location ?? null,
                 hasDisability: partner.User?.disability === "yes",
                 units: n(link.investedUnit),
-                // No amount column on the allocation either; derive it the same way.
-                amount: n(link.investedUnit) * unitValue,
+                // The allocation's own recorded amount, for the same reason as
+                // the booking total above.
+                amount: n(link.amountInvested) || n(link.investedUnit) * n(row.Project?.unitInvestmentValue),
                 image: partnerPhoto(partner.User?.ProfilePicture),
                 bio: partner.User?.bio ?? null,
                 interestedIn: partner.User?.interestedIn ?? null,
